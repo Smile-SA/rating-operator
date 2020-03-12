@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kubectl delete -f deploy/crd
+kubectl delete -f deploy/

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+PROMETHEUS_NAMESPACE=${PROMETHEUS_NAMESPACE:-monitoring}
+
+kubectl -n "$PROMETHEUS_NAMESPACE" get pods -l app=alertmanager -o name | cut -d/ -f2 | xargs -I{} kubectl -n "$PROMETHEUS_NAMESPACE" port-forward {} 9093:9093

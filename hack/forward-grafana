@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+PROMETHEUS_NAMESPACE=${PROMETHEUS_NAMESPACE:-monitoring}
+
+pwd=$(kubectl get -n "$PROMETHEUS_NAMESPACE" secret prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode)
+echo "password: admin / $pwd"
+
+kubectl -n "$PROMETHEUS_NAMESPACE" get pods -l app=grafana -o name | cut -d/ -f2 | xargs -I{} kubectl -n "$PROMETHEUS_NAMESPACE" port-forward {} 3000:3000

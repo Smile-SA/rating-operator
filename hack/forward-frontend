@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+# forward the nginx sidecar. api is at localhost:8080/api/
+
+podname=$(kubectl get pods -l app.kubernetes.io/name=rating,app.kubernetes.io/component=frontend -o name | cut -d/ -f2 | head -1)
+kubectl port-forward "$podname" 8080:8080 --v=10

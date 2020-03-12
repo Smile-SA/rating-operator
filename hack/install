@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kubectl create -f deploy/crd
+kubectl create -f deploy/
