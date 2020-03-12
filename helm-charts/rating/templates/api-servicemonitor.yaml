@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "rating.api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: api
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: api
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  - interval: 60s
+    port: api
+    path: '/rules_metrics'

@@ -1,0 +1,77 @@
+api:
+  affinity: {}
+  config:
+    postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
+    postgres_secret: '{{ .Release.Name }}-postgresql'
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
+    tag: latest
+    imageCredentials:
+      registry: "hub.rnd.alterway.fr"
+      username: "gitlab+deploy-token-8"
+      password: "9rx3xqpUd9yggyRXpNcp"
+  name: api
+  nodeSelector: {}
+  resources: {}
+  service:
+    port: 80
+    type: ClusterIP
+  storage:
+    config:
+      storageClass: null
+  tolerations: []
+frontend:
+  affinity: {}
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-front
+    tag: latest
+    imageCredentials:
+      registry: "hub.rnd.alterway.fr"
+      username: "gitlab+deploy-token-12"
+      password: "5hzFVia1Kiz5gtC9bsZD"
+  name: frontend
+  nodeSelector: {}
+  resources: {}
+  service:
+    port: 80
+    type: ClusterIP
+  tolerations: []
+fullnameOverride: null
+ingress:
+  annotations: {}
+  enabled: false
+  hosts:
+  - host: chart-example.local
+    paths: []
+  tls: []
+metering:
+  presto_database_uri: presto://root@presto.metering:8080/hive/metering
+nameOverride: null
+networkPolicy:
+  enabled: false
+postgresql:
+  enabled: true
+processor:
+  affinity: {}
+  config:
+    postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
+    postgres_secret: '{{ .Release.Name }}-postgresql'
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-processor
+    tag: latest
+    imageCredentials:
+      registry: "hub.rnd.alterway.fr"
+      username: "gitlab+deploy-token-6"
+      password: "-YDyWdxz8c-CcDVuLX2-"
+  name: processor
+  nodeSelector: {}
+  resources: {}
+  tolerations: []
+rbac:
+  create: true
+service:
+  port: 80
+  type: ClusterIP

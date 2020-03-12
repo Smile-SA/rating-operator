@@ -1,0 +1,103 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rating.api.fullname" . }}
+  labels:
+    app.kubernetes.io/component: api
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  # replicas: {{ .Values.replicaCount }}
+  # hardcoded
+  replicas: 1
+  strategy:
+    # don't want two of us running at the same time
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        {{- include "rating.labels" . | nindent 8 }}
+        app.kubernetes.io/component: api
+    spec:
+    {{- if .Values.api.image.imageCredentials }}
+      imagePullSecrets:
+        - name: {{ include "rating.api.pullSecretName" . }}
+    {{- end }}
+      initContainers:
+        - name: config-init-rates
+          image: busybox:1.31.0
+          env:
+            - name: RATING_RATES_DIR
+              value: "/config/rates"
+            - name: RATING_RATES_T0_DIR
+              value: "/config/rates-t0"
+          volumeMounts:
+          - mountPath: "/config/rates"
+            name: config-rates
+            readOnly: false
+          - mountPath: "/config/rates-t0"
+            name: config-rates-t0
+            readOnly: true
+          command: ["sh", "-c", "/bin/cp -a /config/rates-t0 /config/rates/0; /bin/chown -R 1000 /config/rates"]
+      containers:
+        - name: api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 5012
+          args: ["./entrypoint.sh"]
+          env:
+            - name: RATING_RATES_DIR
+              value: "/config/rates"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_HOSTNAME
+              value: "{{ tpl .Values.api.config.postgres_hostname $ }}"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DATABASE
+              value: postgres
+            - name: POSTGRES_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ tpl .Values.api.config.postgres_secret $ }}"
+                  key: postgresql-password
+          volumeMounts:
+          - mountPath: "/config/rates"
+            name: config-rates
+            readOnly: false
+          livenessProbe:
+            httpGet:
+              path: /alive
+              port: 5012
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.api.resources | nindent 12 }}
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.affinity }}
+        affinity:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config-rates-t0
+        configMap:
+          name: {{ include "rating.fullname" . }}-config-rates-t0
+      - name: config-rates
+        persistentVolumeClaim:
+          claimName: {{ include "rating.fullname" . }}-config-rates

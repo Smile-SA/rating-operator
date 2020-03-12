@@ -1,0 +1,37 @@
+---
+rules:
+-
+    name: rules_default
+    rules:
+    -
+      metric: request_cpu
+      price: 0.5
+      unit: core-hours
+    -
+      metric: usage_cpu
+      price: 0.8
+      unit: core-hours
+    -
+      metric: request_memory
+      price: 0.4
+      unit: GiB-hours
+    -
+      metric: usage_memory
+      price: 0.8
+      unit: GiB-hours
+    -
+      metric: slice_receive
+      price: 4
+      unit: GiB-hours
+    -
+      metric: slice_send
+      price: 5
+      unit: GiB-hours
+    -
+      metric: accelerated_slice_receive
+      price: 8
+      unit: GiB-hours
+    -
+      metric: accelerated_slice_send
+      price: 10
+      unit: GiB-hours
