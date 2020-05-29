@@ -1,0 +1,49 @@
+---
+apiVersion: metering.openshift.io/v1
+kind: MeteringConfig
+metadata:
+  name: operator-metering
+spec:
+#  disableOCPFeatures: true
+  tls:
+    enabled: false
+#  reporting-operator:
+#    spec:
+#      route:
+#        enabled: false
+#      config:
+#        prometheus:
+#          url: "http://prometheus-operated.openshift-monitoring:9090/"
+#          certificateAuthority:
+#            useServiceAccountCA: false
+#          metricsImporter:
+#            auth:
+#              useServiceAccountToken: true
+#              tokenSecret:
+#                enabled: false
+#        tls:
+#          api:
+#            enabled: false
+#  hive:
+#    spec:
+#      securityContext:
+#        fsGroup: 0
+#  presto:
+#    spec:
+#      securityContext:
+#        fsGroup: 0
+#    coordinator:
+#      resources:
+#        limits:
+#          cpu: 2
+#        requests:
+#          cpu: 1
+  storage:
+    type: "hive"
+    hive:
+      type: "sharedPVC"
+      sharedPVC:
+        claimName: "metering-hive"
+#        createPVC: true
+#        storageClass: "csi-cephfs"
+#        size: 5Gi

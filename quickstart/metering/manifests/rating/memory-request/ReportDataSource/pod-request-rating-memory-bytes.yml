@@ -1,0 +1,8 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportDataSource
+metadata:
+  name: pod-request-rating-memory-bytes
+spec:
+  prometheusMetricsImporter:
+    query: |
+      sum(kube_pod_container_resource_requests_memory_bytes) by (pod, namespace, node) + on (node) group_left(label_beta_kubernetes_io_instance_type) (sum(kube_node_labels) by (node,label_beta_kubernetes_io_instance_type) * 0)

@@ -1,0 +1,9 @@
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-rating-cpu-usage-hourly
+spec:
+  query: pod-rating-cpu-usage
+  schedule:
+    hourly: {}
+    period: hourly

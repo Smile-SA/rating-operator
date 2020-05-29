@@ -1,4 +1,0 @@
-#!/bin/bash
-
-kubectl create -f deploy/crds
-kubectl create -f deploy/

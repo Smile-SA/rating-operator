@@ -1,0 +1,11 @@
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-bpu-usage-cron
+spec:
+  query: pod-bpu-usage
+  gracePeriod: "5m"
+  schedule:
+    period: cron
+    cron:
+      expression: "*/15 * * * *"

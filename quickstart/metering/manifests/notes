@@ -1,0 +1,10 @@
+create a ReportDataSource with a PrometheusMetricsImporter
+  the prestotables CRD object is created, and the table in presto
+remove the reportdatasource
+  the prestotables CRD and the corresponding table are deleted
+
+
+DELETE from the presto table
+  0 rows, new data is not collected?
+
+

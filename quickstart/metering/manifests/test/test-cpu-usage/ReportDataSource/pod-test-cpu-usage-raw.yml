@@ -1,0 +1,8 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportDataSource
+metadata:
+  name: pod-test-cpu-usage-raw
+spec:
+  reportQueryView:
+    queryName: pod-test-cpu-usage-raw
+

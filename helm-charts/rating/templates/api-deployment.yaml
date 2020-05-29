@@ -26,18 +26,13 @@ spec:
         {{- include "rating.labels" . | nindent 8 }}
         app.kubernetes.io/component: api
     spec:
-    {{- if .Values.api.image.imageCredentials }}
+    {{- if .Values.api.pullSecretsName }}
       imagePullSecrets:
-        - name: {{ include "rating.api.pullSecretName" . }}
-    {{- end }}
+        - name: {{ .Values.api.pullSecretsName }}
+    {{ end }}
       initContainers:
         - name: config-init-rates
           image: busybox:1.31.0
-          env:
-            - name: RATING_RATES_DIR
-              value: "/config/rates"
-            - name: RATING_RATES_T0_DIR
-              value: "/config/rates-t0"
           volumeMounts:
           - mountPath: "/config/rates"
             name: config-rates
@@ -55,6 +50,8 @@ spec:
               containerPort: 5012
           args: ["./entrypoint.sh"]
           env:
+            - name: RATING_NAMESPACE
+              value: {{ .Release.Namespace }}
             - name: RATING_RATES_DIR
               value: "/config/rates"
             - name: POSTGRES_USER
@@ -70,6 +67,11 @@ spec:
                 secretKeyRef:
                   name: "{{ tpl .Values.api.config.postgres_secret $ }}"
                   key: postgresql-password
+            - name: PRESTO_DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "rating.fullname" . }}
+                  key: PRESTO_DATABASE_URI
           volumeMounts:
           - mountPath: "/config/rates"
             name: config-rates
@@ -77,7 +79,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /alive
-              port: 5012
+              port: api
             initialDelaySeconds: 10
             periodSeconds: 10
           resources:

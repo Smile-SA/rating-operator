@@ -12,11 +12,13 @@ spec:
       labels:
         name: rating-operator
     spec:
+      imagePullSecrets:
+        - name: rating-regcred
       serviceAccountName: rating-operator
       containers:
         - name: rating-operator
-          # Replace this with the built image name
-          image: vdaviot/rating-operator:v0.0.1
+          resources: {}
+          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -29,3 +31,11 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "rating-operator"
+            - name: PULLSECRETS_API
+              value: rating-regcred
+            - name: PULLSECRETS_PROCESSING
+              value: rating-regcred
+            - name: POSTGRESQL_PASSWORD
+              value: notasecret
+            - name: RATING_ADMIN_API_KEY
+              value: thisisadmintoken

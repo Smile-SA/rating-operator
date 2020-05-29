@@ -1,0 +1,10 @@
+---
+prometheus:
+  prometheusSpec:
+    retention: 30d
+    # additionalScrapeConfigs:
+    # - job_name: 'custom-targets'
+    #   static_configs:
+    #   - targets: []
+    #   # the default path is /metrics
+    #   # - 'http://<host>:<port>'

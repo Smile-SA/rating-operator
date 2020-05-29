@@ -3,4 +3,5 @@
 set -eu
 set -o pipefail
 
-kubectl get pods -l app=postgresql -o name | cut -d/ -f2 | xargs -I{} kubectl port-forward {} 5432:5432
+podname=$(kubectl get pods -l app=postgresql -o name | cut -d/ -f2 | head -1)
+kubectl port-forward "$podname" 5432:5432

@@ -1,0 +1,9 @@
+---
+token:
+  admin: thisisadmintoken
+api:
+  pullSecretsName: rating-regcred
+processing:
+  pullSecretsName: rating-regcred
+postgresql:
+  postgresqlPassword: notasecret
