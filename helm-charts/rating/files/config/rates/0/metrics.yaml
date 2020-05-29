@@ -20,23 +20,3 @@ metrics:
     presto_table: report_metering_pod_rating_memory_usage_hourly
     presto_column: pod_usage_memory_byte_seconds
     unit: byte-seconds
-  slice_send:
-    report_name: slice-network-bytes-send
-    presto_table: report_metering_slice_network_bytes_send
-    presto_column: bytes_sent
-    unit: byte-seconds
-  slice_receive:
-    report_name: slice-network-bytes-receive
-    presto_table: report_metering_slice_network_bytes_receive
-    presto_column: bytes_received
-    unit: byte-seconds
-  accelerated_slice_receive:
-    report_name: accelerated-slice-network-bytes-receive
-    presto_table: report_metering_accelerated_slice_network_bytes_receive
-    presto_column: bytes_received
-    unit: byte-seconds
-  accelerated_slice_send:
-    report_name: accelerated-slice-network-bytes-send
-    presto_table: report_metering_accelerated_slice_network_bytes_send
-    presto_column: bytes_sent
-    unit: byte-seconds

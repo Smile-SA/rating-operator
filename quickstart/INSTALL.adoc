@@ -1,0 +1,436 @@
+= Rating Operator
+:toc: macro
+:imagesdir: docs/images
+:homepage: https://git.rnd.alterway.fr/overboard/5gbiller/rating-setup
+:blank: pass:[ +]
+:toclevels: 4
+:sectlinks:
+
+toc::[]
+
+= Introduction
+
+In this document we show how to set up a test/minimal instance. In a production
+environment, you may want to add Network policies for increased security, and
+HA storage for resilience. In this tutorial the in-cluster communications are
+considered trusted.
+
+= Requirements
+
+1. A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x
++
+2. A persistent storage plugin that supports the ReadWriteMany access mode, i.e. a shared
+   filesystem that can be written from multiple nodes simultaneously. We describe how to
+   install https://rook.io/[Rook] and https://ceph.com/[Ceph] to that purpose.
+   Some distributions, like CodeReady, come with pre-provisioned volumes
+   without the need to install anything else. NFS is not recommended.
++
+3. Helm is used to deploy Prometheus, or the Rook storage if you need to.
++
+4. A Prometheus instance configured to collect from kubelet and kube-state-metrics.
+   We will show you how to deploy one (currently with no authentication).
+   In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
++
+5. https://github.com/jzelinskie/faq (on the machine that is running kubectl)
+
+
+== Helm
+
+Helm 3 does away with some security issues of its previous versions (no server-side Tiller component), but you may want to restrict Helm's permissions in a production environment. To know more, see https://static.sched.com/hosted_files/helmsummit2019/08/Securing%20Helm%203%20-%20Helm%20Summit%20EU%202019.pptx[Securing Helm 3 - Matthew Fisher, Microsoft].
+
+[source,sh]
+----
+$ curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar xfz -
+$ sudo mv linux-amd64/helm /usr/local/bin/helm3
+----
+
+
+== Rook-Ceph
+
+From https://github.com/rook/rook/blob/master/Documentation/helm-operator.md[https://github.com/rook/rook/blob/master/Documentation/helm-operator.md]:
+
+[source,sh]
+----
+$ git clone https://github.com/rook/rook.git -b v1.2.6 ./quickstart/rook/rook
+Cloning into './rook/rook'...
+remote: Enumerating objects: 75, done.
+[...]
+$ ./quickstart/rook/install.sh
+Installing Helm release...
+NAME:   rook
+[...]
+Creating fs storage class...
+storageclass.storage.k8s.io/csi-cephfs created
+----
+
+The above installs the helm chart and creates a few objects (CephCluster, StorageClass, CephFilsystem...).
+
+NOTE: The default setup and the rest of the document describe a minimal test
+cluster, where the node hosting the volumes is a single point of failure. In
+production you will want to use a robust configuration, by changing the
+`rook/install.sh` script. The Rook repository comes with
+https://github.com/rook/rook/blob/master/Documentation/ceph-examples.md[several
+examples] that you can choose and adapt to your desired setup: development,
+production, HA or not, error correction, performance and retention policies,
+etc. You can define multiple CephClusters, but they need to be installed in
+separate namespaces.
+
+
+When everything is running correcly, with two worker nodes you should see something like:
+
+[source,sh]
+----
+$ kubectl get pods -n rook-ceph
+NAME                                  READY   STATUS    RESTARTS   AGE
+rook-ceph-agent-g48jg                 1/1     Running   0          100s
+rook-ceph-agent-mm9vx                 1/1     Running   0          100s
+rook-ceph-operator-6c8b6f68c5-6ddxh   1/1     Running   3          2m39s
+rook-discover-2zf8p                   1/1     Running   0          100s
+rook-discover-zh7jz                   1/1     Running   0          100s
+----
+
+
+You can now test the dynamic volumes:
+
+[source,sh]
+----
+$ cat <<EOT | kubectl create -f -
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-pv-claim
+spec:
+  storageClassName: rook-ceph-block
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+EOT
+persistentvolumeclaim/test-pv-claim created
+----
+
+
+After a few seconds, you should see a new Persistent Volume, to which the pvc is bound:
+
+[source,sh]
+----
+$ kubectl get pv,pvc
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                                                                                                       STORAGECLASS             REASON   AGE
+persistentvolume/pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            Delete           Bound    marco/test-pv-claim                                                                                                         rook-ceph-block                   2m
+
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+persistentvolumeclaim/test-pv-claim   Bound    pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            rook-ceph-block   2m5s
+----
+
+
+== Prometheus
+
+You can install Prometheus in a multitude of ways, including:
+
+- https://github.com/helm/charts/tree/master/stable/prometheus-operator
+- https://github.com/helm/charts/tree/master/stable/prometheus
+- https://github.com/coreos/kube-prometheus
+
+You can also find Prometheus already installed in your k8s/openshift distribution.
+
+The important things for each method are the connection and authentication details.
+
+To deploy the Prometheus Operator:
+
+[source,sh]
+----
+$ ./quickstart/prometheus/install.sh
+
+NAME:   prometheus
+LAST DEPLOYED: Thu Oct 10 16:17:01 2019
+NAMESPACE: monitoring
+STATUS: DEPLOYED
+[...]
+----
+
+Data persistence is off by default, but can be enabled in https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml[values.yaml],
+for prometheus and/or the alertmanager:
+
+[source,yaml]
+----
+[...]
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: rook-ceph-block
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+        selector: {}
+[...]
+----
+
+NOTE: If Prometheus is using Ceph volumes, it can't effectively alert you on the
+availability of the storage. When Ceph goes down, so does Prometheus. For rating
+purposes, you don't actually need persistence of Prometheus data, since the metrics
+to be rated are shipped to the metering component for long-term storage as soon
+as possible.
+
+After the above installation, the prometheus URL inside the cluster is
+`http://prometheus-prometheus-oper-prometheus.monitoring:9090/`, without
+authentication.
+
+
+== Metering Operator
+
+=== Operator configuration
+
+Check che metering configuration file. Do not apply it with kubectl, since the corresponding CRD does not exist yet.
+
+NOTE: You need to change the prometheus URL with your own if you installed it with another method.
+
+
+[source,sh]
+----
+$ cat ./metering/metering-custom.yaml
+[...]
+  storage:
+    type: "hive"
+    hive:
+      type: "sharedPVC"
+      sharedPVC:
+        createPVC: true
+        storageClass: "csi-cephfs"
+        size: 5Gi
+----
+
+
+=== Installing the operator
+
+Install https://github.com/jzelinskie/faq[faq (Format Agnostic jQ)] on the machine where you are running kubectl.
+
+Clone the repository, then run the install script:
+
+[source,sh]
+----
+$ git clone https://github.com/operator-framework/operator-metering.git -b release-4.2 ./quickstart/metering/operator-metering
+Cloning into 'operator-metering'...
+[...]
+$ ./quickstart/metering/install.sh
+Using /home/marco/5g/valentin/rating-setup/metering/operator-metering/manifests/deploy/upstream/metering-ansible-operator as manifests directory
+Creating namespace metering
+namespace/metering created
+Installing Custom Resource Definitions
+customresourcedefinition.apiextensions.k8s.io/hivetables.metering.openshift.io created
+customresourcedefinition.apiextensions.k8s.io/reportdatasources.metering.openshift.io created
+[...]
+meteringconfig.metering.openshift.io/operator-metering created
+Before retry #1: sleeping 10 seconds
+Before retry #2: sleeping 20 seconds
+Before retry #3: sleeping 40 seconds
+Before retry #4: sleeping 60 seconds
+Before retry #5: sleeping 60 seconds
+Installing reports...
+[...]
+report.metering.openshift.io/pod-cpu-request-hourly created
+report.metering.openshift.io/pod-cpu-usage-hourly created
+report.metering.openshift.io/pod-memory-request-hourly created
+report.metering.openshift.io/pod-memory-usage-hourly created
+----
+
+You can check that the operator is running correctly with:
+
+[source,sh]
+----
+$ kubectl -n metering get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+hive-metastore-0                      0/1     Running   0          14m
+hive-server-0                         0/1     Running   0          14m
+metering-operator-6c746c5cb6-tnbq7    2/2     Running   0          18m
+presto-coordinator-0                  1/1     Running   0          13m
+reporting-operator-56c49bcc4b-zwhd9   1/1     Running   1          12m
+----
+
+
+The running status of the reports should slowly transition from InvalidReport to ReportingPeriodWaiting:
+
+[source,sh]
+----
+$ kubectl get report -n metering
+NAME                                QUERY                        SCHEDULE   RUNNING                  FAILED   LAST REPORT TIME   AGE
+cluster-cpu-capacity-daily          cluster-cpu-capacity         daily      ReportingPeriodWaiting                               3m53s
+cluster-cpu-capacity-hourly         cluster-cpu-capacity         hourly     ReportingPeriodWaiting                               3m53s
+cluster-cpu-usage-daily             cluster-cpu-usage            daily      ReportingPeriodWaiting                               3m53s
+cluster-cpu-usage-hourly            cluster-cpu-usage            hourly     ReportingPeriodWaiting                               3m53s
+[...]
+----
+
+
+
+== Rating
+
+You can install the rating services in two ways: as an operator, or via the Helm chart.
+
+You also have to set a password for Postgres. If you don't, it will be randomly generated
+by helm each time you install or update the chart, but the new password will not be set
+in the database's volume, and the server will refuse all connections ( https://github.com/helm/charts/issues/362 ).
+
+
+=== Installing the operator
+
+Choose a namespace and deploy the operator on it.
+
+You can set the Postgres password in `deploy/operator.yaml`
+
+
+```
+$ RATING_NAMESPACE=rating hack/install.sh
+customresourcedefinition.apiextensions.k8s.io/ratings.charts.helm.k8s.io created
+rating.charts.helm.k8s.io/rating created
+deployment.apps/rating-operator created
+clusterrole.rbac.authorization.k8s.io/rating-operator created
+clusterrolebinding.rbac.authorization.k8s.io/rating-operator created
+serviceaccount/rating-operator created
+```
+
+Beware: the install script modifies in place the file deploy/role_bindings.yaml, so be careful not to commit its changes back to the repository.
+
+=== Installing the Helm chart
+
+To deploy the rating services as a Helm3 release, create a `values.yaml` file
+with at least the Postgres password:
+
+```
+postgresql:
+  postgresqlPassword: <PASSWORD HERE>
+```
+
+Then call Helm to install the charts in the namespace of your choice:
+
+```
+$ helm3 install -n rating rating ./helm-charts/rating -f ./values.yaml
+NAME: rating
+LAST DEPLOYED: Wed Apr  8 14:42:54 2020
+NAMESPACE: rating-mm
+STATUS: deployed
+[...]
+```
+
+The argumens are: namespace, name of the release, directory of the chart.
+
+
+To check if everything is running correctly:
+
+[source,sh]
+----
+$ kubectl -n rating get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+rating-api-668458b4f-7t2mc          1/1     Running   0          29s
+rating-postgresql-0                 1/1     Running   0          29s
+rating-processor-7c8996f47b-zbb52   1/1     Running   0          29s
+----
+
+
+
+= Uninstall
+
+== Rating
+
+[source,sh]
+----
+$ RATING_NAMESPACE=rating ./hack/uninstall.sh
+----
+
+or if you installed with Helm:
+
+[source,sh]
+----
+$ RATING_NAMESPACE=rating ./hack/uninstall-chart.sh
+----
+
+
+== Metering operator and configuration
+
+[source,sh]
+----
+$ ./metering/uninstall.sh
+Deleting metering reports...
+report.metering.openshift.io "cluster-cpu-capacity-daily" deleted
+report.metering.openshift.io "cluster-cpu-capacity-hourly" deleted
+[...]
+customresourcedefinition.apiextensions.k8s.io "prestotables.metering.openshift.io" deleted
+customresourcedefinition.apiextensions.k8s.io "reports.metering.openshift.io" deleted
+Deleting PVCs
+No resources found
+----
+
+
+== Rook-Ceph
+
+Removing the rook-ceph chart does not remove the pods nor the /var/lib/rook
+directory on each of the nodes. To completely remove the rook-ceph components:
+
+[source,sh]
+----
+$ ./quickstart/rook/uninstall.sh
+Removing cephblockpool: replicapool...
+cephblockpool.ceph.rook.io "replicapool" deleted
+Removing storageclass: rook-ceph-block...
+storageclass.storage.k8s.io "rook-ceph-block" deleted
+[...]
+Removing services...
+service "csi-cephfsplugin-metrics" deleted
+service "csi-rbdplugin-metrics" deleted
+$ ./rook/remove-directory.sh
+Removing /var/lib/rook on each node...
+----
+
+Adapt these scripts to your environment, especially `remove-directory.sh` which
+needs to connect with ssh to each worker node.
+
+
+== Prometheus
+
+Helm does not remove CRD objects so we'll do it in a script.
+
+[source,sh]
+----
+$ ./quickstart/prometheus/uninstall.sh
+release "prometheus" deleted
+customresourcedefinition.apiextensions.k8s.io "alertmanagers.monitoring.coreos.com" deleted
+[...]
+customresourcedefinition.apiextensions.k8s.io "prometheusrules.monitoring.coreos.com" deleted
+customresourcedefinition.apiextensions.k8s.io "servicemonitors.monitoring.coreos.com" deleted
+----
+
+
+= Troubleshooting
+
+== The rook operator pod is not running correctly
+
+You might see this message:
+
+[source,sh]
+----
+$ kubectl -n rook-ceph describe pods -l app=rook-ceph-operator
+[...]
+      Message:   failed to run operator. Error starting agent daemonset: error starting agent daemonset: failed to create rook-ceph-agent daemon set. DaemonSet.apps "rook-ceph-agent" is invalid: spec.template.spec.containers[0].securityContext.privileged: Forbidden: disallowed by cluster policy
+[...]
+----
+
+The fix is to run `kube-apiserver` with the `--allow-privileged` flag.
+This configuration detail is specific to rook-ceph and you may not need it with other storage plugins.
+
+In our case with Juju:
+
+[source,sh]
+----
+$ juju config kubernetes-master allow-privileged=true
+----
+
+If that's not the issue you have, look here:
+
+ * https://github.com/rook/rook/blob/master/Documentation/common-issues.md
+ * https://github.com/rook/rook/blob/master/Documentation/ceph-common-issues.md
+ * https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.2.0/troubleshoot/rook_ts.html
+ * https://www.cloudops.com/2019/05/the-ultimate-rook-and-ceph-survival-guide/
+
+

@@ -1,0 +1,13 @@
+---
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-memory-usage-hourly
+spec:
+  query: "pod-memory-usage"
+  gracePeriod: "5m"
+  schedule:
+    period: "hourly"
+    hourly:
+      minute: 0
+      second: 0

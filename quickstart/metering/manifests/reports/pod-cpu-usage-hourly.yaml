@@ -1,0 +1,13 @@
+---
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-cpu-usage-hourly
+spec:
+  query: "pod-cpu-usage"
+  gracePeriod: "5m"
+  schedule:
+    period: "hourly"
+    hourly:
+      minute: 0
+      second: 0

@@ -1,0 +1,7 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportDataSource
+metadata:
+  name: pod-bpu-request-raw
+spec:
+  reportQueryView:
+    queryName: pod-bpu-request-raw

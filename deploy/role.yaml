@@ -27,7 +27,6 @@ rules:
   - rbac.authorization.k8s.io
   resources:
   - clusterrolebindings
-  - clusterroles
   verbs:
   - '*'
 - apiGroups:
@@ -93,11 +92,3 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - metering.openshift.io
-  resources:
-  - reports
-  verbs:
-  - get
-  - watch
-  - list

@@ -1,0 +1,31 @@
+---
+image: docker:stable
+
+services:
+- docker:dind
+
+.docker_login: &docker_login |
+  echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+
+stages:
+- build
+
+build-master:
+  stage: build
+  script:
+  - *docker_login
+  - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:latest" .
+  - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    refs:
+    - master
+
+build:
+  stage: build
+  script:
+  - *docker_login
+  - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME" .
+  - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME"
+  except:
+    refs:
+    - master

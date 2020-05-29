@@ -1,0 +1,8 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportDataSource
+metadata:
+  name: report-pod-bpu-usage-hourly
+spec:
+  prestoTable:
+    tableRef:
+      name: report-metering-pod-bpu-usage-hourly

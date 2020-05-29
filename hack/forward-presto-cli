@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eu
-set -o pipefail
-
-METERING_NAMESPACE=${METERING_NAMESPACE:-metering}
-
-kubectl -n "$METERING_NAMESPACE" get pods -l app=presto -o name | cut -d/ -f2 | xargs -I{} kubectl -n "$METERING_NAMESPACE" port-forward {} 8080:8080

@@ -1,0 +1,9 @@
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-rating-memory-request-hourly
+spec:
+  query: pod-rating-memory-request
+  schedule:
+    hourly: {}
+    period: hourly

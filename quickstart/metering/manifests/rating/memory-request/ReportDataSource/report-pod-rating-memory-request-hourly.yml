@@ -1,0 +1,8 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportDataSource
+metadata:
+  name: report-pod-rating-memory-request-hourly
+spec:
+  prestoTable:
+    tableRef:
+      name: report-metering-pod-rating-memory-request-hourly

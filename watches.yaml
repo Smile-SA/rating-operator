@@ -3,3 +3,9 @@
   group: charts.helm.k8s.io
   kind: Rating
   chart: helm-charts/rating
+  overrideValues:
+    api.pullSecretsName: ${PULLSECRETS_API}
+    processing.pullSecretsName: ${PULLSECRETS_PROCESSING}
+    postgresql.postgresqlPassword: ${POSTGRESQL_PASSWORD}
+    token.admin: ${RATING_ADMIN_API_KEY}
+    

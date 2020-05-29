@@ -1,0 +1,48 @@
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRule
+metadata:
+  name: {{ include "rating.name" . }}-{{ .Release.Namespace }}-default-rules
+  namespace: {{ .Release.Namespace }}
+spec:
+  metrics:
+    request_cpu:
+      report_name: pod-rating-cpu-request-hourly
+      presto_table: report_metering_pod_rating_cpu_request_hourly
+      presto_column: pod_request_cpu_core_seconds
+      unit: core-seconds
+    usage_cpu:  
+      report_name: pod-rating-cpu-usage-hourly
+      presto_table: report_metering_pod_rating_cpu_usage_hourly
+      presto_column: pod_usage_cpu_core_seconds
+      unit: core-seconds
+    request_memory:
+      report_name: pod-rating-memory-request-hourly
+      presto_table: report_metering_pod_rating_memory_request_hourly
+      presto_column: pod_request_memory_byte_seconds
+      unit: byte-seconds
+    usage_memory:
+      report_name: pod-rating-memory-usage-hourly
+      presto_table: report_metering_pod_rating_memory_usage_hourly
+      presto_column: pod_usage_memory_byte_seconds
+      unit: byte-seconds
+  rules:
+  -
+      name: rules_default
+      ruleset:
+      -
+        metric: request_cpu
+        price: 0.5
+        unit: core-hours
+      -
+        metric: usage_cpu
+        price: 0.8
+        unit: core-hours
+      -
+        metric: request_memory
+        price: 0.4
+        unit: GiB-hours
+      -
+        metric: usage_memory
+        price: 0.8
+        unit: GiB-hours

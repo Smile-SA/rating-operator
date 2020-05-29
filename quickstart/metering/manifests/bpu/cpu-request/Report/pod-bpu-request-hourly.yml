@@ -1,0 +1,9 @@
+apiVersion: metering.openshift.io/v1
+kind: Report
+metadata:
+  name: pod-bpu-request-hourly
+spec:
+  query: pod-bpu-request
+  schedule:
+    hourly: {}
+    period: hourly

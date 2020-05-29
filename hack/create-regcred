@@ -1,0 +1,11 @@
+#!/bin/bash
+
+read -p 'Username: ' username
+read -sp 'Password: ' password
+echo
+
+kubectl create secret docker-registry rating-regcred \
+        --docker-server=hub.rnd.alterway.fr \
+        "--docker-username=${username}" \
+        "--docker-password=${password}"
+

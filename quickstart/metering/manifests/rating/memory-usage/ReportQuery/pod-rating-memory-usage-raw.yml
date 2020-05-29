@@ -1,0 +1,51 @@
+apiVersion: metering.openshift.io/v1
+kind: ReportQuery
+metadata:
+  name: pod-rating-memory-usage-raw
+spec:
+  columns:
+  - name: pod
+    type: varchar
+    unit: kubernetes_pod
+  - name: namespace
+    type: varchar
+    unit: kubernetes_namespace
+  - name: node
+    type: varchar
+    unit: kubernetes_node
+  - name: instance_type
+    type: varchar
+  - name: labels
+    tableHidden: true
+    type: map<varchar, varchar>
+  - name: pod_usage_memory_bytes
+    type: double
+    unit: bytes
+  - name: timeprecision
+    type: double
+    unit: seconds
+  - name: pod_usage_memory_byte_seconds
+    type: double
+    unit: byte_seconds
+  - name: timestamp
+    type: timestamp
+    unit: date
+  - name: dt
+    type: varchar
+  inputs:
+  - default: pod-usage-rating-memory-bytes
+    name: PodUsageMemoryBytesDataSourceName
+    type: ReportDataSource
+  query: |
+    SELECT labels['pod'] as pod,
+        labels['namespace'] as namespace,
+        element_at(labels, 'node') as node,
+        element_at(labels, 'label_beta_kubernetes_io_instance_type') as instance_type,
+        labels,
+        amount as pod_usage_memory_bytes,
+        timeprecision,
+        amount * timeprecision as pod_usage_memory_byte_seconds,
+        "timestamp",
+        dt
+    FROM {| dataSourceTableName .Report.Inputs.PodUsageMemoryBytesDataSourceName |}
+    WHERE element_at(labels, 'node') IS NOT NULL
