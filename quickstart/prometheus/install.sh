@@ -12,7 +12,7 @@ kubectl get ns monitoring >/dev/null 2>&1 || kubectl create ns monitoring
 # https://github.com/helm/charts/issues/19452
 CREATE_CRDS="--set prometheusOperator.createCustomResource=false"
 
-helm3 upgrade \
+helm upgrade \
     --install \
     --namespace ${PROMETHEUS_NAMESPACE} \
     --values "$DIR/values.yaml" \

@@ -16,7 +16,7 @@ MANIFESTS_DIR="$DIR/rook/cluster/examples/kubernetes/"
 
 echo "Installing Helm release..."
 kubectl get ns rook-ceph >/dev/null 2>&1 || kubectl create ns rook-ceph
-helm3 upgrade --install rook "$DIR/rook/cluster/charts/rook-ceph" --namespace ${ROOK_NAMESPACE} --set image.tag=v1.2.6
+helm upgrade --install rook "$DIR/rook/cluster/charts/rook-ceph" --namespace ${ROOK_NAMESPACE} --set image.tag=v1.2.6
 
 sleep 30
 
