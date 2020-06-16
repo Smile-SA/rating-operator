@@ -16,8 +16,7 @@ api:
     port: 80
     type: ClusterIP
   storage:
-    config:
-      storageClass: null
+    storageClass: rook-ceph-block
   tolerations: []
 fullnameOverride: null
 ingress:
