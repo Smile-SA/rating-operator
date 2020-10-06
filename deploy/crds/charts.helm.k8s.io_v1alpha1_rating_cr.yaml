@@ -4,12 +4,12 @@ metadata:
   name: rating
 spec:
   # Default values copied from <project_dir>/helm-charts/rating/values.yaml
-  
+
   api:
     affinity: {}
     config:
-      postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
-      postgres_secret: '{{ .Release.Name }}-postgresql'
+      postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+      postgres_secret: "{{ .Release.Name }}-postgresql"
     image:
       pullPolicy: Always
       repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
@@ -21,15 +21,15 @@ spec:
       port: 80
       type: ClusterIP
     storage:
-      storageClass: rook-ceph-block
+      storageClass: longhorn
     tolerations: []
   fullnameOverride: null
   ingress:
     annotations: {}
     enabled: false
     hosts:
-    - host: chart-example.local
-      paths: []
+      - host: chart-example.local
+        paths: []
     tls: []
   metering:
     presto_database_uri: presto://root@presto.metering:8080/hive/metering
@@ -41,8 +41,8 @@ spec:
   processing:
     affinity: {}
     config:
-      postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
-      postgres_secret: '{{ .Release.Name }}-postgresql'
+      postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+      postgres_secret: "{{ .Release.Name }}-postgresql"
     image:
       pullPolicy: Always
       repository: hub.rnd.alterway.fr/overboard/5gbiller/processing-operator
@@ -56,4 +56,31 @@ spec:
   service:
     port: 80
     type: ClusterIP
-  
+  frontend:
+    url: "http://localhost:3000"
+    allowOrigin: "*"
+    grafana:
+      enabled: "true"
+      password: prom-operator
+      backend: "prometheus-grafana.monitoring.svc.cluster.local:80"
+    name: frontend
+    image:
+      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-front
+      tag: master
+      pullPolicy: Always
+    service:
+      type: ClusterIP
+      port: 80
+  reactive:
+    affinity: {}
+    config:
+      postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+      postgres_secret: "{{ .Release.Name }}-postgresql"
+    image:
+      pullPolicy: Always
+      repository: hub.rnd.alterway.fr/overboard/5gbiller/reactive-operator
+      tag: master
+    name: reactive
+    nodeSelector: {}
+    resources: {}
+    tolerations: []

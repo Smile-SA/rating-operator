@@ -31,7 +31,7 @@ sleep 10
 [ "$(kubectl -n ${ROOK_NAMESPACE} get cephcluster --no-headers 2>/dev/null)" = "" ] || die 'Ceph cluster was not removed'
 
 echo "Removing Helm release: rating"
-helm3 delete --namespace ${ROOK_NAMESPACE} rook
+helm delete --namespace ${ROOK_NAMESPACE} rook
 
 # echo "Removing deployments, daemonsets..."
 # kubectl -n ${ROOK_NAMESPACE} delete daemonset --all

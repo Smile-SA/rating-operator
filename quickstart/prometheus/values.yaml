@@ -2,9 +2,27 @@
 prometheus:
   prometheusSpec:
     retention: 30d
-    # additionalScrapeConfigs:
-    # - job_name: 'custom-targets'
-    #   static_configs:
-    #   - targets: []
-    #   # the default path is /metrics
-    #   # - 'http://<host>:<port>'
+grafana:
+  sidecar:
+    datasources:
+      defaultDatasourceEnabled: True
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: 7.0.3
+    pullPolicy: IfNotPresent
+  adminPassword: prom-operator
+  plugins:
+    - digrich-bubblechart-panel
+    - grafana-clock-panel
+    - simpod-json-datasource
+    - grafana-piechart-panel
+  additionalDataSources:
+    - name: Rating-operator
+      type: simpod-json-datasource
+      access: proxy
+      url: http://rating-api.rating.svc.cluster.local:80
+      withCredentials: true
+      editable: true
+      jsonData:
+        keepCookies: ["session"]

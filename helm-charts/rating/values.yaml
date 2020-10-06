@@ -3,8 +3,8 @@ token:
 api:
   affinity: {}
   config:
-    postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
-    postgres_secret: '{{ .Release.Name }}-postgresql'
+    postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+    postgres_secret: "{{ .Release.Name }}-postgresql"
   image:
     pullPolicy: Always
     repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
@@ -16,15 +16,16 @@ api:
     port: 80
     type: ClusterIP
   storage:
-    storageClass: rook-ceph-block
+    # storageClass: rook-ceph-block
+    storageClass: longhorn
   tolerations: []
 fullnameOverride: null
 ingress:
   annotations: {}
   enabled: false
   hosts:
-  - host: chart-example.local
-    paths: []
+    - host: chart-example.local
+      paths: []
   tls: []
 metering:
   presto_database_uri: presto://root@presto.metering:8080/hive/metering
@@ -36,8 +37,8 @@ postgresql:
 processing:
   affinity: {}
   config:
-    postgres_hostname: '{{ .Release.Name }}-postgresql-headless'
-    postgres_secret: '{{ .Release.Name }}-postgresql'
+    postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+    postgres_secret: "{{ .Release.Name }}-postgresql"
   image:
     pullPolicy: Always
     repository: hub.rnd.alterway.fr/overboard/5gbiller/processing-operator
@@ -51,3 +52,36 @@ rbac:
 service:
   port: 80
   type: ClusterIP
+reactive:
+  affinity: {}
+  config:
+    postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+    postgres_secret: "{{ .Release.Name }}-postgresql"
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/reactive-operator
+    tag: master
+  name: reactive
+  nodeSelector: {}
+  resources: {}
+  tolerations: []
+frontend:
+  url: "http://localhost:3000"
+  allowOrigin: "*"
+  grafana:
+    enabled: "true"
+    password: prom-operator
+    backend: "prometheus-grafana.monitoring.svc.cluster.local:80"
+  name: frontend
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-front
+    tag: master
+  service:
+    type: ClusterIP
+    port: 80
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}

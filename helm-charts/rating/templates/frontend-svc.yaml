@@ -1,0 +1,20 @@
+{{- if eq .Values.grafana.enabled "false" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rating.frontend.fullname" . }}
+  labels:
+    {{- include "rating.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+  - name: http
+    protocol: TCP
+    port: {{ .Values.api.service.port }}
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: {{ include "rating.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+{{- end}}

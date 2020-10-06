@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "reactive.operator.fullname" . }}
+  labels:
+    app.kubernetes.io/component: reactive-operator
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: reactive-operator
+  template:
+    metadata:
+      labels:
+        {{- include "rating.labels" . | nindent 8 }}
+        app.kubernetes.io/component: reactive-operator
+    spec:
+    {{- if .Values.processing.pullSecretsName }}
+      imagePullSecrets:
+        - name: {{ .Values.processing.pullSecretsName }}
+    {{- end }}
+      serviceAccountName: {{ include "rating.processing.fullname" . }}-{{ .Release.Namespace }}
+      containers:
+        - name: reactive-operator
+          image: "{{ .Values.reactive.image.repository }}:{{ .Values.reactive.image.tag }}"
+          imagePullPolicy: {{ .Values.reactive.image.pullPolicy }}
+          env:
+          - name: WATCH_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: RATING_API_URL
+            value: http://{{ include "rating.api.fullname" . }}:{{ .Values.api.service.port }}
+          - name: RATING_NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: PROMETHEUS_URL
+            value: http://prometheus-prometheus-oper-prometheus.monitoring.svc.cluster.local:9090
+          resources:
+            {{- toYaml .Values.reactive.resources | nindent 12 }}
+      {{- with .Values.processing.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

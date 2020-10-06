@@ -18,7 +18,7 @@ spec:
       containers:
         - name: rating-operator
           resources: {}
-          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
+          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:vdaviot-redirect
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -35,7 +35,19 @@ spec:
               value: rating-regcred
             - name: PULLSECRETS_PROCESSING
               value: rating-regcred
+            - name: PULLSECRETS_FRONTEND
+              value: rating-regcred-front
             - name: POSTGRESQL_PASSWORD
               value: notasecret
             - name: RATING_ADMIN_API_KEY
               value: thisisadmintoken
+            - name: GRAFANA
+              value: "true"
+            - name: GRAFANA_ADMIN_PASSWORD
+              value: admin
+            - name: GRAFANA_BACKEND_URL
+              value: "prometheus-grafana.monitoring.svc.cluster.local:80"
+            - name: FRONTEND_URL
+              value: "http://localhost:3000"
+            - name: ALLOW_ORIGIN
+              value: "http://localhost:8080"

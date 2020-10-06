@@ -6,6 +6,12 @@
   overrideValues:
     api.pullSecretsName: ${PULLSECRETS_API}
     processing.pullSecretsName: ${PULLSECRETS_PROCESSING}
+    reactive.pullSecretsName: ${PULLSECRETS_REACTIVE}
+    frontend.pullSecretsName: ${PULLSECRETS_FRONTEND}
     postgresql.postgresqlPassword: ${POSTGRESQL_PASSWORD}
     token.admin: ${RATING_ADMIN_API_KEY}
-    
+    frontend.url: ${FRONTEND_URL}
+    frontend.allowOrigin: ${ALLOW_ORIGIN}
+    grafana.enabled: ${GRAFANA}
+    grafana.backend: ${GRAFANA_BACKEND_URL}
+    grafana.password: ${GRAFANA_ADMIN_PASSWORD}

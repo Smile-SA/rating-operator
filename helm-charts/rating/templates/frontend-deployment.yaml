@@ -1,0 +1,90 @@
+{{- if eq .Values.grafana.enabled "false" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rating.frontend.fullname" . }}
+  labels:
+    app.kubernetes.io/component: frontend
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ .Values.frontend.name }}
+  template:
+    metadata:
+      labels:
+        {{- include "rating.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ .Values.frontend.name }}
+    spec:
+    {{- if .Values.frontend.pullSecretsName }}
+      imagePullSecrets:
+        - name: {{ .Values.frontend.pullSecretsName }}
+    {{ end }}
+      containers:
+        - name: app
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+          - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /index.html
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath: /usr/share/nginx/html/static/config
+            name: config-app
+        - name: proxy
+          image: nginx:1.17.3-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8080
+          env:
+            - name: PROXIED_API_URL
+              value: http://{{ include "rating.api.fullname" . }}:{{ .Values.api.service.port }}
+            - name: PROXIED_FRONTEND_URL
+              value: http://localhost:80/
+          command:
+          - "/bin/sh"
+          - "/config-proxy/entrypoint.sh"
+          resources:
+            limits:
+              cpu: 300m
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+          - mountPath: /config-proxy
+            name: config-proxy
+      volumes:
+      - name: config-proxy
+        configMap:
+          name: {{ include "rating.fullname" . }}-config-frontend-proxy
+      - name: config-app
+        configMap:
+          name: {{ include "rating.fullname" . }}-config-frontend-app
+      {{- with .Values.frontend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.frontend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.frontend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}
