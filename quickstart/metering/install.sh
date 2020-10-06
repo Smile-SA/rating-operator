@@ -12,7 +12,7 @@ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 export METERING_NAMESPACE=${METERING_NAMESPACE:-metering}
 
-export METERING_CR_FILE="$DIR/metering-custom.yaml"
+export METERING_CR_FILE="$DIR/metering-custom-longhorn.yaml"
 "$DIR/operator-metering/hack/upstream-install.sh"
 
 # shellcheck disable=SC2016

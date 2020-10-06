@@ -24,3 +24,4 @@ helm upgrade \
     prometheus \
     stable/prometheus-operator
 
+kubectl apply -f dashboards/dashboard.yaml

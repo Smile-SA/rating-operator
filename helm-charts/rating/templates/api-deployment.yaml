@@ -50,6 +50,21 @@ spec:
               containerPort: 5012
           args: ["./entrypoint.sh"]
           env:
+            - name: FRONTEND_URL
+              value: {{ .Values.frontend.url }}
+            {{- if eq .Values.grafana.enabled "true" }}
+            - name: GRAFANA
+              value: "true"
+            - name: GRAFANA_BACKEND_URL
+              value: {{ .Values.frontend.grafana.backend }}
+            - name: GRAFANA_ADMIN_PASSWORD
+              value: {{ .Values.frontend.grafana.password }}
+            {{- else }}
+            - name: GRAFANA
+              value: "false"
+            {{ end }}
+            - name: ALLOW_ORIGIN
+              value: {{ .Values.frontend.allowOrigin }}
             - name: RATING_NAMESPACE
               value: {{ .Release.Namespace }}
             - name: RATING_RATES_DIR

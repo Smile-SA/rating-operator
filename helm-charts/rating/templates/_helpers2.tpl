@@ -13,6 +13,14 @@ Truncating to 63 here is messy. If names are too long, consider fullnameOverride
 {{ template "rating.fullname" . }}-{{ .Values.processing.name }}
 {{- end -}}
 
+{{- define "reactive.operator.fullname" -}}
+{{ template "rating.fullname" . }}-{{ .Values.reactive.name }}
+{{- end -}}
+
+{{- define "rating.frontend.fullname" -}}
+{{ template "rating.fullname" . }}-{{ .Values.frontend.name }}
+{{- end -}}
+
 {{/*
 Names for the pull secrets.
 */}}
@@ -21,6 +29,10 @@ Names for the pull secrets.
 {{ template "rating.fullname" . }}-{{ .Values.api.name }}-pull
 {{- end -}}
 
-{{- define "rating.processing.pullSecretName" -}}
-{{ template "rating.fullname" . }}-{{ .Values.processing.name }}-pull
+{{- define "reactive.operator.pullSecretName" -}}
+{{ template "rating.fullname" . }}-{{ .Values.reactive.name }}-pull
+{{- end -}}
+
+{{- define "rating.frontend.pullSecretName" -}}
+{{ template "rating.fullname" . }}-{{ .Values.frontend.name }}-pull
 {{- end -}}
