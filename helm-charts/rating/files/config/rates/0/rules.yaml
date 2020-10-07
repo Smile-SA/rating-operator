@@ -13,9 +13,9 @@ rules:
     unit: core-hours
   -
     metric: request_memory
-    price: 0.4
+    price: 0.0000000001
     unit: GiB-hours
   -
     metric: usage_memory
-    price: 0.8
+    price: 0.00000000001
     unit: GiB-hours
