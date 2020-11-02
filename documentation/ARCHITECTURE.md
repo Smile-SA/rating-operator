@@ -4,4 +4,4 @@ The interactions of the differents `rating-operator` components are described vi
 
 ![rating-operator](/img/rating-operator.svg)
 
-To learn more about how they are used or configured, respectively read [this](/documetation/USAGE.md) and [this](/documentation/CRD.md).
+To learn more about how they are used or configured, respectively read [the usage](/documentation/USAGE.md) and [the configuration](/documentation/CRD.md) documentations.
