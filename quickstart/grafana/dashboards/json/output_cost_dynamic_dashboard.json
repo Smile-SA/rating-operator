@@ -12,6 +12,63 @@
    "links": [ ],
    "panels": [
       {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+         },
+         "id": 2,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "GCP Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 4
+         },
+         "id": 3,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "AWS Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 8
+         },
+         "id": 4,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Azure Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
          "datasource": "Rating-operator",
          "fieldConfig": {
             "defaults": {
@@ -29,7 +86,13 @@
                "unit": "none"
             }
          },
-         "id": 2,
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 1
+         },
+         "id": 5,
          "links": [ ],
          "maxPerRow": null,
          "options": {
@@ -50,9 +113,9 @@
          "repeatDirection": "h",
          "targets": [
             {
-               "data": "{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"agg\": \"$interval\"}",
+               "data": "{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"aggregator\": \"$interval\"}",
                "refId": "A",
-               "target": "/metrics/<metric>/<agg>",
+               "target": "/metrics/<metric>/<aggregator>",
                "type": "table"
             }
          ],
@@ -78,7 +141,13 @@
                "unit": "none"
             }
          },
-         "id": 3,
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 5
+         },
+         "id": 6,
          "links": [ ],
          "maxPerRow": null,
          "options": {
@@ -99,9 +168,9 @@
          "repeatDirection": "h",
          "targets": [
             {
-               "data": "{\"metric\": \"node_cost_simulation_aws_$aws\", \"agg\": \"$interval\"}",
+               "data": "{\"metric\": \"node_cost_simulation_aws_$aws\", \"aggregator\": \"$interval\"}",
                "refId": "A",
-               "target": "/metrics/<metric>/<agg>",
+               "target": "/metrics/<metric>/<aggregator>",
                "type": "table"
             }
          ],
@@ -127,7 +196,13 @@
                "unit": "none"
             }
          },
-         "id": 4,
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 9
+         },
+         "id": 7,
          "links": [ ],
          "maxPerRow": null,
          "options": {
@@ -148,9 +223,9 @@
          "repeatDirection": "h",
          "targets": [
             {
-               "data": "{\"metric\": \"node_cost_simulation_aks_$azure\", \"agg\": \"$interval\"}",
+               "data": "{\"metric\": \"node_cost_simulation_aks_$azure\", \"aggregator\": \"$interval\"}",
                "refId": "A",
-               "target": "/metrics/<metric>/<agg>",
+               "target": "/metrics/<metric>/<aggregator>",
                "type": "table"
             }
          ],

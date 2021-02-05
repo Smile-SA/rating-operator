@@ -1021,9 +1021,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1077,9 +1077,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1133,9 +1133,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1189,9 +1189,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1245,9 +1245,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1301,9 +1301,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1357,9 +1357,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1413,9 +1413,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1469,9 +1469,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1525,9 +1525,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1581,9 +1581,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1637,9 +1637,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1693,9 +1693,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1749,9 +1749,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1805,9 +1805,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1861,9 +1861,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1917,9 +1917,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -1973,9 +1973,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2029,9 +2029,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2085,9 +2085,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2141,9 +2141,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2197,9 +2197,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2253,9 +2253,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2309,9 +2309,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2365,9 +2365,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2421,9 +2421,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2477,9 +2477,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2533,9 +2533,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2589,9 +2589,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2645,9 +2645,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2701,9 +2701,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2757,9 +2757,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2813,9 +2813,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2869,9 +2869,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2925,9 +2925,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -2981,9 +2981,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3037,9 +3037,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3093,9 +3093,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3149,9 +3149,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3205,9 +3205,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3261,9 +3261,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3317,9 +3317,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3373,9 +3373,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3429,9 +3429,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3485,9 +3485,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3541,9 +3541,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3597,9 +3597,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3653,9 +3653,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3709,9 +3709,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3765,9 +3765,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3821,9 +3821,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3877,9 +3877,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"daily\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/daily",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3933,9 +3933,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"weekly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/weekly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -3989,9 +3989,9 @@ dashboards:
                       "pluginVersion": "7",
                       "targets": [
                           {
-                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                            "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"monthly\"}",
                             "refId": "A",
-                            "target": "/metrics/<metric>/monthly",
+                            "target": "/metrics/<metric>/<aggregator>",
                             "type": "table"
                           }
                       ],
@@ -4989,6 +4989,6 @@ dashboards:
                 },
                 "timepicker": { },
                 "timezone": "browser",
-                "title": "[Grafonnet] Cost Simulation",
+                "title": "[Grafonnet] Cloud Cost Simulation",
                 "version": 0
               }

@@ -65,29 +65,29 @@ local aws_cost_panels =
 
 local azure_cost_panels = 
 [
-  azure['b2s-daily'] + {gridPos: { h: 2, w: 4, x: 0, y: 48 }},
-  azure['b2s-weekly'] + {gridPos: { h: 2, w: 4, x: 0, y: 50 }},
-  azure['b2s-monthly'] + {gridPos: { h: 2, w: 4, x: 0, y: 52 }},
+    azure['b2s-daily'] + {gridPos: { h: 2, w: 4, x: 0, y: 48 }},
+    azure['b2s-weekly'] + {gridPos: { h: 2, w: 4, x: 0, y: 50 }},
+    azure['b2s-monthly'] + {gridPos: { h: 2, w: 4, x: 0, y: 52 }},
 
-  azure['b2ms-daily'] + {gridPos: { h: 2, w: 4, x: 4, y: 48 }},
-  azure['b2ms-weekly'] + {gridPos: { h: 2, w: 4, x: 4, y: 50 }},
-  azure['b2ms-monthly'] + {gridPos: { h: 2, w: 4, x: 4, y: 52 }},
+    azure['b2ms-daily'] + {gridPos: { h: 2, w: 4, x: 4, y: 48 }},
+    azure['b2ms-weekly'] + {gridPos: { h: 2, w: 4, x: 4, y: 50 }},
+    azure['b2ms-monthly'] + {gridPos: { h: 2, w: 4, x: 4, y: 52 }},
 
-  azure['b4ms-daily'] + {gridPos: { h: 2, w: 4, x: 8, y: 48 }},
-  azure['b4ms-weekly'] + {gridPos: { h: 2, w: 4, x: 8, y: 50 }},
-  azure['b4ms-monthly'] + {gridPos: { h: 2, w: 4, x: 8, y: 52 }},
+    azure['b4ms-daily'] + {gridPos: { h: 2, w: 4, x: 8, y: 48 }},
+    azure['b4ms-weekly'] + {gridPos: { h: 2, w: 4, x: 8, y: 50 }},
+    azure['b4ms-monthly'] + {gridPos: { h: 2, w: 4, x: 8, y: 52 }},
 
-  azure['b1s-daily'] + {gridPos: { h: 2, w: 4, x: 12, y: 48 }},
-  azure['b1s-weekly'] + {gridPos: { h: 2, w: 4, x: 12, y: 50 }},
-  azure['b1s-monthly'] + {gridPos: { h: 2, w: 4, x: 12, y: 52 }},
+    azure['b1s-daily'] + {gridPos: { h: 2, w: 4, x: 12, y: 48 }},
+    azure['b1s-weekly'] + {gridPos: { h: 2, w: 4, x: 12, y: 50 }},
+    azure['b1s-monthly'] + {gridPos: { h: 2, w: 4, x: 12, y: 52 }},
 
-  azure['b1ms-daily'] + {gridPos: { h: 2, w: 4, x: 16, y: 48 }},
-  azure['b1ms-weekly'] + {gridPos: { h: 2, w: 4, x: 16, y: 50 }},
-  azure['b1ms-monthly'] + {gridPos: { h: 2, w: 4, x: 16, y: 52 }},
+    azure['b1ms-daily'] + {gridPos: { h: 2, w: 4, x: 16, y: 48 }},
+    azure['b1ms-weekly'] + {gridPos: { h: 2, w: 4, x: 16, y: 50 }},
+    azure['b1ms-monthly'] + {gridPos: { h: 2, w: 4, x: 16, y: 52 }},
 
-  azure['a8-daily'] + {gridPos: { h: 2, w: 4, x: 20, y: 48 }},
-  azure['a8-weekly'] + {gridPos: { h: 2, w: 4, x: 20, y: 50 }},
-  azure['a8-monthly'] + {gridPos: { h: 2, w: 4, x: 20, y: 52 }},
+    azure['a8-daily'] + {gridPos: { h: 2, w: 4, x: 20, y: 48 }},
+    azure['a8-weekly'] + {gridPos: { h: 2, w: 4, x: 20, y: 50 }},
+    azure['a8-monthly'] + {gridPos: { h: 2, w: 4, x: 20, y: 52 }},
 ];
 
 local aws_nbinstance_panel = [
@@ -118,7 +118,7 @@ local azure_nbinstance_panel = [
 ];
 
 dashboard.new(
-    title='[Grafonnet] Cost Simulation',
+    title='[Grafonnet] Cloud Cost Simulation',
     timepicker={},
     schemaVersion=26,
     time_from='now-6h',

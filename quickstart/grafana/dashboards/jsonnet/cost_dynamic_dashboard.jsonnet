@@ -56,6 +56,22 @@ dashboard.new(
     )
 )
 .addPanels(
+  [
+    row.new(
+      title='GCP Biling',
+      showTitle=true,
+    ) + { gridPos: {h: 1, w: 24, x: 0, y: 0} },
+    row.new(
+      title='AWS Biling',
+      showTitle=true,
+    ) + { gridPos: {h: 1, w: 24, x: 0, y: 4} },
+    row.new(
+      title='Azure Biling',
+      showTitle=true,
+    ) + { gridPos: {h: 1, w: 24, x: 0, y: 8} },
+  ]
+)
+.addPanels(
     [
         stat.new(
             title='$interval gcp_$gcp',
@@ -75,12 +91,12 @@ dashboard.new(
         .addTargets(
             [
                 custom.target(
-                    target='/metrics/<metric>/<agg>',
-                    data="{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"agg\": \"$interval\"}",
+                    target='/metrics/<metric>/<aggregator>',
+                    data="{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"aggregator\": \"$interval\"}",
                     type='table',
                 )
             ],
-        )
+        ) + {gridPos: { h: 3, w: 4, x: 0, y: 1 }},
     ],
 )
 .addPanels(
@@ -103,12 +119,12 @@ dashboard.new(
         .addTargets(
             [
                 custom.target(
-                    target='/metrics/<metric>/<agg>',
-                    data="{\"metric\": \"node_cost_simulation_aws_$aws\", \"agg\": \"$interval\"}",
+                    target='/metrics/<metric>/<aggregator>',
+                    data="{\"metric\": \"node_cost_simulation_aws_$aws\", \"aggregator\": \"$interval\"}",
                     type='table',
                 )
             ],
-        )
+        ) + {gridPos: { h: 3, w: 4, x: 0, y: 5 }},
     ],
 )
 .addPanels(
@@ -131,11 +147,11 @@ dashboard.new(
         .addTargets(
             [
                 custom.target(
-                    target='/metrics/<metric>/<agg>',
-                    data="{\"metric\": \"node_cost_simulation_aks_$azure\", \"agg\": \"$interval\"}",
+                    target='/metrics/<metric>/<aggregator>',
+                    data="{\"metric\": \"node_cost_simulation_aks_$azure\", \"aggregator\": \"$interval\"}",
                     type='table',
                 )
             ],
-        )
+        ) + {gridPos: { h: 3, w: 4, x: 0, y: 9 }},
     ],
 )
