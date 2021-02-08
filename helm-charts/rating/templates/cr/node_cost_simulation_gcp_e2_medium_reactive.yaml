@@ -1,0 +1,21 @@
+apiVersion: rating.alterway.fr/v1
+# GCP -> 1 vCPU + 4GB Ram e2-medium
+# 24,46e per month / 730h = 0.0355/h
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-node-cost-simulation-gcp-e2-medium
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_medium_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / sum(gcp_e2_medium_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_medium_cpu)) * sum(gcp_e2_medium)
+  name: node_cost_simulation_gcp_e2_medium
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-number-instance-simulation-gcp-e2-medium
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(gcp_e2_medium_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_medium_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_medium_cpu))
+  name: number_instance_simulation_gcp_e2_medium
+  timeframe: 3600s

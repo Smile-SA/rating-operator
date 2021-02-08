@@ -1,7 +1,9 @@
 # **Usage**
 
 ## Configuring
-With the `rating-operator` deployment is included a basic configuration compatible with standard `metering-operator`:
+
+### Scalable
+Within the `rating-operator` deployment is included a basic configuration compatible with standard `metering-operator`:
 
 ```sh
 $ kubectl get ratingrules.rating.alterway.fr
@@ -38,27 +40,56 @@ Spec:
     Name:  rules_default
     Ruleset:
       Metric:  request_cpu
-      Price:   0.5
+      Value:   0.5
       Unit:    core-hours
       Metric:  usage_cpu
-      Price:   0.8
+      Value:   0.8
       Unit:    core-hours
       Metric:  request_memory
-      Price:   0.4
+      Value:   0.4
       Unit:    GiB-hours
       Metric:  usage_memory
-      Price:   0.8
+      Value:   0.8
       Unit:    GiB-hours
 [...]
 ```
 This configuration will be used until a new one is created.
-You can edit and use the above with:
+You can edit the above with:
 ```sh
 $ kubectl edit ratingrules.rating.alterway.fr <yourconfig>
 ```
 For more advanced use cases, we strongly advice to create new configurations. To understand why, read the *configuration versionning* part of [this document](/documentation/FEATURES.md) document.
 
 More information on `RatingRules` can be found in the [custom resources documentation](/documentation/CRD.md).
+
+### Reactive
+
+The `rating-operator` also deploys a base configuration for the reactive component. This configuration takes the form of ReactiveRules, describing the same metrics as above, with a lower latency.
+
+```sh
+$ kubectl get reactiverules.rating.alterway.fr
+NAME                                                       AGE
+reactive-rule-pod-request-cpu                              2m
+reactive-rule-pod-request-memory                           2m
+reactive-rule-pod-usage-cpu                                2m
+reactive-rule-pod-usage-memory                             2m
+
+$ kubectl get reactiverules.rating.alterway.fr reactive-rule-pod-usage-cpu -o yaml
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-pod-usage-cpu
+spec:
+  metric: usage_cpu * on() group_right sum(rate(container_cpu_usage_seconds_total[1m]))
+    BY (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""})
+    by (pod, namespace, node) * 0)
+  name: pods_usage_cpu
+  timeframe: 60s
+```
+
+This example is here to illustrate how both system can supplement each other.
+
+ReactiveRules are not subject to configuration versionning.
+More informations on `ReactiveRules` can be found in the [custom resources documentation](/documentation/CRD.md).
 
 ----
 

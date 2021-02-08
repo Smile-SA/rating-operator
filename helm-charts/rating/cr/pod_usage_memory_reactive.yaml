@@ -1,9 +1,0 @@
-apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
-metadata:
-  name: reactive-rule-pod-usage-memory
-  namespace: rating
-spec:
-  metric: 'usage_memory * on () group_right sum(container_memory_usage_bytes) by (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""}) by (pod, namespace, node) * 0) + on (node) group_left(label_beta_kubernetes_io_instance_type) (sum(kube_node_labels) by (node,label_beta_kubernetes_io_instance_type) * 0)'
-  name: pods_usage_memory
-  timeframe: 60s

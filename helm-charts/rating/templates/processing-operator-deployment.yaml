@@ -27,12 +27,15 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.processing.pullSecretsName }}
     {{- end }}
-      serviceAccountName: {{ include "rating.processing.fullname" . }}-{{ .Release.Namespace }}
+      serviceAccountName: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
+      automountServiceAccountToken: True
       containers:
         - name: processing-operator
           image: "{{ .Values.processing.image.repository }}:{{ .Values.processing.image.tag }}"
           imagePullPolicy: {{ .Values.processing.image.pullPolicy }}
           env:
+          - name: AUTH
+            value: "{{ .Values.security.auth }}"
           - name: RATING_API_URL
             value: http://{{ include "rating.api.fullname" . }}:{{ .Values.api.service.port }}
           - name: RATING_NAMESPACE

@@ -3,7 +3,7 @@
 **Every GET endpoints listed below can receive url arguments**
 
 - `start` & `end`
-- time format is `%Y-%m-%d %H:%M:%S`
+- time format is `%Y-%m-%d %H:%M:%S.%fZ`
 
 **If no arguments are provided, default values will be used.**
 
@@ -37,7 +37,7 @@ The available endpoints are sorted by category
 
 **GET `/namespaces/<namespace>/rating`**
 
-- Get the price for a given namespace, per hour and per metric.
+- Get the rate for a given namespace, per hour and per metric.
 
 **GET `/namespaces/<namespace>/pods`**
 
@@ -127,7 +127,7 @@ The available endpoints are sorted by category
 
 **GET `/nodes/<node>/rating`**
 
-- Get the price for a given node, per hour and per metric.
+- Get the rate for a given node, per hour and per metric.
 
 **GET `/nodes/<node>/namespaces`**
 

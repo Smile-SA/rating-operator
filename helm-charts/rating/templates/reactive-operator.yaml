@@ -27,7 +27,8 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.processing.pullSecretsName }}
     {{- end }}
-      serviceAccountName: {{ include "rating.processing.fullname" . }}-{{ .Release.Namespace }}
+      serviceAccountName: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
+      automountServiceAccountToken: True
       containers:
         - name: reactive-operator
           image: "{{ .Values.reactive.image.repository }}:{{ .Values.reactive.image.tag }}"
@@ -41,12 +42,15 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          - name: AUTH
+            value: "{{ .Values.security.auth }}"
           - name: RATING_API_URL
             value: http://{{ include "rating.api.fullname" . }}:{{ .Values.api.service.port }}
           - name: RATING_NAMESPACE
             value: {{ .Release.Namespace }}
           - name: PROMETHEUS_URL
-            value: http://prometheus-prometheus-oper-prometheus.monitoring.svc.cluster.local:9090
+          # Configure this better
+            value: "http://{{ .Values.prometheus.service }}.{{ .Values.prometheus.namespace }}.svc.cluster.local:9090"
           resources:
             {{- toYaml .Values.reactive.resources | nindent 12 }}
       {{- with .Values.processing.nodeSelector }}

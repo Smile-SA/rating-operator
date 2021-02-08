@@ -1,0 +1,20 @@
+# AKS -> 2 vCPU + 4GB Ram b2s 0.068/h
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-node-cost-simulation-aks-b2s
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b2s_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / sum(aks_b2s_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b2s_cpu)) * sum(aks_b2s)
+  name: node_cost_simulation_aks_b2s
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-number-instance-simulation-aks-b2s
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aks_b2s_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_b2s_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_b2s_cpu))
+  name: number_instance_simulation_aks_b2s
+  timeframe: 3600s

@@ -10,38 +10,39 @@ considered trusted.
 ## Requirements
 
 - A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x9
-- A persistent storage plugin that supports the ReadWriteMany access mode, i.e. a shared
-   filesystem that can be written from multiple nodes simultaneously. We describe how to
-   install https://rook.io/[Rook] and https://ceph.com/[Ceph] to that purpose.
-   Some distributions, like CodeReady, come with pre-provisioned volumes
-   without the need to install anything else. NFS is not recommended.
-- Helm is used to deploy Prometheus, or the Rook storage if you need to.
+- A storage provider (By default Longhorn, rook-ceph available)
+- Helm is used to deploy Prometheus, or the storage if you need to.
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
    We will show you how to deploy one (currently with no authentication).
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
-- https://github.com/jzelinskie/faq (on the machine that is running kubectl)
 
 
 ### *Helm*
 
 Helm 3 does away with some security issues of its previous versions (no server-side Tiller component), but you may want to restrict Helm's permissions in a production environment. To know more, see [Securing Helm 3 - Matthew Fisher, Microsoft](https://static.sched.com/hosted_files/helmsummit2019/08/Securing%20Helm%203%20-%20Helm%20Summit%20EU%202019.pptx).
-To prevent compatibility problems, we recommand using version 3.1.2 of helm.
+To prevent compatibility problems, we recommend using version 3.1.2 of helm.
 ```sh
 $ curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar xfz -
-$ sudo mv linux-amd64/helm /usr/local/bin/helm3
+$ sudo mv linux-amd64/helm /usr/local/bin/helm
 ```
 
 ### Storage provider
 
 Two solutions are available for storage, each one having advantages and uses-cases.
+
 **Longhorn** is lighter, more adapted to smaller scale. On the other hand, **Rook/ceph** is heavier but easily scalable.
 You can also install both to try it out.
 
-To change the method of provisionning volumes, replace the storageClass variable in further configurations.
-**Longhorn** is enabled by default.
+**Longhorn** is recommanded for standard installation.
 
+Once you have your storage provider installed, please skip the other as having both will not bring any benefits.
+
+To modify the provider storageClass, follow the instructions in [configuration](/documentation/CONFIGURATION.md).
 #### *Longhorn*
 
+To install Longhorn, go through the following steps:
+
+First, clone the repository to your machine:
 
 ```sh
 $ git clone https://github.com/longhorn/longhorn ./quickstart/longhorn/longhorn
@@ -50,32 +51,38 @@ remote: Enumerating objects: 1, done.
 [...]
 ```
 
-Once the repository is cloned, please edit
-`./quickstart/longhorn/longhorn/examples/rwx/02-longhorn-nfs-provisioner.yaml`
-as follows:
-
-```
-line 18:   clusterIP: 10.43.111.111 
-```
-
-Replace this by a valid IP in the range `10.152.183.0/24`.
-Once this is done, proceed to the installation.
+Then, apply the manifest to install it:
 
 ```sh
-$ ./quickstart/longhorn/install.sh
-namespace/longhorn-system created
-NAME: longhorn
+$ kubectl apply -f ./quickstart/longhorn/longhorn/deploy/longhorn.yaml
 [...]
-Longhorn is now installed on the cluster!
-Please wait a few minutes for other Longhorn components such as CSI deployments, Engine Images, and Instance Managers to be initialized.
-[...]
-persistentvolumeclaim/longhorn-nfs-provisioner created
-storageclass.storage.k8s.io/longhorn-nfs created
-[...]
+namespace/longhorn-system configured
+serviceaccount/longhorn-service-account configured
+clusterrole.rbac.authorization.k8s.io/longhorn-role configured
+clusterrolebinding.rbac.authorization.k8s.io/longhorn-bind configured
+customresourcedefinition.apiextensions.k8s.io/engines.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/replicas.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/settings.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/volumes.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/engineimages.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/nodes.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/instancemanagers.longhorn.io configured
+customresourcedefinition.apiextensions.k8s.io/sharemanagers.longhorn.io configured
+configmap/longhorn-default-setting configured
+podsecuritypolicy.policy/longhorn-psp configured
+role.rbac.authorization.k8s.io/longhorn-psp-role configured
+rolebinding.rbac.authorization.k8s.io/longhorn-psp-binding configured
+configmap/longhorn-storageclass configured
+daemonset.apps/longhorn-manager configured
+service/longhorn-backend configured
+deployment.apps/longhorn-ui configured
+service/longhorn-frontend configured
+deployment.apps/longhorn-driver-deployer **configured**
+
 ```
 
-If you modified the file correctly, everything should be initializating / running.
-To confirm, use:
+Wait a minute, then verify everything is working as expected by running:
+
 ```sh
 $ kubectl get pods -n longhorn-system
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -108,19 +115,14 @@ longhorn-nfs-provisioner-67ddb7ffc9-qzlft   1/1     Running   0          1m4s
 longhorn-ui-6c5b56bb9c-x6ldw                1/1     Running   0          1m4s
 ```
 
-To test the RWX volumes, run:
-`./quickstart/longhorn/longhorn/examples/rwx/03-rwx-test.yaml`
-
-To test the RWO volumes, run:
+To test the volumes provisionning, run:
 `./quickstart/longhorn/longhorn/examples/simple_pvc.yaml`
 
 Then, confirm with
 ```sh
 $ kubectl get pvc -n longhorn-system
 NAME                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-longhorn-nfs-provisioner   Bound    pvc-a9413e35-86af-4779-a557-35ca02ed0722   19Gi       RWO            longhorn       2m3s
 longhorn-simple-pvc        Bound    pvc-432e9316-6fbc-4bcb-8e7a-b7eb97011826   1Gi        RWO            longhorn       10s
-nfs-test                   Bound    pvc-d7b37379-d4b9-4dc7-ae42-d45be11e79ba   1Gi        RWX            longhorn-nfs   3s
 ```
 
 #### *Rook-Ceph*
@@ -161,10 +163,9 @@ rook-discover-2zf8p                   1/1     Running   0          100s
 rook-discover-zh7jz                   1/1     Running   0          100s
 ```
 
-
 You can now test the dynamic volumes:
 
-```
+```yml
 $ cat <<EOT | kubectl create -f -
 ---
 apiVersion: v1
@@ -197,17 +198,30 @@ persistentvolumeclaim/test-pv-claim   Bound    pvc-15e45593-ad59-11e9-855f-52540
 
 ### *Prometheus*
 
-You can install Prometheus in a multitude of ways, including:
+Be sure to take a look at the Prometheus `values.yaml` file before proceeding with the installation.
 
-- https://github.com/helm/charts/tree/master/stable/prometheus-operator
-- https://github.com/helm/charts/tree/master/stable/prometheus
-- https://github.com/coreos/kube-prometheus
+We will use the chart of the prometheus-community repository for this example:
 
-You can also find Prometheus already installed in your k8s/openshift distribution.
+**https://github.com/prometheus-community/helm-charts**
 
+```sh
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+"prometheus-community" has been added to your repositories
+```
+
+Once added to your helm repository, update it to be sure to have the latest version
+
+```sh
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "prometheus-community" chart repository
+Update Complete. ⎈ Happy Helming!⎈
+```
+
+You can also find Prometheus already installed in your K8s/Openshift distribution.
 The important things for each method are the connection and authentication details.
 
-To deploy the Prometheus Operator with the right configuration:
+When the helm repository is updated, deploy the Prometheus Operator with:
 
 ```sh
 $ ./quickstart/prometheus/install.sh
@@ -219,10 +233,10 @@ STATUS: DEPLOYED
 [...]
 ```
 
-Data persistence is off by default, but can be enabled in https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml[values.yaml],
+Data persistence is off by default, but can be enabled in <https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml[values.yaml>],
 for prometheus and/or the alertmanager:
 
-```
+```yml
 [...]
     storageSpec:
       volumeClaimTemplate:
@@ -235,31 +249,41 @@ for prometheus and/or the alertmanager:
         selector: {}
 [...]
 ```
-NOTE: If Prometheus is using Ceph volumes, it can't effectively alert you on the
-availability of the storage. When Ceph goes down, so does Prometheus. For rating
-purposes, you don't actually need persistence of Prometheus data, since the metrics
-to be rated are shipped to the metering component for long-term storage as soon
-as possible.
 
-After the above installation, the prometheus URL inside the cluster is
+NOTE: If Prometheus is using Ceph volumes, it can't effectively alert you on the
+availability of the storage. When Ceph goes down, so does Prometheus.
+
+After the above installation, the prometheus URL inside the cluster should be
 `http://prometheus-prometheus-oper-prometheus.monitoring:9090/`, without
 authentication.
 
 #### Grafana
 
-By default, **prometheus-operator** installs it's own **Grafana** instance in its namespace.
-We provide a base Grafana configuration that includes:
+##### Standard
+
+**prometheus-operator** deploys its own **Grafana** instance.
+Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana configuration that includes:
 
 - plugins to query `rating-operator` data
 - datasource for `rating-operator`
-- simple dashboard
+- Three dashboards, including rated data:
+  - IAAS costs simulation
+  - Application specifics
+  - Rating-operator resources consumption
 
-To modify the dashboard, you need to modify its ConfigMap, named `grafana-dashboards-configmap`.
-We provide an example dashboard file at `./quickstart/prometheus/dashboards/dashboard.yaml`.
+In order to edit the dashboards, you either need to edit:
+  - The ConfigMap
+  - The file (`./quickstart/prometheus/dashboards`), then apply with `kubectl -f`.
 
+##### Non-standard
 
-### *Metering Operator*
+If, for any reason, you cannot access or modify the main Grafana instance of your cluster, we provide a script to install Grafana with the rating-operator.
+Don't forget to update the `deploy/operator.yaml` with the adress of your Grafana instance.
+More infos in the [configuration documentation](/documentation/CONFIGURATION.md).
 
+### *Metering Operator* (Optional, skip if your use case is not LARGE scale)
+
+**DISCLAIMER**: The metering-operator project is not maintained anymore. We consider the metering based rating to be deprecated.
 **DISCLAIMER**: The `metering-operator` is only required  for the *scalable* rating, as it uses the operator's `Reports` objects. If you only need a *light* solution to rate dataframes, skip this step.
 
 #### Operator configuration
@@ -270,7 +294,7 @@ NOTE: You need to change the prometheus URL with your own if you installed it wi
 
 
 ```sh
-$ cat ./metering/metering-custom-longhorn.yaml
+$ cat ./metering/metering-custom.yaml
 [...]
   storage:
     type: "hive"
@@ -278,14 +302,12 @@ $ cat ./metering/metering-custom-longhorn.yaml
       type: "sharedPVC"
       sharedPVC:
         createPVC: true
-        storageClass: "longhorn-nfs"
+        storageClass: "csi-cephfs"
         size: 5Gi
 ```
 
 
 #### Installing the operator
-
-Install [faq (Format Agnostic jQ)](https://github.com/jzelinskie/faq) on the machine where you are running kubectl.
 
 Clone the repository, then run the install script:
 
@@ -293,8 +315,9 @@ Clone the repository, then run the install script:
 $ git clone https://github.com/operator-framework/operator-metering.git -b release-4.2 ./quickstart/metering/operator-metering
 Cloning into 'operator-metering'...
 [...]
+
 $ ./quickstart/metering/install.sh
-Using /home/marco/5g/valentin/rating-setup/metering/operator-metering/manifests/deploy/upstream/metering-ansible-operator as manifests directory
+[...]
 Creating namespace metering
 namespace/metering created
 Installing Custom Resource Definitions
@@ -344,19 +367,18 @@ cluster-cpu-usage-hourly            cluster-cpu-usage            hourly     Repo
 
 ### *Rating*
 
-You can install the rating stack in two ways: as an operator, or via the Helm chart.
+There's two installation method for the rating-operator:
+-  As an operator
+-  As an Helm chart
+  
+We recommend deploying the operator version.
+Use the chart only if you want full control over updates, configuration and CustomResources.
 
-You also have to set a password for Postgres. If you don't, it will be randomly generated
-by helm each time you install or update the chart, but the new password will not be set
-in the database's volume, and the server will refuse all connections ( https://github.com/helm/charts/issues/362 ).
-
-
+Before installing the operator, please consider reading [this document](/documentation/TROUBLESHOOT.md), as the default configuration that comes included in the rating-operator might not suit your case.
 #### Installing the operator
 
-Choose a namespace and deploy the operator on it.
 
-You can set the Postgres password in `deploy/operator.yaml`
-
+Choose a namespace and deploy the operator in it.
 
 ```sh
 $ RATING_NAMESPACE=rating hack/install.sh
@@ -368,22 +390,14 @@ clusterrolebinding.rbac.authorization.k8s.io/rating-operator created
 serviceaccount/rating-operator created
 ```
 
-Beware: the install script modifies in place the file deploy/role_bindings.yaml, so be careful not to commit its changes back to the repository.
+Beware: the installation script modifies in place the file deploy/role_bindings.yaml, so be careful not to commit its changes back to the repository.
 
 #### Installing the Helm chart
 
-To deploy the rating services as a Helm release, create a `values.yaml` file
-with at least the Postgres password:
+Call Helm to install the charts in the namespace of your choice:
 
 ```
-postgresql:
-  postgresqlPassword: <PASSWORD HERE>
-```
-
-Then call Helm to install the charts in the namespace of your choice:
-
-```
-$ helm3 install -n rating rating ./helm-charts/rating -f ./values.yaml
+$ helm install -n rating rating ./helm-charts/rating -f ./values.yaml
 NAME: rating
 LAST DEPLOYED: Wed Apr  8 14:42:54 2020
 NAMESPACE: rating-mm
@@ -461,7 +475,7 @@ needs to connect with ssh to each worker node.
 
 ### Prometheus
 
-Helm does not remove CRD objects so we'll do it in a script.
+Helm does not remove CRD objects, hence the need of a script to do so.
 
 ```sh
 $ ./quickstart/prometheus/uninstall.sh
@@ -470,5 +484,3 @@ customresourcedefinition.apiextensions.k8s.io "alertmanagers.monitoring.coreos.c
 [...]
 customresourcedefinition.apiextensions.k8s.io "prometheusrules.monitoring.coreos.com" deleted
 customresourcedefinition.apiextensions.k8s.io "servicemonitors.monitoring.coreos.com" deleted
-```
-
