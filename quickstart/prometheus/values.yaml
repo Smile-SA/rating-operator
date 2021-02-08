@@ -1,28 +1,5005 @@
 ---
+# This is the base configuration for the prometheus-operator
+# Use the quickstart/grafana/values.yaml if you already have a prometheus and want a local grafana instead
+# See https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml for more infos on available options
 prometheus:
   prometheusSpec:
     retention: 30d
 grafana:
+  adminPassword: prom-operator
   sidecar:
     datasources:
+      # Keep the default prometheus datasource
       defaultDatasourceEnabled: True
-  enabled: true
   image:
     repository: grafana/grafana
-    tag: 7.0.3
+    tag: 7.3.5
     pullPolicy: IfNotPresent
-  adminPassword: prom-operator
+  # The plugins below are required by the rating-operator datasource
+  # Feel free to add more
   plugins:
-    - digrich-bubblechart-panel
-    - grafana-clock-panel
-    - simpod-json-datasource
-    - grafana-piechart-panel
-  additionalDataSources:
-    - name: Rating-operator
-      type: simpod-json-datasource
-      access: proxy
-      url: http://rating-api.rating.svc.cluster.local:80
-      withCredentials: true
-      editable: true
-      jsonData:
-        keepCookies: ["session"]
+    - digrich-bubblechart-panel  # Required
+    - grafana-clock-panel  # Required
+    - simpod-json-datasource  # Required
+    - grafana-piechart-panel  # Required
+  grafana.ini:
+    panels:
+      disable_sanitize_html: true
+  # Basic datasource configuration for the rating-operator
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Rating-operator
+          type: simpod-json-datasource
+          access: proxy
+          # Update the url if you are not running the default configuration
+          url: http://rating-operator-api.rating.svc.cluster.local:80
+          editable: true
+          # Both withCredentials and session cookies are mandatory to exploit the multi-tenant aspect on Grafana
+          withCredentials: true
+          jsonData:
+            keepCookies: ["session"]
+  # Dashboards are directly included in the configuration, to ease the deployment
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: 'admin'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+      - name: 'admin'
+        orgId: 1
+        folder: 'admin'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/admin
+      - name: 'tenant'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: true
+        editable: false
+        options:
+          path: /var/lib/grafana/dashboards/tenant
+  dashboards:
+    default:
+      default-dashboard:
+        json: |-
+          {
+            "__inputs": [ ],
+            "__requires": [ ],
+            "annotations": {
+                "list": [ ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "hideControls": false,
+            "id": null,
+            "links": [ ],
+            "panels": [
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 7,
+                      "w": 12,
+                      "x": 0,
+                      "y": 0
+                  },
+                  "id": 2,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"pods_usage_cpu\", \"namespace\": \"rating-operator\"}",
+                        "refId": "A",
+                        "target": "/namespaces/<namespace>/metrics/<metric>/rating",
+                        "type": "timeseries"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "Rating-operator CPU Usage",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 7,
+                      "w": 12,
+                      "x": 12,
+                      "y": 0
+                  },
+                  "id": 3,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"pods_usage_memory\", \"namespace\": \"rating-operator\"}",
+                        "refId": "A",
+                        "target": "/namespaces/<namespace>/metrics/<metric>/rating",
+                        "type": "timeseries"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "Rating-operator RAM Usage",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [ ]
+                        },
+                        "unit": "dateTimeAsIso"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 12,
+                      "x": 0,
+                      "y": 7
+                  },
+                  "id": 4,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "last"
+                        ],
+                        "fields": "price",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"prometheus_oldest_data\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/rating",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "Oldest Prometheus data",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [ ]
+                        },
+                        "unit": "dateTimeFromNow"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 12,
+                      "x": 12,
+                      "y": 7
+                  },
+                  "id": 5,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "min",
+                        "values": true
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "",
+                        "refId": "A",
+                        "target": "/rated/frames/oldest",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "Oldest rated data",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 5,
+                      "w": 12,
+                      "x": 0,
+                      "y": 9
+                  },
+                  "id": 6,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": true,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"prometheus_storage_size\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/ratio",
+                        "type": "table"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "Prometheus storage (GB)",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 5,
+                      "w": 12,
+                      "x": 12,
+                      "y": 9
+                  },
+                  "id": 7,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"rating_storage_size\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/ratio",
+                        "type": "table"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "Rating storage (GB)",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                }
+            ],
+            "refresh": "",
+            "rows": [ ],
+            "schemaVersion": 26,
+            "style": "dark",
+            "tags": [ ],
+            "templating": {
+                "list": [
+                  {
+                      "current": {
+                        "text": "Rating-operator",
+                        "value": "Rating-operator"
+                      },
+                      "hide": 2,
+                      "label": null,
+                      "name": "Rating-operator",
+                      "options": [ ],
+                      "query": "JSON",
+                      "refresh": 1,
+                      "regex": "",
+                      "type": "datasource"
+                  }
+                ]
+            },
+            "time": {
+                "from": "now-6h",
+                "to": "now"
+            },
+            "timepicker": { },
+            "timezone": "browser",
+            "title": "[Grafonnet] Default Dashboard",
+            "version": 0
+          }
+    tenant:
+      tenant-dashboard:
+        json: |-
+          {
+            "__inputs": [ ],
+            "__requires": [ ],
+            "annotations": {
+                "list": [ ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "hideControls": false,
+            "id": null,
+            "links": [ ],
+            "panels": [
+                {
+                  "datasource": "Rating-operator",
+                  "description": "(more than 1, CPU is preferred)",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "max": 1,
+                        "min": 0,
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": null
+                      }
+                  },
+                  "gridPos": {
+                      "h": 5,
+                      "w": 24,
+                      "x": 0,
+                      "y": 0
+                  },
+                  "id": 2,
+                  "links": [ ],
+                  "options": {
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      },
+                      "showThresholdLabels": false,
+                      "showThresholdMarkers": true
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cpu_memory_ratio\"}",
+                        "refId": "A",
+                        "target": "/nodes/metrics/<metric>/rating",
+                        "type": "timeseries"
+                      }
+                  ],
+                  "title": "CPU vs RAM ratio per instance (more than 1, CPU is preferred)",
+                  "transparent": true,
+                  "type": "gauge"
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "description": "(more than 1, CPU is preferred)",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 6,
+                      "w": 24,
+                      "x": 0,
+                      "y": 5
+                  },
+                  "id": 3,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cpu_memory_ratio\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/ratio",
+                        "type": "table"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "CPU vs RAM ratio (more than 1, CPU is preferred)",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "description": "(more than 1, STORAGE is preferred)",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 6,
+                      "w": 24,
+                      "x": 0,
+                      "y": 11
+                  },
+                  "id": 4,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"storage_ram_ratio\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/ratio",
+                        "type": "table"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "STORAGE vs RAM ratio (more than 1, STORAGE is preferred)",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                },
+                {
+                  "aliasColors": { },
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "Rating-operator",
+                  "description": "RAM in GB, CPU in milicore",
+                  "fill": 1,
+                  "fillGradient": 0,
+                  "gridPos": {
+                      "h": 7,
+                      "w": 24,
+                      "x": 0,
+                      "y": 17
+                  },
+                  "id": 5,
+                  "legend": {
+                      "alignAsTable": false,
+                      "avg": false,
+                      "current": false,
+                      "max": false,
+                      "min": false,
+                      "rightSide": false,
+                      "show": true,
+                      "sideWidth": null,
+                      "total": false,
+                      "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 1,
+                  "links": [ ],
+                  "nullPointMode": "null",
+                  "percentage": false,
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "repeat": null,
+                  "seriesOverrides": [ ],
+                  "spaceLength": 10,
+                  "stack": false,
+                  "steppedLine": false,
+                  "targets": [
+                      {
+                        "data": "",
+                        "refId": "A",
+                        "target": "/metrics/rating",
+                        "type": "timeseries"
+                      }
+                  ],
+                  "thresholds": [ ],
+                  "timeFrom": null,
+                  "timeShift": null,
+                  "title": "Resource consumption",
+                  "tooltip": {
+                      "shared": true,
+                      "sort": 0,
+                      "value_type": "individual"
+                  },
+                  "transparent": true,
+                  "type": "graph",
+                  "xaxis": {
+                      "buckets": null,
+                      "mode": "time",
+                      "name": null,
+                      "show": true,
+                      "values": [ ]
+                  },
+                  "yaxes": [
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      },
+                      {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                      }
+                  ]
+                }
+            ],
+            "refresh": "",
+            "rows": [ ],
+            "schemaVersion": 26,
+            "style": "dark",
+            "tags": [ ],
+            "templating": {
+                "list": [
+                  {
+                      "current": {
+                        "text": "Rating-operator",
+                        "value": "Rating-operator"
+                      },
+                      "hide": 2,
+                      "label": null,
+                      "name": "Rating-operator",
+                      "options": [ ],
+                      "query": "JSON",
+                      "refresh": 1,
+                      "regex": "",
+                      "type": "datasource"
+                  }
+                ]
+            },
+            "time": {
+                "from": "now-6h",
+                "to": "now"
+            },
+            "timepicker": { },
+            "timezone": "browser",
+            "title": "[Grafonnet] Application Performance",
+            "version": 0
+          }
+    admin:
+      admin-dashboard:
+        json: |-
+          {
+            "__inputs": [ ],
+            "__requires": [ ],
+            "annotations": {
+                "list": [ ]
+            },
+            "editable": true,
+            "gnetId": null,
+            "graphTooltip": 0,
+            "hideControls": false,
+            "id": null,
+            "links": [ ],
+            "panels": [
+                {
+                  "collapse": false,
+                  "collapsed": false,
+                  "gridPos": {
+                      "h": 1,
+                      "w": 24,
+                      "x": 0,
+                      "y": 4
+                  },
+                  "id": 2,
+                  "panels": [ ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": true,
+                  "title": "GCP Biling",
+                  "titleSize": "h6",
+                  "type": "row"
+                },
+                {
+                  "collapse": false,
+                  "collapsed": false,
+                  "gridPos": {
+                      "h": 1,
+                      "w": 24,
+                      "x": 0,
+                      "y": 25
+                  },
+                  "id": 3,
+                  "panels": [ ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": true,
+                  "title": "AWS Biling",
+                  "titleSize": "h6",
+                  "type": "row"
+                },
+                {
+                  "collapse": false,
+                  "collapsed": false,
+                  "gridPos": {
+                      "h": 1,
+                      "w": 24,
+                      "x": 0,
+                      "y": 44
+                  },
+                  "id": 4,
+                  "panels": [ ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": true,
+                  "title": "Azure Biling",
+                  "titleSize": "h6",
+                  "type": "row"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 10
+                  },
+                  "id": 5,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 12
+                  },
+                  "id": 6,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 14
+                  },
+                  "id": 7,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 10
+                  },
+                  "id": 8,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 12
+                  },
+                  "id": 9,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 14
+                  },
+                  "id": 10,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 10
+                  },
+                  "id": 11,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 12
+                  },
+                  "id": 12,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 14
+                  },
+                  "id": 13,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 10
+                  },
+                  "id": 14,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-highmem-2",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 12
+                  },
+                  "id": 15,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-highmem-2",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 14
+                  },
+                  "id": 16,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-highmem-2",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 10
+                  },
+                  "id": 17,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-highcpu-4",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 12
+                  },
+                  "id": 18,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-highcpu-4",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 14
+                  },
+                  "id": 19,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-highcpu-4",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 10
+                  },
+                  "id": 20,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily e2-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 12
+                  },
+                  "id": 21,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly e2-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 14
+                  },
+                  "id": 22,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly e2-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 29
+                  },
+                  "id": 23,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily a1-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 31
+                  },
+                  "id": 24,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly a1-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 33
+                  },
+                  "id": 25,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly a1-medium",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 29
+                  },
+                  "id": 26,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily a1-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 31
+                  },
+                  "id": 27,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly a1-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 33
+                  },
+                  "id": 28,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly a1-large",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 29
+                  },
+                  "id": 29,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily a1-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 31
+                  },
+                  "id": 30,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly a1-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 33
+                  },
+                  "id": 31,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly a1-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 29
+                  },
+                  "id": 32,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily a1-2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 31
+                  },
+                  "id": 33,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly a1-2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 33
+                  },
+                  "id": 34,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly a1-2-xlarge",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 29
+                  },
+                  "id": 35,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily t4g-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 31
+                  },
+                  "id": 36,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly t4g-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 33
+                  },
+                  "id": 37,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly t4g-micro",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 29
+                  },
+                  "id": 38,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily t4g-nano",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 31
+                  },
+                  "id": 39,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly t4g-nano",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 33
+                  },
+                  "id": 40,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly t4g-nano",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 48
+                  },
+                  "id": 41,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily b2s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 50
+                  },
+                  "id": 42,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly b2s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 0,
+                      "y": 52
+                  },
+                  "id": 43,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly b2s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 48
+                  },
+                  "id": 44,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily b2ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 50
+                  },
+                  "id": 45,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly b2ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 4,
+                      "y": 52
+                  },
+                  "id": 46,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly b2ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 48
+                  },
+                  "id": 47,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily b4ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 50
+                  },
+                  "id": 48,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly b4ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 8,
+                      "y": 52
+                  },
+                  "id": 49,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly b4ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 48
+                  },
+                  "id": 50,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily b1s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 50
+                  },
+                  "id": 51,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly b1s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 12,
+                      "y": 52
+                  },
+                  "id": 52,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly b1s",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 48
+                  },
+                  "id": 53,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily b1ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 50
+                  },
+                  "id": 54,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly b1ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 16,
+                      "y": 52
+                  },
+                  "id": 55,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly b1ms",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 48
+                  },
+                  "id": 56,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/daily",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "daily a8",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 50
+                  },
+                  "id": 57,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/weekly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "weekly a8",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 2,
+                      "w": 4,
+                      "x": 20,
+                      "y": 52
+                  },
+                  "id": 58,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "mean"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/monthly",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "monthly a8",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 0,
+                      "y": 26
+                  },
+                  "id": 59,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_a1_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "a1-medium instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 4,
+                      "y": 26
+                  },
+                  "id": 60,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_a1_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "a1-large instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 8,
+                      "y": 26
+                  },
+                  "id": 61,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_a1_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "a1-xlarge instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 12,
+                      "y": 26
+                  },
+                  "id": 62,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_a1_2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "a1-2-xlarge instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 16,
+                      "y": 26
+                  },
+                  "id": 63,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_t4g_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "t4g-micro instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 20,
+                      "y": 26
+                  },
+                  "id": 64,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aws_t4g_nano\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "t4g-nano instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 0,
+                      "y": 5
+                  },
+                  "id": 65,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_medium\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-medium instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 4,
+                      "y": 5
+                  },
+                  "id": 66,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_large\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-large instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 8,
+                      "y": 5
+                  },
+                  "id": 67,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_xlarge\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-xlarge instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 12,
+                      "y": 5
+                  },
+                  "id": 68,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_highmem_2\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-highmem-2 instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 16,
+                      "y": 5
+                  },
+                  "id": 69,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_highcpu_4\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-highcpu-4 instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              },
+                              {
+                                  "color": "red",
+                                  "value": 80
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 20,
+                      "y": 5
+                  },
+                  "id": 70,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_gcp_e2_micro\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "e2-micro instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 0,
+                      "y": 45
+                  },
+                  "id": 71,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_b2s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "b2s instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 4,
+                      "y": 45
+                  },
+                  "id": 72,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_b2ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "b2ms instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 8,
+                      "y": 45
+                  },
+                  "id": 73,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_b4ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "b4ms instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 12,
+                      "y": 45
+                  },
+                  "id": 74,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_b1s\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "b1s instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 16,
+                      "y": 45
+                  },
+                  "id": 75,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_b1ms\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "b1ms instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                },
+                {
+                  "datasource": "Rating-operator",
+                  "fieldConfig": {
+                      "defaults": {
+                        "links": [ ],
+                        "mappings": [ ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                              {
+                                  "color": "green",
+                                  "value": null
+                              }
+                            ]
+                        },
+                        "unit": "none"
+                      }
+                  },
+                  "gridPos": {
+                      "h": 3,
+                      "w": 4,
+                      "x": 20,
+                      "y": 45
+                  },
+                  "id": 76,
+                  "links": [ ],
+                  "options": {
+                      "colorMode": "value",
+                      "graphMode": "area",
+                      "justifyMode": "auto",
+                      "orientation": "auto",
+                      "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                      }
+                  },
+                  "pluginVersion": "7",
+                  "targets": [
+                      {
+                        "data": "{\"metric\": \"number_instance_simulation_aks_a8\"}",
+                        "refId": "A",
+                        "target": "/metrics/<metric>/max",
+                        "type": "table"
+                      }
+                  ],
+                  "title": "a8 instance needed",
+                  "transparent": true,
+                  "type": "stat"
+                }
+            ],
+            "refresh": "",
+            "rows": [ ],
+            "schemaVersion": 26,
+            "style": "dark",
+            "tags": [ ],
+            "templating": {
+                "list": [
+                  {
+                      "current": {
+                        "text": "Rating-operator",
+                        "value": "Rating-operator"
+                      },
+                      "hide": 2,
+                      "label": null,
+                      "name": "Rating-operator",
+                      "options": [ ],
+                      "query": "JSON",
+                      "refresh": 1,
+                      "regex": "",
+                      "type": "datasource"
+                  }
+                ]
+            },
+            "time": {
+                "from": "now-6h",
+                "to": "now"
+            },
+            "timepicker": { },
+            "timezone": "browser",
+            "title": "[Grafonnet] Cost Simulation",
+            "version": 0
+          }

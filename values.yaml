@@ -1,35 +1,208 @@
----
-token:
-  admin: thisisadmintoken
+# RATING-OPERATOR CHART CONFIGURATION
+# DISCLAIMER: This ONLY configure the chart, not the operator itself.
+# DISCLAIMER: Installing as a chart is deprecated and will be removed in the future.
+
+# This file holds the configuration used by Helm to deploy rating-operator as a chart.
+# Use only if you want to have full control over updates, default configuration, custom resources, etc.
+# It is kept for compatibility but is not tested nor maintained anymore.
+
+
+## The security part of the configuration is related to your cluster authentication method (cert files, token, non local users management)
+security:
+  # The "auth" flag enables TLS/HTTPS verification in the component
+  # Enable it if your cluster uses HTTPS
+  auth: "false"
+
+  # The "adminToken" string configure the application security key
+  # It is used for administrator requests to the rating-operator-api and as a secret key for session encoding
+  token:
+    admin: thisisadmintoken
+
+  # The "adminAccount" variable defines the which tenant is considered admin.
+  # Usually, the default "admin" is enough. Some external applications already using the "admin" name could motivate to change this parameter.
+  # Don't forget to edit the Grafana deployment accordingly, to syncronise both adminAccount values.
+  adminAccount: admin
+  # Keycloak can be used as an authentication method through the operator.
+  # Setting enabled to "false" will configure the rating-operator to use its own local user management
+  keycloak:
+    enabled: "false"
+
+    ## Below the configuration for the Keycloak server
+    # serverUrl: "my_url_keycloak"
+    # clientID: rating-operator
+    # realmName: "my_realm"
+    # clientSecretKey: "bakshdhb-dkjashbdjh-dkjahdfskl"
+
+## Location of the prometheus component
+prometheus:
+  service: prometheus-prometheus-oper-prometheus
+  namespace: monitoring
+
+## Configuration of the api component
+api:
+
+  # Pod name 
+  name: api
+
+  # Below lies the name of the postgresql pod running along the rating-operator-api
+  config:
+    postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+    postgres_secret: "{{ .Release.Name }}-postgresql"
+
+  # Image tags
+  # These options are mostly for developpers
+  # Base values should satisfy user needs
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
+    tag: master
+
+  # Resources allocation
+  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+  affinity: {}
+  nodeSelector: {}
+  resources: {}
+  tolerations: []
+
+  # rating-operator-api service configuration
+  # To be used to expose the api to the web
+  service:
+    port: 80
+    type: ClusterIP
+  
+  # The rating-operator supports rook-ceph and longhorn storageClasses out of the box
+  # Follow the rating-operator documentation for more details about their installation and configuration.
+  # Different storageClass / provider could be used, but we do not warranty positive results.
+  storage:
+    storageClass: longhorn
+
+# This value configuration where to reach the metering-operator storage system
+# Do not modify if you don't have a specific need
+# The usage of metering-operator is deprecated
+metering:
+  presto_database_uri: presto://root@presto.metering:8080/hive/metering
+
+# Storage pod configuration
+# Uses a compressed bitnami/postgresql chart
+# See https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml for more options
+global:
+  storageClass: longhorn
+  postgresql:
+    storageClass: longhorn
+storageClass: longhorn
+
+postgresql:
+  enabled: true
+  
+  # As mentionned above, rating-operator support rook-ceph and longhorn out of the box
+  storageClass: longhorn
+
+  # Both password and PostgresPassword have to be set if your postgresqlUsername is "postgres"
+  postgresqlUsername: postgres
+  postgresqlPassword: notasecret
+  postgresqlPostgresPassword: notasecret
+
+  # Openshift/OKD specifics
+  # Modify only if you have trouble allocating / RBAC problems with your storage pod on Openshift
+  # securityContext:                                                                                                                                                                 
+  #   enabled: true                                                                                                                                                                  
+  #   fsGroup: 1000600000
+  #   runAsUser: 1000600000
+  # volumePermissions:                                                                                                                                                               
+  #   enabled: false                                                                                                                                                                 
+  #   securityContext:                                                                                                                                                               
+  #     runAsUser: 1000600000
+
+## Configuration of the manager component
+manager:
+
+  # Pod name
+  name: manager
+
+  # Image tags
+  # Mostly for developpers, the base values should satisfy user needs
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
+    tag: master
+
+  # Resources allocation
+  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+  affinity: {}
+  nodeSelector: {}
+  resources: {}
+  tolerations: []
+
+## Configuration of the engine component
+engine:
+  
+  # Pod name
+  name: engine
+
+  # Image tags
+  # Mostly for developpers, the base values should satisfy user needs
+  image:
+    pullPolicy: Always
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
+    tag: master
+
+  # Resources allocation
+  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+  affinity: {}
+  nodeSelector: {}
+  resources: {}
+  tolerations: []
+
+## Configuration of the frontend component 
+# Grafana is used as the base frontend for the rating-operator
+frontend:
+
+  # The address to which you'll be redirected once logged in through the rating-operator
+  url: "prometheus-grafana.monitoring.svc.cluster.local"
+
+  # If you try to connect a different frontend to the application, this might be needed
+  allowOrigin: "*"
+
+  # Grafana configuration
+  grafana:
+
+    # Password for the administrator account
+    password: prom-operator
+
+    # The address toward which the requests made to Grafana will be directed
+    backend: "prometheus-grafana.monitoring.svc.cluster.local"
+
+    # Helpers for cookies
+    # Grafana session through HTTPS requires specific cookie handling
+    env:
+      domain: ""
+      httponly: "false"
+      secure: "false"
+      samesite: "none"
+
+
+# Convenience options, usually left as default
+rbac:
+  create: true
+service:
+  port: 80
+  type: ClusterIP
+nameOverride: null
+networkPolicy:
+  enabled: false
+fullnameOverride: null
+ingress:
+  annotations: {}
+  enabled: false
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+
+# Left for compatibility
 api:
   pullSecretsName: rating-regcred
-processing:
+manager:
   pullSecretsName: rating-regcred
-reactive:
+engine:
   pullSecretsName: rating-regcred
-postgresql:
-  postgresqlPassword: notasecret
-prometheus:
-  service: prometheus-grafana
-  namespace: monitoring
-frontend:
-  pullSecretsName: rating-regcred
-  url: "http://localhost:3000"
-  allowOrigin: "*"
-  grafana:
-    enabled: "true"
-    password: prom-operator
-    backend: "prometheus-grafana.monitoring.svc.cluster.local:80"
-  name: frontend
-  image:
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-front
-    tag: testing
-    pullPolicy: Always
-  service:
-    type: ClusterIP
-    port: 80
-
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  resources: {}

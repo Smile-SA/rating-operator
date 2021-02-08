@@ -1,0 +1,20 @@
+# AWS -> 2 vCPU + 4GB Ram a1.xlarge 0.102/h
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-node-cost-simulation-aws-a1-2-xlarge
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_2_xlarge_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_2_xlarge_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_2_xlarge_cpu)) * sum(aws_a1_2_xlarge)
+  name: node_cost_simulation_aws_a1_2_xlarge
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-number-instance-simulation-aws-a1-2-xlarge
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aws_a1_2_xlarge_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_a1_2_xlarge_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_a1_2_xlarge_cpu))
+  name: number_instance_simulation_aws_a1_2_xlarge
+  timeframe: 3600s

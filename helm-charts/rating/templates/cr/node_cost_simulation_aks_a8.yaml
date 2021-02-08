@@ -1,0 +1,20 @@
+# AKS -> 8 vCPU + 56GB Ram A8   1.466/h
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-node-cost-simulation-aks-a8
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_a8_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / sum(aks_a8_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_a8_cpu)) * sum(aks_a8)
+  name: node_cost_simulation_aks_a8
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-number-instance-simulation-aks-a8
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aks_a8_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_a8_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_a8_cpu))
+  name: number_instance_simulation_aks_a8
+  timeframe: 3600s

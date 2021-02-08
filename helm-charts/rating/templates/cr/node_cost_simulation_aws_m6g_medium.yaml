@@ -1,0 +1,20 @@
+# AWS -> 1 vCPU + 4GB Ram 0.0385/h
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-node-cost-simulation-aws-m6g-medium
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric:  ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_m6g_medium_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_m6g_medium_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_m6g_medium_cpu)) * sum(aws_m6g_medium)
+  name: node_cost_simulation_aws_m6g_medium
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-number-instance-simulation-aws-m6g-medium
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aws_m6g_medium_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_m6g_medium_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_m6g_medium_cpu))
+  name: number_instance_simulation_aws_m6g_medium
+  timeframe: 3600s

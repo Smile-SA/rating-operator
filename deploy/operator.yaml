@@ -18,7 +18,7 @@ spec:
       containers:
         - name: rating-operator
           resources: {}
-          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
+          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:rename
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -29,11 +29,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            # Every variable that exist here AND in watches.yaml can be overrided at runtime
             - name: OPERATOR_NAME
               value: "rating-operator"
             - name: PULLSECRETS_API
               value: rating-regcred
-            - name: PULLSECRETS_PROCESSING
+            - name: PULLSECRETS_MANAGER
               value: rating-regcred
             - name: PULLSECRETS_FRONTEND
               value: rating-regcred-front
@@ -43,11 +44,11 @@ spec:
               value: thisisadmintoken
             - name: GRAFANA
               value: "true"
-            - name: GRAFANA_ADMIN_PASSWORD
-              value: admin
             - name: GRAFANA_BACKEND_URL
-              value: "prometheus-grafana.monitoring.svc.cluster.local:80"
+              value: "prometheus-grafana.rating.svc.cluster.local"
             - name: FRONTEND_URL
-              value: "http://localhost:3000"
+              value: "prometheus-grafana.rating.svc.cluster.local"
             - name: ALLOW_ORIGIN
               value: "http://localhost:8080"
+            - name: CLUSTER_AUTH
+              value: "false"

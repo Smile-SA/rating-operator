@@ -1,21 +1,76 @@
 ---
 rules:
--
-  name: rules_default
+- name: rules_aws
   ruleset:
-  -
-    metric: request_cpu
-    price: 0.5
+  - metric: aws_a1_medium
+    value: 0.0255
+  - metric: aws_a1_medium_cpu
+    value: 1
+  - metric: aws_a1_medium_memory
+    value: 2
+  - metric: aws_a1_large
+    value: 0.051
+  - metric: aws_a1_large_cpu
+    value: 2
+  - metric: aws_a1_large_memory
+    value: 4
+  - metric: aws_a1_xlarge
+    value: 0.102
+  - metric: aws_a1_xlarge_cpu
+    value: 4
+  - metric: aws_a1_xlarge_memory
+    value: 8
+- name: rules_aks
+  ruleset:
+  - metric: aks_b2s
+    value: 0.068
+  - metric: aks_b2s_cpu
+    value: 2
+  - metric: aks_b2s_memory
+    value: 4
+  - metric: aks_b2ms
+    value: 0.135
+  - metric: aks_b2ms_cpu
+    value: 2
+  - metric: aks_b2ms_memory
+    value: 8
+  - metric: aks_b4ms
+    value: 0.27
+  - metric: aks_b4ms_cpu
+    value: 4
+  - metric: aks_b4ms_memory
+    value: 16
+- name: rules_gcp
+  ruleset:
+  - metric: gcp_e2_medium
+    value: 0.0355
+  - metric: gcp_e2_medium_cpu
+    value: 1
+  - metric: gcp_e2_medium_memory
+    value: 4
+  - metric: gcp_e2_large
+    value: 0.067
+  - metric: gcp_e2_large_cpu
+    value: 2
+  - metric: gcp_e2_large_memory
+    value: 8
+  - metric: gcp_e2_xlarge
+    value: 0.134
+  - metric: gcp_e2_xlarge_cpu
+    value: 4
+  - metric: gcp_e2_xlarge_memory
+    value: 16
+- name: rules_default
+  ruleset:
+  - metric: request_cpu
+    value: 0.5
     unit: core-hours
-  -
-    metric: usage_cpu
-    price: 0.8
+  - metric: usage_cpu
+    value: 0.8
     unit: core-hours
-  -
-    metric: request_memory
-    price: 0.0000000001
+  - metric: request_memory
+    value: 0.0000000001
     unit: GiB-hours
-  -
-    metric: usage_memory
-    price: 0.00000000001
+  - metric: usage_memory
+    value: 0.00000000001
     unit: GiB-hours

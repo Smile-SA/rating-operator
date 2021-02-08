@@ -1,0 +1,462 @@
+{
+   "__inputs": [ ],
+   "__requires": [ ],
+   "annotations": {
+      "list": [ ]
+   },
+   "editable": true,
+   "gnetId": null,
+   "graphTooltip": 0,
+   "hideControls": false,
+   "id": null,
+   "links": [ ],
+   "panels": [
+      {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+         },
+         "id": 2,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "GCP Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 4
+         },
+         "id": 3,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "AWS Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 8
+         },
+         "id": 4,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Azure Biling",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "datasource": "Rating-operator",
+         "fieldConfig": {
+            "defaults": {
+               "links": [ ],
+               "mappings": [ ],
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     }
+                  ]
+               },
+               "unit": "none"
+            }
+         },
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 1
+         },
+         "id": 5,
+         "links": [ ],
+         "maxPerRow": null,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "mean"
+               ],
+               "fields": "",
+               "values": false
+            }
+         },
+         "pluginVersion": "7",
+         "repeat": "gcp",
+         "repeatDirection": "h",
+         "targets": [
+            {
+               "data": "{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"aggregator\": \"$interval\"}",
+               "refId": "A",
+               "target": "/metrics/<metric>/<aggregator>",
+               "type": "table"
+            }
+         ],
+         "title": "$interval gcp_$gcp",
+         "transparent": true,
+         "type": "stat"
+      },
+      {
+         "datasource": "Rating-operator",
+         "fieldConfig": {
+            "defaults": {
+               "links": [ ],
+               "mappings": [ ],
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     }
+                  ]
+               },
+               "unit": "none"
+            }
+         },
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 5
+         },
+         "id": 6,
+         "links": [ ],
+         "maxPerRow": null,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "mean"
+               ],
+               "fields": "",
+               "values": false
+            }
+         },
+         "pluginVersion": "7",
+         "repeat": "aws",
+         "repeatDirection": "h",
+         "targets": [
+            {
+               "data": "{\"metric\": \"node_cost_simulation_aws_$aws\", \"aggregator\": \"$interval\"}",
+               "refId": "A",
+               "target": "/metrics/<metric>/<aggregator>",
+               "type": "table"
+            }
+         ],
+         "title": "$interval aws_$aws",
+         "transparent": true,
+         "type": "stat"
+      },
+      {
+         "datasource": "Rating-operator",
+         "fieldConfig": {
+            "defaults": {
+               "links": [ ],
+               "mappings": [ ],
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     }
+                  ]
+               },
+               "unit": "none"
+            }
+         },
+         "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 9
+         },
+         "id": 7,
+         "links": [ ],
+         "maxPerRow": null,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "mean"
+               ],
+               "fields": "",
+               "values": false
+            }
+         },
+         "pluginVersion": "7",
+         "repeat": "azure",
+         "repeatDirection": "h",
+         "targets": [
+            {
+               "data": "{\"metric\": \"node_cost_simulation_aks_$azure\", \"aggregator\": \"$interval\"}",
+               "refId": "A",
+               "target": "/metrics/<metric>/<aggregator>",
+               "type": "table"
+            }
+         ],
+         "title": "$interval azure_$azure",
+         "transparent": true,
+         "type": "stat"
+      }
+   ],
+   "refresh": "",
+   "rows": [ ],
+   "schemaVersion": 26,
+   "style": "dark",
+   "tags": [ ],
+   "templating": {
+      "list": [
+         {
+            "current": {
+               "text": "Rating-operator",
+               "value": "Rating-operator"
+            },
+            "hide": 2,
+            "label": null,
+            "name": "Rating-operator",
+            "options": [ ],
+            "query": "JSON",
+            "refresh": 1,
+            "regex": "",
+            "type": "datasource"
+         },
+         {
+            "allValue": null,
+            "current": {
+               "text": "daily",
+               "value": "daily"
+            },
+            "hide": 0,
+            "includeAll": false,
+            "label": "",
+            "multi": false,
+            "name": "interval",
+            "options": [
+               {
+                  "text": "daily",
+                  "value": "daily"
+               },
+               {
+                  "text": "weekly",
+                  "value": "weekly"
+               },
+               {
+                  "text": "monthly",
+                  "value": "monthly"
+               }
+            ],
+            "query": "daily,weekly,monthly",
+            "refresh": 0,
+            "type": "custom"
+         },
+         {
+            "allValue": null,
+            "current": {
+               "selected": true,
+               "text": "All",
+               "value": [
+                  "$__all"
+               ]
+            },
+            "hide": 0,
+            "includeAll": true,
+            "label": "",
+            "multi": true,
+            "name": "gcp",
+            "options": [
+               {
+                  "selected": true,
+                  "text": "All",
+                  "value": "$__all"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_medium",
+                  "value": "e2_medium"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_large",
+                  "value": "e2_large"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_xlarge",
+                  "value": "e2_xlarge"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_highmem_2",
+                  "value": "e2_highmem_2"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_highcpu_4",
+                  "value": "e2_highcpu_4"
+               },
+               {
+                  "selected": false,
+                  "text": "e2_micro",
+                  "value": "e2_micro"
+               }
+            ],
+            "query": "e2_medium,e2_large,e2_xlarge,e2_highmem_2,e2_highcpu_4,e2_micro",
+            "refresh": 0,
+            "type": "custom"
+         },
+         {
+            "allValue": null,
+            "current": {
+               "selected": true,
+               "text": "All",
+               "value": [
+                  "$__all"
+               ]
+            },
+            "hide": 0,
+            "includeAll": true,
+            "label": "",
+            "multi": true,
+            "name": "aws",
+            "options": [
+               {
+                  "selected": true,
+                  "text": "All",
+                  "value": "$__all"
+               },
+               {
+                  "selected": false,
+                  "text": "a1_medium",
+                  "value": "a1_medium"
+               },
+               {
+                  "selected": false,
+                  "text": "a1_large",
+                  "value": "a1_large"
+               },
+               {
+                  "selected": false,
+                  "text": "a1_xlarge",
+                  "value": "a1_xlarge"
+               },
+               {
+                  "selected": false,
+                  "text": "a1_2_xlarge",
+                  "value": "a1_2_xlarge"
+               },
+               {
+                  "selected": false,
+                  "text": "t4g_micro",
+                  "value": "t4g_micro"
+               },
+               {
+                  "selected": false,
+                  "text": "t4g_nano",
+                  "value": "t4g_nano"
+               }
+            ],
+            "query": "a1_medium,a1_large,a1_xlarge,a1_2_xlarge,t4g_micro,t4g_nano",
+            "refresh": 0,
+            "type": "custom"
+         },
+         {
+            "allValue": null,
+            "current": {
+               "selected": true,
+               "text": "All",
+               "value": [
+                  "$__all"
+               ]
+            },
+            "hide": 0,
+            "includeAll": true,
+            "label": "",
+            "multi": true,
+            "name": "azure",
+            "options": [
+               {
+                  "selected": true,
+                  "text": "All",
+                  "value": "$__all"
+               },
+               {
+                  "selected": false,
+                  "text": "b2s",
+                  "value": "b2s"
+               },
+               {
+                  "selected": false,
+                  "text": "b2ms",
+                  "value": "b2ms"
+               },
+               {
+                  "selected": false,
+                  "text": "b4ms",
+                  "value": "b4ms"
+               },
+               {
+                  "selected": false,
+                  "text": "b1s",
+                  "value": "b1s"
+               },
+               {
+                  "selected": false,
+                  "text": "b1ms",
+                  "value": "b1ms"
+               },
+               {
+                  "selected": false,
+                  "text": "a8",
+                  "value": "a8"
+               }
+            ],
+            "query": "b2s,b2ms,b4ms,b1s,b1ms,a8",
+            "refresh": 0,
+            "type": "custom"
+         }
+      ]
+   },
+   "time": {
+      "from": "now-6h",
+      "to": "now"
+   },
+   "timepicker": { },
+   "timezone": "browser",
+   "title": "[Grafonnet] Cost Simulation Dynamic",
+   "version": 0
+}
