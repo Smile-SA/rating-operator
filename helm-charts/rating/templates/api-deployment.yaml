@@ -4,43 +4,38 @@ kind: Deployment
 metadata:
   name: {{ include "rating.api.fullname" . }}
   labels:
+    app: {{ include "rating.api.fullname" . }}
+    app.kubernetes.io/name: {{ include "rating.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
     {{- include "rating.labels" . | nindent 4 }}
 
 spec:
-  # replicas: {{ .Values.replicaCount }}
-  # hardcoded
   replicas: 1
   strategy:
-    # don't want two of us running at the same time
     type: Recreate
-
   selector:
     matchLabels:
+      app: {{ include "rating.api.fullname" . }}
       app.kubernetes.io/name: {{ include "rating.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: api
+      {{- include "rating.labels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "rating.labels" . | nindent 8 }}
+        app: {{ include "rating.api.fullname" . }}
+        app.kubernetes.io/name: {{ include "rating.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: api
+        {{- include "rating.labels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
+      automountServiceAccountToken: True
     {{- if .Values.api.pullSecretsName }}
       imagePullSecrets:
         - name: {{ .Values.api.pullSecretsName }}
     {{ end }}
-      initContainers:
-        - name: config-init-rates
-          image: busybox:1.31.0
-          volumeMounts:
-          - mountPath: "/config/rates"
-            name: config-rates
-            readOnly: false
-          - mountPath: "/config/rates-t0"
-            name: config-rates-t0
-            readOnly: true
-          command: ["sh", "-c", "/bin/cp -a /config/rates-t0 /config/rates/0; /bin/chown -R 1000 /config/rates"]
       containers:
         - name: api
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
@@ -50,6 +45,29 @@ spec:
               containerPort: 5012
           args: ["./entrypoint.sh"]
           env:
+            - name: AUTH
+              value: "{{ .Values.security.auth }}"
+            - name: RATING_API_URL
+              value: {{ include "rating.api.fullname" . }}-{{ .Release.Namespace }}
+            {{- if eq .Values.security.keycloak.enabled "true" }}
+            - name: KEYCLOAK
+              value: "true"
+            - name: KEYCLOAK_URL
+              value: {{ .Values.security.keycloak.serverUrl }}
+            - name: KEYCLOAK_REALM
+              value: {{ .Values.security.keycloak.realmName }}
+            - name: KEYCLOAK_CLIENT_ID
+              value: {{ .Values.security.keycloak.clientID }}
+            - name: KEYCLOAK_SECRET_KEY
+              value: {{ .Values.security.keycloak.clientSecretKey }}
+            {{- else }}
+            - name: KEYCLOAK
+              value: "false"
+            {{ end }}
+            - name: DASHBOARD_MENU_URL
+              value: "http://localhost:3000"
+            - name: ADMIN_ACCOUNT
+              value: {{ .Values.security.adminAccount }}
             - name: FRONTEND_URL
               value: {{ .Values.frontend.url }}
             {{- if eq .Values.grafana.enabled "true" }}
@@ -59,6 +77,26 @@ spec:
               value: {{ .Values.frontend.grafana.backend }}
             - name: GRAFANA_ADMIN_PASSWORD
               value: {{ .Values.frontend.grafana.password }}
+            - name: DOMAIN
+              value: {{ .Values.frontend.grafana.env.domain }}
+            - name: COOKIE_SAMESITE
+              value: {{ .Values.frontend.grafana.env.samesite }}
+            {{- if eq .Values.frontend.grafana.env.secure "true" }}
+            - name: COOKIE_SECURE
+              value: "true"
+            {{- else }}
+            - name: COOKIE_SECURE
+              value: "false"
+            {{- end }}
+
+            {{- if eq .Values.frontend.grafana.env.httponly "true" }}
+            - name: COOKIE_HTTPONLY
+              value: "true"
+            {{- else }}
+            - name: COOKIE_HTTPONLY
+              value: "false"
+            {{- end }}
+
             {{- else }}
             - name: GRAFANA
               value: "false"
@@ -112,9 +150,6 @@ spec:
           {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: config-rates-t0
-        configMap:
-          name: {{ include "rating.fullname" . }}-config-rates-t0
       - name: config-rates
         persistentVolumeClaim:
           claimName: {{ include "rating.fullname" . }}-config-rates

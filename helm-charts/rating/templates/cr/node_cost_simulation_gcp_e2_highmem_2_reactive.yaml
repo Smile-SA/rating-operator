@@ -1,0 +1,21 @@
+# GCP -> 1 vCPU + 4GB Ram e2-highmem-2
+# 48.92e per month / 730h = 0.067/h
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-node-cost-simulation-gcp-e2-highmem-2
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_highmem_2_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu)) * sum(gcp_e2_highmem_2)
+  name: node_cost_simulation_gcp_e2_highmem_2
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-number-instance-simulation-gcp-e2-highmem-2
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(gcp_e2_highmem_2_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_highmem_2_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_highmem_2_cpu))
+  name: number_instance_simulation_gcp_e2_highmem_2
+  timeframe: 3600s

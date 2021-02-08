@@ -2,7 +2,7 @@
 apiVersion: rating.alterway.fr/v1
 kind: RatingRule
 metadata:
-  name: {{ include "rating.name" . }}-{{ .Release.Namespace }}-default-rules
+  name: {{ .Release.Namespace }}-default-rules
   namespace: {{ .Release.Namespace }}
 spec:
   metrics:
@@ -27,22 +27,158 @@ spec:
       presto_column: pod_usage_memory_byte_seconds
       unit: byte-seconds
   rules:
-  -
-      name: rules_default
+    - name: rules_aws
       ruleset:
-      -
-        metric: request_cpu
-        price: 0.5
+      - metric: aws_m6g_medium
+        value: 0.0385
+      - metric: aws_m6g_medium_cpu
+        value: 1
+      - metric: aws_m6g_medium_memory
+        value: 4
+      - metric: aws_m6g_large
+        value: 0.077
+      - metric: aws_m6g_large_cpu
+        value: 2
+      - metric: aws_m6g_large_memory
+        value: 8
+      - metric: aws_a1_medium
+        value: 0.0255
+      - metric: aws_a1_medium_cpu
+        value: 1
+      - metric: aws_a1_medium_memory
+        value: 2
+      - metric: aws_a1_large
+        value: 0.051
+      - metric: aws_a1_large_cpu
+        value: 2
+      - metric: aws_a1_large_memory
+        value: 4
+      - metric: aws_a1_xlarge
+        value: 0.102
+      - metric: aws_a1_xlarge_cpu
+        value: 4
+      - metric: aws_a1_xlarge_memory
+        value: 8
+      - metric: aws_a1_2_xlarge
+        value: 0.204
+      - metric: aws_a1_2_xlarge_cpu
+        value: 8
+      - metric: aws_a1_2_xlarge_memory
+        value: 16
+      - metric: aws_t4g_nano
+        value: 0.0042
+      - metric: aws_t4g_nano_cpu
+        value: 2
+      - metric: aws_t4g_nano_memory
+        value: 0.5
+      - metric: aws_t4g_micro
+        value: 0.0084
+      - metric: aws_t4g_micro_cpu
+        value: 2
+      - metric: aws_t4g_micro_memory
+        value: 1
+    - name: rules_aks
+      ruleset:
+      - metric: aks_b1ms
+        value: 0.0288
+      - metric: aks_b1ms_cpu
+        value: 1
+      - metric: aks_b1ms_memory
+        value: 2
+      - metric: aks_b1s
+        value: 0.0164
+      - metric: aks_b1s_cpu
+        value: 1
+      - metric: aks_b1s_memory
+        value: 1
+      - metric: aks_b2s
+        value: 0.068
+      - metric: aks_b2s_cpu
+        value: 2
+      - metric: aks_b2s_memory
+        value: 4
+      - metric: aks_b2ms
+        value: 0.135
+      - metric: aks_b2ms_cpu
+        value: 2
+      - metric: aks_b2ms_memory
+        value: 8
+      - metric: aks_b4ms
+        value: 0.27
+      - metric: aks_b4ms_cpu
+        value: 4
+      - metric: aks_b4ms_memory
+        value: 16
+      - metric: aks_a8
+        value: 1.466
+      - metric: aks_a8_cpu
+        value: 8
+      - metric: aks_a8_memory
+        value: 56
+    - name: rules_gcp
+      ruleset:
+      - metric: gcp_c2_standard_4
+        value: 0.2088
+      - metric: gcp_c2_standard_4_cpu
+        value: 4
+      - metric: gcp_c2_standard_4_memory
+        value: 16
+      - metric: gcp_c2_standard_8
+        value: 0.4176
+      - metric: gcp_c2_standard_8_cpu
+        value: 8
+      - metric: gcp_c2_standard_8_memory
+        value: 32
+      - metric: gcp_e2_medium
+        value: 0.0355
+      - metric: gcp_e2_medium_cpu
+        value: 1
+      - metric: gcp_e2_medium_memory
+        value: 4
+      - metric: gcp_e2_large
+        value: 0.067
+      - metric: gcp_e2_large_cpu
+        value: 2
+      - metric: gcp_e2_large_memory
+        value: 8
+      - metric: gcp_e2_xlarge
+        value: 0.134
+      - metric: gcp_e2_xlarge_cpu
+        value: 4
+      - metric: gcp_e2_xlarge_memory
+        value: 16
+      # e2.highmem-2  2vcp5u 16gib  ram 65.99$/month
+      - metric: gcp_e2_highmem_2
+        value: 0.0903
+      - metric: gcp_e2_highmem_2_cpu
+        value: 2
+      - metric: gcp_e2_highmem_2_memory
+        value: 16
+      # e2.highcpu-4  4vcpu 4gib ram 72.23$/month
+      - metric: gcp_e2_highcpu_4
+        value: 0.0989
+      - metric: gcp_e2_highcpu_4_cpu
+        value: 4
+      - metric: gcp_e2_highcpu_4_memory
+        value: 4
+      # e2.micro 0.25vcpu 1gib ram 6.11$/month
+      - metric: gcp_e2_micro
+        value: 0.0083
+      - metric: gcp_e2_micro_cpu
+        value: 0.25
+      - metric: gcp_e2_micro_memory
+        value: 1
+    - name: rules_default
+      ruleset:
+      - metric: request_cpu
+        value: 1
         unit: core-hours
-      -
-        metric: usage_cpu
-        price: 0.8
+      - metric: usage_cpu
+        value: 1
         unit: core-hours
-      -
-        metric: request_memory
-        price: 0.0000000001
+      - metric: request_memory
+        value: 1
         unit: GiB-hours
-      -
-        metric: usage_memory
-        price: 0.00000000001
+      - metric: usage_memory
+        value: 1
         unit: GiB-hours

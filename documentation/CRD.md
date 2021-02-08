@@ -57,14 +57,14 @@ spec:
     rules:
     -
         metric: request_cpu
-        price: 0.00075
+        value: 0.00075
         unit: core-hours
   -
     name: rules_default
     rules:
     -
       metric: request_cpu
-      price: 0.5
+      value: 0.5
       unit: core-hours
 ```
 

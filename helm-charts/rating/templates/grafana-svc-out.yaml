@@ -1,18 +1,19 @@
+{{- if eq .Values.grafana.enabled "true" }}
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ .Release.Name }}-grafana
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/instance: prometheus
-    app.kubernetes.io/name: grafana
-  name: prometheus-grafana-out
-  namespace: monitoring
+    {{- include "rating.labels" . | nindent 4 }}
 spec:
-  type: NodePort
+  type: {{ .Values.api.service.type }}
   ports:
-  - port: 80
+  - name: grafana
+    port: 80
     protocol: TCP
     targetPort: 3000
-    nodePort: 30041
   selector:
-    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/instance: grafana
     app.kubernetes.io/name: grafana
+{{- end}}

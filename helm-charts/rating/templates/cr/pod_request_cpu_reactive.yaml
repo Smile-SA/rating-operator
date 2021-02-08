@@ -1,0 +1,9 @@
+apiVersion: rating.alterway.fr/v1
+kind: ReactiveRule
+metadata:
+  name: reactive-rule-pod-request-cpu
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: request_cpu * on() group_right sum(kube_pod_container_resource_requests_cpu_cores) by (pod, namespace, node)
+  name: pods_request_cpu
+  timeframe: 3600s

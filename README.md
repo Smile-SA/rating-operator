@@ -1,11 +1,14 @@
 # **RATING-OPERATOR**
 
+<img src="./img/Circle_Logo-Rating-Operator.png" width="200">
+
 ## Overview
 
 `rating-operator` is a Kubernetes native application that generate customizable **K**ey **P**erformance **I**ndicator as metrics and provide interfaces to exploit them. It features two different rating mechanism based on the same rules, helping users solve their rating needs.
 
 ## Table of content
 
+- [Configuration](/documentation/CONFIGURATION.md)
 - [Installation](/documentation/INSTALL.md)
 - [Usage](/documentation/USAGE.md)
 - [Custom Resources](/documentation/CRD.md)
@@ -13,6 +16,7 @@
 - [Architecture](/documentation/ARCHITECTURE.md)
 - [API endpoints](/documentation/API.md)
 - [Troubleshooting](/documentation/TROUBLESHOOT.md)
+- [Contributing](documentation/CONTRIBUTING.md)
 
 
 ## **Credits**

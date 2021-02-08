@@ -4,9 +4,11 @@ kind: Service
 metadata:
   name: {{ include "rating.api.fullname" . }}
   labels:
+    app: {{ include "rating.api.fullname" . }}
+    app.kubernetes.io/name: {{ include "rating.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
     {{- include "rating.labels" . | nindent 4 }}
-
 spec:
   type: {{ .Values.api.service.type }}
   ports:
@@ -15,6 +17,8 @@ spec:
     port: {{ .Values.api.service.port }}
     targetPort: 5012
   selector:
+    app: {{ include "rating.api.fullname" . }}
     app.kubernetes.io/name: {{ include "rating.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
+    {{- include "rating.labels" . | nindent 4 }}

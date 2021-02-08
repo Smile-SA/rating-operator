@@ -22,6 +22,6 @@ helm upgrade \
     --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
     ${CREATE_CRDS} \
     prometheus \
-    stable/prometheus-operator
+    prometheus-community/prometheus-operator
 
-kubectl apply -f dashboards/dashboard.yaml
+# kubectl apply -n ${PROMETHEUS_NAMESPACE} -f dashboards/

@@ -5,7 +5,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
   # access to the reports can be limited by namespace:
-  # namespace: rating
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "rating.labels" . | nindent 4 }}
 
@@ -15,6 +15,6 @@ roleRef:
   name: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "rating.processing.fullname" . }}-{{ .Release.Namespace }}
+  name: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}
