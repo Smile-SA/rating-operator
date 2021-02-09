@@ -4,7 +4,7 @@
 
 ## Overview
 
-`rating-operator` is a Kubernetes native application that generate customizable **K**ey **P**erformance **I**ndicator as metrics and provide interfaces to exploit them. It features two different rating mechanism based on the same rules, helping users solve their rating needs.
+`rating-operator` is a Kubernetes native application that generate customizable **K**ey **P**erformance **I**ndicator as metrics and provide interfaces to exploit them. It features a multi-tenant, configurable and light operator to help users solve their rating needs.
 
 ## Table of content
 
@@ -23,7 +23,7 @@
 
 Kudos to the people behind:
 
-- `metering-operator` from **CoreOS**
+- `metering-operator` from **CoreOS** (**Deprecated**)
 - `kopf` from **Zalando** 
 - `operator-sdk` from **Red hat**
 

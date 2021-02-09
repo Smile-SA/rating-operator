@@ -9,11 +9,10 @@ considered trusted.
 
 ## Requirements
 
-- A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x9
+- A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x
 - A storage provider (By default Longhorn, rook-ceph available)
-- Helm is used to deploy Prometheus, or the storage if you need to.
+- Helm 3
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
-   We will show you how to deploy one (currently with no authentication).
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
 
 
@@ -21,6 +20,7 @@ considered trusted.
 
 Helm 3 does away with some security issues of its previous versions (no server-side Tiller component), but you may want to restrict Helm's permissions in a production environment. To know more, see [Securing Helm 3 - Matthew Fisher, Microsoft](https://static.sched.com/hosted_files/helmsummit2019/08/Securing%20Helm%203%20-%20Helm%20Summit%20EU%202019.pptx).
 To prevent compatibility problems, we recommend using version 3.1.2 of helm.
+
 ```sh
 $ curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar xfz -
 $ sudo mv linux-amd64/helm /usr/local/bin/helm
@@ -35,9 +35,10 @@ You can also install both to try it out.
 
 **Longhorn** is recommanded for standard installation.
 
-Once you have your storage provider installed, please skip the other as having both will not bring any benefits.
+Once the storage provider is installed, if you do not intend on testing both, we recommand skipping to the next step.
 
 To modify the provider storageClass, follow the instructions in [configuration](/documentation/CONFIGURATION.md).
+
 #### *Longhorn*
 
 To install Longhorn, go through the following steps:
@@ -118,7 +119,8 @@ longhorn-ui-6c5b56bb9c-x6ldw                1/1     Running   0          1m4s
 To test the volumes provisionning, run:
 `./quickstart/longhorn/longhorn/examples/simple_pvc.yaml`
 
-Then, confirm with
+Then, confirm with:
+
 ```sh
 $ kubectl get pvc -n longhorn-system
 NAME                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
@@ -183,7 +185,6 @@ EOT
 persistentvolumeclaim/test-pv-claim created
 ```
 
-
 After a few seconds, you should see a new Persistent Volume, to which the pvc is bound:
 
 ```sh
@@ -195,10 +196,11 @@ NAME                                  STATUS   VOLUME                           
 persistentvolumeclaim/test-pv-claim   Bound    pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            rook-ceph-block   2m5s
 ```
 
-
 ### *Prometheus*
 
-Be sure to take a look at the Prometheus `values.yaml` file before proceeding with the installation.
+**DISCLAIMER** Be sure to take a look at the Prometheus `./quickstart/prometheus/values.yaml` file before proceeding with the installation.
+
+For more informations, please read the [configuration documentation](/documentation/CONFIGURE.md).
 
 We will use the chart of the prometheus-community repository for this example:
 
@@ -271,17 +273,14 @@ Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana confi
   - Application specifics
   - Rating-operator resources consumption
 
-In order to edit the dashboards, you either need to edit:
-  - The ConfigMap
-  - The file (`./quickstart/prometheus/dashboards`), then apply with `kubectl -f`.
-
 ##### Non-standard
 
-If, for any reason, you cannot access or modify the main Grafana instance of your cluster, we provide a script to install Grafana with the rating-operator.
+If, for any reason, you cannot access or modify the main Grafana instance of your cluster, we provide a script to install Grafana along the rating-operator.
 Don't forget to update the `deploy/operator.yaml` with the adress of your Grafana instance.
+
 More infos in the [configuration documentation](/documentation/CONFIGURATION.md).
 
-### *Metering Operator* (Optional, skip if your use case is not LARGE scale)
+### *Metering Operator* (OPTIONAL, DEPRECATED)
 
 **DISCLAIMER**: The metering-operator project is not maintained anymore. We consider the metering based rating to be deprecated.
 **DISCLAIMER**: The `metering-operator` is only required  for the *scalable* rating, as it uses the operator's `Reports` objects. If you only need a *light* solution to rate dataframes, skip this step.
@@ -350,7 +349,6 @@ presto-coordinator-0                  1/1     Running   0          13m
 reporting-operator-56c49bcc4b-zwhd9   1/1     Running   1          12m
 ```
 
-
 The running status of the reports should slowly transition from InvalidReport to ReportingPeriodWaiting:
 
 ```sh
@@ -368,15 +366,16 @@ cluster-cpu-usage-hourly            cluster-cpu-usage            hourly     Repo
 ### *Rating*
 
 There's two installation method for the rating-operator:
--  As an operator
--  As an Helm chart
+
+- As an operator
+- As an Helm chart
   
 We recommend deploying the operator version.
 Use the chart only if you want full control over updates, configuration and CustomResources.
 
-Before installing the operator, please consider reading [this document](/documentation/TROUBLESHOOT.md), as the default configuration that comes included in the rating-operator might not suit your case.
-#### Installing the operator
+Before installing the operator, please consider reading [this document](/documentation/CONFIGURE.md), as the default configuration that comes included in the rating-operator might not suit your case.
 
+#### Installing as an operator
 
 Choose a namespace and deploy the operator in it.
 
@@ -392,11 +391,11 @@ serviceaccount/rating-operator created
 
 Beware: the installation script modifies in place the file deploy/role_bindings.yaml, so be careful not to commit its changes back to the repository.
 
-#### Installing the Helm chart
+#### Installing as a chart
 
 Call Helm to install the charts in the namespace of your choice:
 
-```
+```sh
 $ helm install -n rating rating ./helm-charts/rating -f ./values.yaml
 NAME: rating
 LAST DEPLOYED: Wed Apr  8 14:42:54 2020
@@ -406,7 +405,6 @@ STATUS: deployed
 ```
 
 The arguments are: namespace, name of the release, directory of the chart.
-
 
 To check if everything is running correctly:
 
@@ -434,7 +432,6 @@ or if you installed with Helm:
 $ RATING_NAMESPACE=rating ./hack/uninstall-chart.sh
 ```
 
-
 ### Metering operator and configuration
 
 ```sh
@@ -449,6 +446,18 @@ Deleting PVCs
 No resources found
 ```
 
+### Longhorn
+
+To remove Longhorn, run:
+
+```sh
+# First, to run the uninstaller
+$ kubectl apply -f ./quickstart/longhorn/longhorn/uninstall/uninstall.yaml
+
+# Then
+$ kubectl delete -f /quickstart/longhorn/longhorn/deploy/longhorn.yaml
+$ kubectl delete -f /quickstart/longhorn/longhorn/uninstall/uninstall.yaml
+```
 
 ### Rook-Ceph
 
@@ -484,3 +493,12 @@ customresourcedefinition.apiextensions.k8s.io "alertmanagers.monitoring.coreos.c
 [...]
 customresourcedefinition.apiextensions.k8s.io "prometheusrules.monitoring.coreos.com" deleted
 customresourcedefinition.apiextensions.k8s.io "servicemonitors.monitoring.coreos.com" deleted
+```
+
+### Grafana
+
+If you installed Grafana manually, run:
+
+```sh
+$ GRAFANA_NAMESPACE=rating ./quickstart/grafana/uninstall.sh
+```

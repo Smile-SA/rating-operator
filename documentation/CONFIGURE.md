@@ -10,6 +10,8 @@ Depending on the type of usage you are planning to do, we recommand configuring 
 - At the top level (`./values.yaml`), to configure the chart deployment.
 - At the image level (`./helm-charts/rating/values.yaml`), to provision a base config for the application.
 
+In a last part, we'll describe the external configuration we provide.
+
 ## Files descriptions
 
 ### Values.yaml
@@ -268,3 +270,7 @@ This is aimed at people who will distribute versions of the rating-operator to t
 An example of that would be including the `Keycloak` and `postgresql` configuration of the company, then letting different services configure their own instance through the `./deploy/crds/charts.helm.k8s.io_v1alpha1_rating_cr.yaml`.
 
 We do not recommand modifying this configuration if you are in a different case.
+
+### Prometheus & Grafana
+
+TO ADD
