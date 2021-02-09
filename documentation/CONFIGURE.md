@@ -10,7 +10,10 @@ Depending on the type of usage you are planning to do, we recommand configuring 
 - At the top level (`./values.yaml`), to configure the chart deployment.
 - At the image level (`./helm-charts/rating/values.yaml`), to provision a base config for the application.
 
-In a last part, we'll describe the external configuration we provide.
+In a last part, we'll describe the external configuration we provide:
+
+- A Prometheus configuration (`./quickstart/prometheus/values.yaml`)
+- A Grafana configuration (`./quickstart/grafana/values.yaml`)
 
 ## Files descriptions
 
@@ -273,4 +276,87 @@ We do not recommand modifying this configuration if you are in a different case.
 
 ### Prometheus & Grafana
 
-TO ADD
+#### Prometheus
+
+The configuration described below can be found in `./quickstart/prometheus/values.yaml`.
+
+```yaml
+# This is the base configuration for the prometheus-operator
+# Use the quickstart/grafana/values.yaml if you already have a prometheus and want a local grafana instead
+# See https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml for more infos on available options
+prometheus:
+  prometheusSpec:
+    retention: 30d
+grafana:
+  adminPassword: prom-operator
+  sidecar:
+    datasources:
+      # Keep the default prometheus datasource
+      defaultDatasourceEnabled: True
+  image:
+    repository: grafana/grafana
+    tag: 7.3.5
+    pullPolicy: IfNotPresent
+  # The plugins below are required by the rating-operator datasource
+  # Feel free to add more
+  plugins:
+    - digrich-bubblechart-panel  # Required
+    - grafana-clock-panel  # Required
+    - simpod-json-datasource  # Required
+    - grafana-piechart-panel  # Required
+  grafana.ini:
+    panels:
+      disable_sanitize_html: true
+  # Basic datasource configuration for the rating-operator
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Rating-operator
+          type: simpod-json-datasource
+          access: proxy
+          # Update the url if you are not running the default configuration
+          url: http://rating-api.rating.svc.cluster.local:80
+          editable: true
+          # Both withCredentials and session cookies are mandatory to exploit the multi-tenant aspect on Grafana
+          withCredentials: true
+          jsonData:
+            keepCookies: ["session"]
+  # Dashboards are directly included in the configuration, to ease the deployment
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: 'admin'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+      - name: 'admin'
+        orgId: 1
+        folder: 'admin'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/admin
+      - name: 'tenant'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: true
+        editable: false
+        options:
+          path: /var/lib/grafana/dashboards/tenant
+  dashboards:
+    [...]
+```
+
+#### Grafana
+
+The Grafana configuration is included in the Prometheus one. Please refer to the above.
+
+The configuration for the standalone Grafana installation is located at `./quickstart/grafana/values.yaml`.
