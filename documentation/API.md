@@ -1,297 +1,423 @@
-# API endpoints
+# **rating-operator-api**
 
-**Every GET endpoints listed below can receive url arguments**
+Used as the communication interface between the rating components, the `rating-operator-api` is also used to expose metrics to users.
 
-- `start` & `end`
-- time format is `%Y-%m-%d %H:%M:%S.%fZ`
+There's two ways to access these metrics:
 
-**If no arguments are provided, default values will be used.**
+- By watching the results on our Grafana dashboards.
+- By querying this API through the exposed endpoints.
 
-## **Healthcheck**
+In this document we'll explain how to use these endpoints, with examples and expected parameters.
 
-`/alive`
+The endpoints are ordered by their resource (namespace, pods, etc..), and the grammar is similar for each category.
 
-- The alive endpoint is used to know if the service is running.
+There's different kind of queries and right types:
 
-## **Rating**
+#### Access types
 
-The available endpoints are sorted by category
+- **Public**, every user of the rating-operator-api will receive the same response.
+- **Tenant**, each tenant will receive only data that belongs to him. Tenants that are not logged in will only have access to public data.
+- **Admin**, these endpoints can only be used if the tenant is admin and provide the secret key.
 
-## **Namespaces**
+#### Differents queries
 
-**GET `/namespaces`**
+- **Simple endpoints**
 
-- Get the list of namespaces.
+No parameters required, call the endpoint, get a response.
 
-**GET `/namespaces/rating`**
+```sh
+$ curl http://rating-operator-api.rating:80/namespaces
+{
+    "results":[{"namespace":"default", "tenant_id":"default"}],
+    "total": 1
+}
+```
 
-- Get the rating per namespaces, per hour and per metric.
+- **Endpoints with url parameters**
 
-**GET `/namespaces/total_rating`**
+The endpoints using this method will be labelled `[URL]`.
 
-- Get the total rating per namespaces.
+We'll use `/namespaces/<namespace>/<aggregator>` as an exemple here.
 
-**GET `/namespaces/<namespace>/total_rating`**
+In this query, the time range is handled by the **aggregator**, and the parameters are sent through the url.
+```sh
+# We use 'default' namespace and the 'daily' aggregator for the example.
+$ curl http://rating-operator-api.rating:80/namespaces/default/daily
+{
+    "results": [...],
+    "total": ...
+}
+```
 
-- Get the total rating of a given namespace.
+- **Endpoints with time range (TR)**
 
-**GET `/namespaces/<namespace>/rating`**
+The endpoints using this method will be labelled `[TR]`.
 
-- Get the rate for a given namespace, per hour and per metric.
+For this example, `/namespaces/<namespace>/rating` is a perfect choice.
+There's no time range specified in this query, so we need to specify it using url encoded parameters.
+The default value for those is from two hours to now.
 
-**GET `/namespaces/<namespace>/pods`**
+```sh
+$ curl http://rating-operator-api.rating:80/namespaces/default/rating?start=2021-02-05+10%3A22%3A53.604Z&end=2021-02-05+16%3A22%3A53.604Z
+{
+    "results": [...],
+    "total": ...
+}
+```
 
-- Get a list of pods for the given namespace.
+- **Endpoint with payload**
 
-**GET `/namespaces/<namespace>/nodes`**
+The endpoints using this method will be labelled `[PL]`.
 
-- Get a list of nodes for the given namespace.
+These endpoints are the hardest to query, from a user perspective.
+They are generally available for resource handling, such as rules or tenant management.
+Let's create a ReactiveRule with cURL as an example:
 
-**GET `/namespaces/<namespace>/nodes/pods`**
+```sh
+$ curl -X POST
+       -H "Content-Type: application/json"
+       -d '{"name": "test-reactive-rules","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
+       http://rating-operator-api.rating:80/reactive/new
+ReactiveRule test-reactive-rules created.
+```
 
-- Get the number of pods hosted on nodes for a given namespace.
+----
 
-## **Metrics**
+## **Endpoints**
 
-**GET `/metrics`**
 
-- Get the list of metrics.
+### ***Namespaces***
 
-**GET `/metrics/<metric>/rating`**
 
-- Get the rating for a given metric, per hour.
+**GET `/namespaces`** **Public**
 
-**GET `/metrics/<metric>/total_rating`**
+Get a list of namespaces visibile by the tenant.
+No parameters expected.
 
-- Get the total rating for a given metric.
+**GET `/namespaces/rating`** ***[TR]*** **Tenant**
 
-**GET `/reports/<report>/metric`**
+Get the rating on a time period, grouped by namespaces.
 
-- Get the metric for a given report.
+Parameters expected:
+    - `start`
+    - `end`
 
-**GET `/metrics/<metric>/report`**
 
-- Get the report for a given metric.
+**GET `/namespaces/total_rating`** ***[TR]*** **Tenant**
 
-**GET `/metrics/<metric>/last_rated`**
+Get the **sum** of the rating on a time period, grouped by namespaces.
 
-- Get the date of the last rating for a given metric.
+Parameters expected:
+    - `start`
+    - `end`
 
-## **Pods**
+**GET `/namespaces/metrics/rating`** ***[TR]*** **Tenant**
 
-**GET `/pods`**
+Get the rating on a time period, grouped by namespaces and metrics.
 
-- Get the list of pods.
+Parameters expected:
+    - `start`
+    - `end`
 
-**GET `/pods/<pod>/lifetime`**
+**GET `/namespaces/<namespace>/<aggregator>`** ***[URL]*** **Tenant**
 
-- Get the start and last update time of a pod.
+Get the rating for a namespace, according to the aggregator.
 
-**GET `/pods/rating`**
+Available aggregator are:
+- `daily`
+- `weekly`
+- `monthly`
 
-- Get the rating for a given pod per hour.
+If `namespace` equal "rating", then the rating is queried for all namespaces.
 
-**GET `/pods/total_rating`**
+**GET `/namespaces/<namespace>/rating`** ***[TR] [URL]*** **Tenant**
 
-- Get the total rating for a given pod.
+Get the rating on a time period, for a given namespace.
 
-**GET `/pods/<pod>/rating`**
+Parameters expected:
+    - `start`
+    - `end`
 
-- Get the rating for a given pod, per hour and per metric.
+**GET `/namespaces/<namespace>/total_rating`** ***[TR] [URL]*** **Tenant**
 
-**GET `/pods/<pod>/total_rating`**
+Get the **sum** of the rating on a time period, for a given namespace.
 
-- Get the total rating for a given pod.
+Parameters expected:
+    - `start`
+    - `end`
 
-**GET `/pods/<pod>/namespace`**
 
-- Get the namespace for a given pod.
+**GET `/namespaces/<namespace>/metrics/<metric>/rating`** ***[TR] [URL]*** **Tenant**
 
-**GET `/pods/<pod>/node`**
+Get the rating on a time period, for givens namespace and metric.
 
-- Get the node for a given pod.
+Parameters expected:
+    - `start`
+    - `end`
 
-## **Nodes**
 
-**GET `/nodes`**
+**POST `/namespaces/tenant`** **[PL]** **Admin**
 
-- Get the list of nodes.
+Associate a tenant with a namespace.
 
-**GET `/nodes/rating`**
+Expect a payload with:
+    - `namespace`
+    - `tenant_id`
+    - `token`
 
-- Get the rating per nodes, per hour and per metric.
 
-**GET `/nodes/total_rating`**
+### ***CONFIGS***
 
-- Get the total rating per nodes.
 
-**GET `/nodes/<node>/rating`**
+**GET `/ratingrules`** **Public**
 
-- Get the rate for a given node, per hour and per metric.
+Get the list of all RatingRules as object.
 
-**GET `/nodes/<node>/namespaces`**
+**GET `/ratingrules/list/local`** **Public**
 
-- Get the namespaces related to a given node.
+Get the list of all the RatingRules names from the local configuration directory.
 
-**GET `/nodes/<node>/pods`**
+**GET `/ratingrules/list/cluster`** **Public**
 
-- Get the pods hosted on a given node.
+Get the list of all the RatingRules names from the cluster.
 
-**GET `/nodes/<node>/total_rating`**
 
-- Get the total rating of a given node.
+**GET `/ratingrules/<timestamp>`** ***[URL]***
 
-**GET `/nodes/<node>/namespaces/rating`**
+Get the RatingRule for a given timestamp.
 
-- Get the rating of the namespaces for a given node, per hour and per metric.
 
-**GET `/nodes/<node>/namespaces/<namespace>/rating`**
+**POST `/ratingrules/add`** **[PL]** **Admin**
 
-- Get the rating of the given namespace for a given node, per hour and per metric.
+Add a new configuration.
 
-**GET `/nodes/<node>/namespaces/<namespace>/total_rating`**
+Expect a payload with:
+    - `rules`
+    - `metrics`
+    - `timestamp`
 
-- Get the total rating of the given namespace for a given node.
+**POST `/ratingrules/update`** **[PL]** **Admin**
 
-## **Configurations**
+Update a configuration.
 
-**GET `/rating/configs`**
+Expect a payload with:
+    - `rules`
+    - `metrics`
+    - `timestamp`
 
-- Get the list of all configurations as object 
+**POST `/ratingrules/delete`** **[PL]** **Admin**
 
-**GET `/rating/configs/list`**
+Delete a configuration.
 
-- Get the list of all configurations as timestamps
+Expect a payload with:
+    - `timestamp`
 
-**GET `/rating/configs/<timestamp>`**
 
-- Get the configuration for a given timestamp
+### ***METRICS***
 
-**POST `/rating/configs/add`**
 
-- Create a new configuration according to the POST request received
-- Expect a `body` object containing `rules`, `metrics` and `timestamp` as json
+**GET `/metrics`** **Public** **Tenant**
 
-**POST `/rating/configs/update`**
+Get the list of metrics.
 
-- Update a configuration according to the POST request received
-- Expect a `body` object containing `rules`, `metrics` and `timestamp` as json
 
-**POST `/rating/configs/delete`**
+**GET `/metrics/<metric>/todate`** ***[URL]*** ***[TR]*** **Tenant**
 
-- Delete the configuration according to the POST request received
-- Expect a `body` object containing `timestamp`
+Get the rating, from the start of the month to now.
 
+Parameters expected:
+    - `start`
+    - `end`
 
 
-## **Reactive-rating**
+**GET `/metrics/rating`** ***[TR]*** **Tenant**
 
-**GET `/prometheus/get`**
+Get the rating per metric.
 
-- Get the **prometheus-rating.rules** object.
+Parameters expected:
+    - `start`
+    - `end`
 
-**POST `/prometheus/add`**
 
-- Add the given metric to the **prometheus-rating.rules** object.
-- Expect a `body` object containing `group`, `expr`, `record` parameters.
+**GET `/metrics/<metric>/max`** ***[URL]*** ***[TR]*** **Tenant**
 
-**POST `/prometheus/edit`**
+Get the max rating for a given metric.
 
-- Edit the given metric from the **prometheus-rating.rules** object.
-- Expect a `body` object containing `group`, `expr`, `record` parameters.
+Parameters expected:
+    - `start`
+    - `end`
 
-**POST `/prometheus/delete`**
+**GET `/metrics/<metric>/ratio`** ***[URL]*** ***[TR]*** **Tenant**
 
-- Delete the given metric from the **prometheus-rating.rules** object.
-- Expect a `body` object containing `group` and `record` parameters.
+Get the rating as a ratio per instance, for a given metric.
 
+Parameters expected:
+    - `start`
+    - `end`
 
-## **Multi-tenancy**
+**GET `/metrics/<metric>/<aggregator>`** ***[URL]*** **Tenant**
 
-**`/signup`**
+Get the rating for a given metric, according to the aggregator.
 
-- Render the `signup` template, send the form to `/signup_user`
+Available aggregator are:
+- `daily`
+- `weekly`
+- `monthly`
 
-**POST `/signup_user`**
+**GET `/metrics/<metric>/rating`** ***[URL]*** ***[TR]*** **Tenant**
 
-- Create the user in the database and provides namespace
-- Expects **tenant** and **password**
-- **quantity** can also be provided, default to 1
+Get the rating for a given metric.
 
-**POST `/login`**
+Parameters expected:
+    - `start`
+    - `end`
 
-- Render the `login` template, send the form to `/login_user`
+**GET `/metrics/<metric>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
-**POST `/login_user`**
+Get the aggragated rating for a given metric.
 
-- Log the user in the application, returns a openned session, and redirect to Grafana
-- Expects **tenant** and **password**
+Parameters expected:
+    - `start`
+    - `end`
 
-**`/logout`**
 
-- Close your actual session
+### ***PODS***
 
-**`/password`**
 
-- Render the template to change current users password
+**GET `/pods`** ***[TR]*** **Tenant**
 
-**`/password_change`**
+Get the list of pods.
 
-- Change the tenant password
-- Expect **tenant**, **old** and **new** parameters.
+Parameters expected:
+    - `start`
+    - `end`
 
-**GET `/current`**
+**GET `/pods/rating`** ***[TR]*** **Tenant**
 
-- Returns the tenant holding the session
+Get the rating for a given pod.
 
-**GET `/tenant`**
+Parameters expected:
+    - `start`
+    - `end`
 
-- Expect **tenant**
-- Returns the tenant and its namespaces
+**GET `/pods/total_rating`** ***[TR]*** **Tenant**
 
-**GET `/tenants`**
+Get pods aggregated rating.
 
-- Require admin token
-- Returns the list of tenants
+Parameters expected:
+    - `start`
+    - `end`
 
-**POST `/tenants/link`**
 
-- Require admin token
-- Link namespaces to a given tenant
-- Expect **tenant** and **namespaces** (list of identifiers)
+**GET `/pods/<pod>/lifetime`** ***[URL]*** **Tenant**
 
-**POST `/tenants/unlink`**
+Get the start and last update time of a pod.
 
-- Require admin token
-- Unlink a namespace from its tenants
-- Expect **namespace**
 
-**POST `/tenants/delete`**
+**GET `/pods/<pod>/<aggregator>`** ***[URL]*** **Tenant**
 
-- Require admin token
-- Delete a given tenant and all its associated namespaces
-- Expect **tenant**
+Get the pods rating by time aggregation.
 
+Available aggregator are:
+- `daily`
+- `weekly`
+- `monthly`
 
-## **Reactive-rules**
+**GET `/pods/<pod>/rating`** ***[URL]*** ***[TR]*** **Tenant**
 
-**GET `/reactive/get`**
+Get pods rating.
 
-- Get the given ReactiveRule as JSON
-- Expect a `name` parameter
+Parameters expected:
+    - `start`
+    - `end`
 
-**POST `/reactive/new`**
+**GET `/pods/<pod>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
-- Create a new ReactiveRule with the given parameters
-- Expect a `name`, `timeframe` and `metric`
+Get pods aggregated rating.
 
-**POST `/reactive/edit`**
+Parameters expected:
+    - `start`
+    - `end`
 
-- Edit an existing ReactiveRule with the given parameters
-- Expect a `name`, `timeframe` and `metric`
+**GET `/pods/<pod>/metrics/<metric>/rating`** ***[URL]*** ***[TR]*** **Tenant**
 
+Get the rating for a given pod and metric.
 
-**POST `/reactive/delete`**
+Parameters expected:
+    - `start`
+    - `end`
 
-- Delete the given ReactiveRule
-- Expect a `name`
+**GET `/pods/<pod>/metrics/<metric>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
+
+Get the aggregated rating for a given pod and metric.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+
+### ***NODE***
+
+
+**GET `/nodes`** **Tenant**
+
+Get the list of nodes.
+
+
+**GET `/nodes/rating`** ****[TR]** **Tenant**
+
+Get nodes rating.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+**GET `/nodes/total_rating`** ****[TR]** **Tenant**
+
+Get the nodes agglomerated rating.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+**GET `/nodes/metrics/rating`** ****[TR]** **Tenant**
+
+Get the nodes metrics.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+
+**GET `/nodes/<node>/<aggregator>`** ***[URL]*** **Tenant**
+
+Get the nodes rating by time aggregation.
+
+Available aggregator are:
+- `daily`
+- `weekly`
+- `monthly`
+
+**GET `/nodes/<node>/rating`** ***[URL]*** ***[TR]*** **Tenant**
+
+Get the rating for a given node.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+**GET `/nodes/<node>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
+
+Get the agglomerated rating for a given node.
+
+Parameters expected:
+    - `start`
+    - `end`
+
+**GET `/nodes/metrics/<metric>/rating`** ***[URL]*** ***[TR]*** **Tenant**
+
+Get the rating for a given metric.
+
+Parameters expected:
+    - `start`
+    - `end`
