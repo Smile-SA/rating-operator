@@ -24,7 +24,7 @@
 Kudos to the people behind:
 
 - `metering-operator` from **CoreOS** (**Deprecated**)
-- `kopf` from **Zalando** 
+- `kopf` from **Zalando**
 - `operator-sdk` from **Red hat**
 
 for their great tools that helped us build this solution.

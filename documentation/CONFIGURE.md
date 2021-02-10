@@ -276,7 +276,7 @@ We do not recommand modifying this configuration if you are in a different case.
 
 ### Prometheus & Grafana
 
-#### Prometheus
+#### Stack Prometheus
 
 The configuration described below can be found in `./quickstart/prometheus/values.yaml`.
 

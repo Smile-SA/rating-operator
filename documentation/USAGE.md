@@ -134,5 +134,5 @@ Spec:
 
 Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in ReactiveRules.
 
-As soon as the `ReactiveRules` is validated, the `reactive-operator` will start processing frames.
+As soon as the `ReactiveRules` is validated, the `rating-operator-engine` will start processing frames.
 More information on `ReactiveRules` can be found in the [custom resources documentation](/documentation/CRD.md).
