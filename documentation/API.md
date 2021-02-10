@@ -371,7 +371,7 @@ Parameters expected:
 
 Get the list of nodes.
 
-**GET `/nodes/rating`** ****[TR]** **Tenant**
+**GET `/nodes/rating`** ***[TR]*** **Tenant**
 
 Get nodes rating.
 
@@ -380,7 +380,7 @@ Parameters expected:
 - `start`
 - `end`
 
-**GET `/nodes/total_rating`** ****[TR]** **Tenant**
+**GET `/nodes/total_rating`** ***[TR]*** **Tenant**
 
 Get the nodes agglomerated rating.
 
@@ -389,7 +389,7 @@ Parameters expected:
 - `start`
 - `end`
 
-**GET `/nodes/metrics/rating`** ****[TR]** **Tenant**
+**GET `/nodes/metrics/rating`** ***[TR]*** **Tenant**
 
 Get the nodes metrics.
 
