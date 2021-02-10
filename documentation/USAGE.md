@@ -99,6 +99,7 @@ spec:
 ```
 
 More informations on `ReactiveRules` can be found in the [custom resources documentation](/documentation/CRD.md).
+
 ----
 
 ## Adding new metrics
