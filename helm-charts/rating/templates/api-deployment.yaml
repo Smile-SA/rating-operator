@@ -36,6 +36,17 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.api.pullSecretsName }}
     {{ end }}
+      initContainers:
+        - name: config-init-rates
+          image: busybox:1.31.0
+          volumeMounts:
+          - mountPath: "/config/rates"
+            name: config-rates
+            readOnly: false
+          - mountPath: "/config/rates-t0"
+            name: config-rates-t0
+            readOnly: true
+          command: ["sh", "-c", "/bin/cp -a /config/rates-t0 /config/rates/0; /bin/chown -R 1000 /config/rates"]
       containers:
         - name: api
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
@@ -150,6 +161,9 @@ spec:
           {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+      - name: config-rates-t0
+        configMap:
+          name: {{ include "rating.fullname" . }}-config-rates-t0
       - name: config-rates
         persistentVolumeClaim:
           claimName: {{ include "rating.fullname" . }}-config-rates
