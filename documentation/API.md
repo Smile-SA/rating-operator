@@ -85,9 +85,7 @@ ReactiveRule test-reactive-rules created.
 
 ## **Endpoints**
 
-
 ### ***Namespaces***
-
 
 **GET `/namespaces`** **Public**
 
@@ -99,31 +97,34 @@ No parameters expected.
 Get the rating on a time period, grouped by namespaces.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/namespaces/total_rating`** ***[TR]*** **Tenant**
 
 Get the **sum** of the rating on a time period, grouped by namespaces.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/namespaces/metrics/rating`** ***[TR]*** **Tenant**
 
 Get the rating on a time period, grouped by namespaces and metrics.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/namespaces/<namespace>/<aggregator>`** ***[URL]*** **Tenant**
 
 Get the rating for a namespace, according to the aggregator.
 
 Available aggregator are:
+
 - `daily`
 - `weekly`
 - `monthly`
@@ -135,25 +136,27 @@ If `namespace` equal "rating", then the rating is queried for all namespaces.
 Get the rating on a time period, for a given namespace.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/namespaces/<namespace>/total_rating`** ***[TR] [URL]*** **Tenant**
 
 Get the **sum** of the rating on a time period, for a given namespace.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/namespaces/<namespace>/metrics/<metric>/rating`** ***[TR] [URL]*** **Tenant**
 
 Get the rating on a time period, for givens namespace and metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 
 **POST `/namespaces/tenant`** **[PL]** **Admin**
@@ -161,13 +164,12 @@ Parameters expected:
 Associate a tenant with a namespace.
 
 Expect a payload with:
-    - `namespace`
-    - `tenant_id`
-    - `token`
 
+- `namespace`
+- `tenant_id`
+- `token`
 
 ### ***CONFIGS***
-
 
 **GET `/ratingrules`** **Public**
 
@@ -181,85 +183,86 @@ Get the list of all the RatingRules names from the local configuration directory
 
 Get the list of all the RatingRules names from the cluster.
 
-
 **GET `/ratingrules/<timestamp>`** ***[URL]***
 
 Get the RatingRule for a given timestamp.
-
 
 **POST `/ratingrules/add`** **[PL]** **Admin**
 
 Add a new configuration.
 
 Expect a payload with:
-    - `rules`
-    - `metrics`
-    - `timestamp`
+
+- `rules`
+- `metrics`
+- `timestamp`
 
 **POST `/ratingrules/update`** **[PL]** **Admin**
 
 Update a configuration.
 
 Expect a payload with:
-    - `rules`
-    - `metrics`
-    - `timestamp`
+
+- `rules`
+- `metrics`
+- `timestamp`
 
 **POST `/ratingrules/delete`** **[PL]** **Admin**
 
 Delete a configuration.
 
 Expect a payload with:
-    - `timestamp`
 
+- `timestamp`
 
 ### ***METRICS***
-
 
 **GET `/metrics`** **Public** **Tenant**
 
 Get the list of metrics.
-
 
 **GET `/metrics/<metric>/todate`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the rating, from the start of the month to now.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/metrics/rating`** ***[TR]*** **Tenant**
 
 Get the rating per metric.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/metrics/<metric>/max`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the max rating for a given metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/metrics/<metric>/ratio`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the rating as a ratio per instance, for a given metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/metrics/<metric>/<aggregator>`** ***[URL]*** **Tenant**
 
 Get the rating for a given metric, according to the aggregator.
 
 Available aggregator are:
+
 - `daily`
 - `weekly`
 - `monthly`
@@ -269,17 +272,18 @@ Available aggregator are:
 Get the rating for a given metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/metrics/<metric>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the aggragated rating for a given metric.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 ### ***PODS***
 
@@ -289,36 +293,38 @@ Parameters expected:
 Get the list of pods.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/pods/rating`** ***[TR]*** **Tenant**
 
 Get the rating for a given pod.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/pods/total_rating`** ***[TR]*** **Tenant**
 
 Get pods aggregated rating.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/pods/<pod>/lifetime`** ***[URL]*** **Tenant**
 
 Get the start and last update time of a pod.
-
 
 **GET `/pods/<pod>/<aggregator>`** ***[URL]*** **Tenant**
 
 Get the pods rating by time aggregation.
 
 Available aggregator are:
+
 - `daily`
 - `weekly`
 - `monthly`
@@ -328,72 +334,76 @@ Available aggregator are:
 Get pods rating.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/pods/<pod>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get pods aggregated rating.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/pods/<pod>/metrics/<metric>/rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the rating for a given pod and metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/pods/<pod>/metrics/<metric>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the aggregated rating for a given pod and metric.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 ### ***NODE***
-
 
 **GET `/nodes`** **Tenant**
 
 Get the list of nodes.
-
 
 **GET `/nodes/rating`** ****[TR]** **Tenant**
 
 Get nodes rating.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/nodes/total_rating`** ****[TR]** **Tenant**
 
 Get the nodes agglomerated rating.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/nodes/metrics/rating`** ****[TR]** **Tenant**
 
 Get the nodes metrics.
 
 Parameters expected:
-    - `start`
-    - `end`
 
+- `start`
+- `end`
 
 **GET `/nodes/<node>/<aggregator>`** ***[URL]*** **Tenant**
 
 Get the nodes rating by time aggregation.
 
 Available aggregator are:
+
 - `daily`
 - `weekly`
 - `monthly`
@@ -403,21 +413,24 @@ Available aggregator are:
 Get the rating for a given node.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/nodes/<node>/total_rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the agglomerated rating for a given node.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
 
 **GET `/nodes/metrics/<metric>/rating`** ***[URL]*** ***[TR]*** **Tenant**
 
 Get the rating for a given metric.
 
 Parameters expected:
-    - `start`
-    - `end`
+
+- `start`
+- `end`
