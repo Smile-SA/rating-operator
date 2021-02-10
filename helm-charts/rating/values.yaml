@@ -11,7 +11,7 @@ security:
   auth: "false"
 
   # The "adminToken" string configure the application security key
-  # It is used for administrator requests to the rating-api and as a secret key for session encoding
+  # It is used for administrator requests to the rating-operator-api and as a secret key for session encoding
   token:
     admin: thisisadmintoken
 
@@ -41,7 +41,7 @@ api:
   # Pod name 
   name: api
 
-  # Below lies the name of the postgresql pod running along the rating-api
+  # Below lies the name of the postgresql pod running along the rating-operator-api
   config:
     postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
     postgres_secret: "{{ .Release.Name }}-postgresql"
@@ -51,8 +51,8 @@ api:
   # Base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
-    tag: kubernetes-release-candidate
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
+    tag: master
 
   # Resources allocation
   # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -61,7 +61,7 @@ api:
   resources: {}
   tolerations: []
 
-  # Rating-api service configuration
+  # rating-operator-api service configuration
   # To be used to expose the api to the web
   service:
     port: 80
@@ -110,18 +110,18 @@ postgresql:
   #   securityContext:                                                                                                                                                               
   #     runAsUser: 1000600000
 
-## Configuration of the processing component
-processing:
+## Configuration of the manager component
+manager:
 
   # Pod name
-  name: processing
+  name: manager
 
   # Image tags
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/processing-operator
-    tag: kubernetes-release-candidate
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
+    tag: master
 
   # Resources allocation
   # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -130,18 +130,18 @@ processing:
   resources: {}
   tolerations: []
 
-## Configuration of the reactive component
-reactive:
+## Configuration of the engine component
+engine:
   
   # Pod name
-  name: reactive
+  name: engine
 
   # Image tags
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/reactive-operator
-    tag: kubernetes-release-candidate
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
+    tag: master
 
   # Resources allocation
   # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator

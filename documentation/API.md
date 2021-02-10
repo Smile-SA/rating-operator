@@ -71,14 +71,14 @@ The endpoints using this method will be labelled `[PL]`.
 
 These endpoints are the hardest to query, from a user perspective.
 They are generally available for resource handling, such as rules or tenant management.
-Let's create a ReactiveRule with cURL as an example:
+Let's create a RatingRuleModel with cURL as an example:
 
 ```sh
 $ curl -X POST
        -H "Content-Type: application/json"
-       -d '{"name": "test-reactive-rules","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
-       http://rating-operator-api.rating:80/reactive/new
-ReactiveRule test-reactive-rules created.
+       -d '{"name": "rating-rule-models-test","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
+       http://rating-operator-api.rating:80/models/new
+RatingRuleModel rating-rule-models-test created.
 ```
 
 ----

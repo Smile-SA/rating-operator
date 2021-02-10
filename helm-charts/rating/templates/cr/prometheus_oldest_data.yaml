@@ -1,7 +1,7 @@
 apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
+kind: RatingRuleModels
 metadata:
-  name: reactive-rule-prometheus-oldest-data
+  name: rating-rule-model-prometheus-oldest-data
   namespace: {{ .Release.Namespace }}
 spec:
   metric: min(prometheus_tsdb_lowest_timestamp)

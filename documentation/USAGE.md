@@ -76,20 +76,20 @@ More information on `RatingRules` can be found in the [custom resources document
 
 #### RatedRules
 
-The other part of the configuration is composed of **ReactiveRules**, describing metrics using **promQL** and of a base **RatingRule** that holds values to be used in queries.
+The other part of the configuration is composed of **RatingRuleModels**, describing metrics using **promQL** and of a base **RatingRule** that holds values to be used in queries.
 
 ```sh
-$ kubectl get reactiverules.rating.alterway.fr
-NAME                                                       AGE
-reactive-rule-pod-request-cpu                              2m
-reactive-rule-pod-request-memory                           2m
-reactive-rule-pod-usage-cpu                                2m
-reactive-rule-pod-usage-memory                             2m
+$ kubectl get ratingrulemodels.rating.alterway.fr
+NAME                                                           AGE
+rating-rule-model-pod-request-cpu                              2m
+rating-rule-model-pod-request-memory                           2m
+rating-rule-model-pod-usage-cpu                                2m
+rating-rule-model-pod-usage-memory                             2m
 
-$ kubectl get reactiverules.rating.alterway.fr reactive-rule-pod-usage-cpu -o yaml
-kind: ReactiveRule
+$ kubectl get ratingrulemodels.rating.alterway.fr rating-rule-model-pod-usage-cpu -o yaml
+kind: RatingRuleModel
 metadata:
-  name: reactive-rule-pod-usage-cpu
+  name: rating-rule-model-pod-usage-cpu
 spec:
   metric: usage_cpu * on() group_right sum(rate(container_cpu_usage_seconds_total[1m]))
     BY (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""})
@@ -98,26 +98,26 @@ spec:
   timeframe: 60s
 ```
 
-More informations on `ReactiveRules` can be found in the [custom resources documentation](/documentation/CRD.md).
+More informations on `RatingRuleModels` can be found in the [custom resources documentation](/documentation/CRD.md).
 
 ----
 
 ## Adding new metrics
 
-To rate a new metric, you need to create a `ReactiveRule`:
+To rate a new metric, you need to create a `RatingRuleModel`:
 
 ```sh
-$ kubectl get reactiverules.rating.alterway.fr                             
+$ kubectl get ratingRuleModels.rating.alterway.fr                             
 NAME                            AGE
-reactive-rule-rated-usage-cpu   21s
+rating-rule-model-rated-usage-cpu   21s
 
-$ kubectl describe reactiverules.rating.alterway.fr reactive-rule-rated-usage-cpu
-Name:         reactive-rule-rated-usage-cpu
+$ kubectl describe ratingRuleModels.rating.alterway.fr rating-rule-model-rated-usage-cpu
+Name:         rating-rule-model-rated-usage-cpu
 Namespace:    rating
 Labels:       <none>
 Annotations:  <none>
 API Version:  rating.alterway.fr/v1
-Kind:         ReactiveRule
+Kind:         RatingRuleModel
 [...]
 Spec:
   # Metric have to be a valid prometheus query
@@ -133,7 +133,7 @@ Spec:
 [...]
 ```
 
-Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in ReactiveRules.
+Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in RatingRuleModels.
 
-As soon as the `ReactiveRules` is validated, the `rating-operator-engine` will start processing frames.
-More information on `ReactiveRules` can be found in the [custom resources documentation](/documentation/CRD.md).
+As soon as the `RatingRuleModels` is validated, the `rating-operator-engine` will start processing frames.
+More information on `RatingRuleModels` can be found in the [custom resources documentation](/documentation/CRD.md).

@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rating.operator.engine.fullname" . }}
+  labels:
+    app.kubernetes.io/component: rating-operator-engine
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: rating-operator-engine
+  template:
+    metadata:
+      labels:
+        {{- include "rating.labels" . | nindent 8 }}
+        app.kubernetes.io/component: rating-operator-engine
+    spec:
+    {{- if .Values.manager.pullSecretsName }}
+      imagePullSecrets:
+        - name: {{ .Values.manager.pullSecretsName }}
+    {{- end }}
+      serviceAccountName: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
+      automountServiceAccountToken: True
+      containers:
+        - name: rating-operator-engine
+          image: "{{ .Values.engine.image.repository }}:{{ .Values.engine.image.tag }}"
+          imagePullPolicy: {{ .Values.engine.image.pullPolicy }}
+          env:
+          - name: WATCH_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: AUTH
+            value: "{{ .Values.security.auth }}"
+          - name: RATING_API_URL
+            value: http://{{ include "rating.operator.api.fullname" . }}:{{ .Values.api.service.port }}
+          - name: RATING_NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: PROMETHEUS_URL
+          # Configure this better
+            value: "http://{{ .Values.prometheus.service }}.{{ .Values.prometheus.namespace }}.svc.cluster.local:9090"
+          resources:
+            {{- toYaml .Values.engine.resources | nindent 12 }}
+      {{- with .Values.manager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

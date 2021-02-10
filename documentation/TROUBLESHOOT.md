@@ -17,8 +17,8 @@ If you encounter an error not documented here, feel free to open an issue to dis
 
 
 - After installing the `metering-operator`, it is **STRONGLY** recommended to wait for the first `Reports` to be generated before installing the `rating`.
-- After `rating-operator` installation, it is avised to wait approximately 10 minutes before starting to use it. The initialization time of the rating-api can be long depending on the allocated resources.
-- To test the ability of the rating-api to answer, you can try:
+- After `rating-operator` installation, it is avised to wait approximately 10 minutes before starting to use it. The initialization time of the rating-operator-api can be long depending on the allocated resources.
+- To test the ability of the rating-operator-api to answer, you can try:
 ```sh
 $> kubectl get pods -l app.kubernetes.io/component=api -o name | cut -d/ -f2 | xargs -I{} kubectl port-forward {} 5012:5012
 Forwarding from 127.0.0.1:5012 -> 5012
@@ -130,8 +130,8 @@ You will never encounter this problem if you are using the *reactive* mechanism.
 ---
 > I don't succeed in using multi-tenancy through Grafana
 
-We use cookie based sessions to authenticate user queries to the rating-api.
-You have to log through the `/login` endpoint of the rating-api, **THEN** log into grafana.
+We use cookie based sessions to authenticate user queries to the rating-operator-api.
+You have to log through the `/login` endpoint of the rating-operator-api, **THEN** log into grafana.
 If you have configured the datasource properly, enabled the **session** cookie and activated **Basic authentication**, you can verift the cookie presence after login, through your web browser's interface.
 If you cannot, go back to configuring Grafana or check your browser's cookie settings.
 

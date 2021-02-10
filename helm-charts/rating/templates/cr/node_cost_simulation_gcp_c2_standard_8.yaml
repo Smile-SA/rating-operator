@@ -1,0 +1,20 @@
+# GCP -> 8 vCPU + 32GB Ram c2-standard-8 0.4176/h
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModels
+metadata:
+  name: rating-rule-model-node-cost-simulation-gcp-c2-standard-8
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_c2_standard_8_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_c2_standard_8_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_c2_standard_8_cpu)) * sum(gcp_c2_standard_8)
+  name: node_cost_simulation_gcp_c2_standard_8
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModels
+metadata:
+  name: rating-rule-model-number-instance-simulation-gcp-c2-standard-8
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(gcp_c2_standard_8_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_c2_standard_8_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_c2_standard_8_cpu))
+  name: number_instance_simulation_gcp_c2_standard_8
+  timeframe: 3600s

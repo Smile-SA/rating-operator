@@ -1,0 +1,9 @@
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModels
+metadata:
+    name: rating-rule-model-storage-ram-ratio
+    namespace: {{ .Release.Namespace }}
+spec:
+    metric: ((sum(kubelet_volume_stats_capacity_bytes) by (namespace, node, persistentvolumeclaim) - sum(kubelet_volume_stats_available_bytes) by (namespace, node, persistentvolumeclaim))) / (sum(kubelet_volume_stats_capacity_bytes) by (namespace, node, persistentvolumeclaim) / 100) / on (node) group_left() label_replace(instance:node_memory_utilisation:ratio, "node", "$1", "instance", "(.*)")
+    name: storage_ram_ratio
+    timeframe: 3600s

@@ -29,7 +29,7 @@ security:
   auth: "true"
 
   # The "adminToken" string configure the application security key
-  # It is used for administrator requests to the rating-api and as a secret key for session encoding
+  # It is used for administrator requests to the rating-operator-api and as a secret key for session encoding
   token:
     admin: thisisadmintoken
 
@@ -55,7 +55,7 @@ api:
   # Pod name 
   name: api
 
-  # Below lies the name of the postgresql pod running along the rating-api
+  # Below lies the name of the postgresql pod running along the rating-operator-api
   config:
     postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
     postgres_secret: "{{ .Release.Name }}-postgresql"
@@ -65,7 +65,7 @@ api:
   # Base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
     tag: master
 
   # Resources allocation
@@ -75,7 +75,7 @@ api:
   resources: {}
   tolerations: []
 
-  # Rating-api service configuration
+  # rating-operator-api service configuration
   # To be used to expose the api to the web
   service:
     port: 80
@@ -116,17 +116,17 @@ postgresql:
     enabled: false
       runAsUser: 1000600000
 
-## Configuration of the processing component
-processing:
+## Configuration of the manager component
+manager:
 
   # Pod name
-  name: processing
+  name: manager
 
   # Image tags
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/processing-operator
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
     tag: master
 
   # Resources allocation
@@ -136,17 +136,17 @@ processing:
   resources: {}
   tolerations: []
 
-## Configuration of the reactive component
-reactive:
+## Configuration of the engine component
+engine:
   
   # Pod name
-  name: reactive
+  name: engine
 
   # Image tags
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/reactive-operator
+    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
     tag: master
 
   # Resources allocation
@@ -225,8 +225,8 @@ security:
     security.auth: ${CLUSTER_AUTH} # Can be overriden by that, by setting CLUSTER_AUTH env var
     security.token.admin: ${RATING_ADMIN_API_KEY}
     api.pullSecretsName: ${PULLSECRETS_API}
-    processing.pullSecretsName: ${PULLSECRETS_PROCESSING}
-    reactive.pullSecretsName: ${PULLSECRETS_REACTIVE}
+    manager.pullSecretsName: ${PULLSECRETS_MANAGER}
+    engine.pullSecretsName: ${PULLSECRETS_ENGINE}
     frontend.pullSecretsName: ${PULLSECRETS_FRONTEND}
     postgresql.postgresqlPassword: ${POSTGRESQL_PASSWORD}
     frontend.url: ${FRONTEND_URL}
@@ -236,11 +236,11 @@ security:
     grafana.password: ${GRAFANA_ADMIN_PASSWORD}
 ```
 
-## Specifics 
+## Specifics
 
 After the common configuration overview above, those shorter explanations will help you decide where you want to include your configuration.
 
-#### Runtime
+### Runtime
 
 If a value from the chart have to evolve while already deployed, the best way to do so is to use `kubectl set env`.
 
@@ -316,7 +316,7 @@ grafana:
           type: simpod-json-datasource
           access: proxy
           # Update the url if you are not running the default configuration
-          url: http://rating-api.rating.svc.cluster.local:80
+          url: http://rating-operator-api.rating.svc.cluster.local:80
           editable: true
           # Both withCredentials and session cookies are mandatory to exploit the multi-tenant aspect on Grafana
           withCredentials: true

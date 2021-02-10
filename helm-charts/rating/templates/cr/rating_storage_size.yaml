@@ -1,0 +1,9 @@
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModels
+metadata:
+  name: rating-rule-model-rating-storage-size
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: (kubelet_volume_stats_used_bytes{persistentvolumeclaim="data-rating-postgresql-0"} / on (persistentvolumeclaim) group_right() kubelet_volume_stats_capacity_bytes{persistentvolumeclaim="data-rating-postgresql-0"}) * 100
+  name: rating_storage_size
+  timeframe: 3600s
