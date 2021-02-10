@@ -8,7 +8,7 @@
 
 ## Table of content
 
-- [Configuration](/documentation/CONFIGURATION.md)
+- [Configuration](/documentation/CONFIGURE.md)
 - [Installation](/documentation/INSTALL.md)
 - [Usage](/documentation/USAGE.md)
 - [Custom Resources](/documentation/CRD.md)
