@@ -56,7 +56,7 @@ spec:
     image:
       pullPolicy: Always
       repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-api
-      tag: kubernetes-release-candidate
+      tag: master
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -124,7 +124,7 @@ spec:
     image:
       pullPolicy: Always
       repository: hub.rnd.alterway.fr/overboard/5gbiller/processing-operator
-      tag: kubernetes-release-candidate
+      tag: master
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -144,7 +144,7 @@ spec:
     image:
       pullPolicy: Always
       repository: hub.rnd.alterway.fr/overboard/5gbiller/reactive-operator
-      tag: kubernetes-release-candidate
+      tag: master
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
