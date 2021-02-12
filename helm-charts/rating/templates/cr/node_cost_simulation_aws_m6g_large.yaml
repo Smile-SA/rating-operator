@@ -1,6 +1,6 @@
 # AWS -> 2 vCPU + 8GB Ram m6g.large 0.077/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-aws-m6g-large
   namespace: {{ .Release.Namespace }}
@@ -10,7 +10,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-aws-m6g-large
   namespace: {{ .Release.Namespace }}

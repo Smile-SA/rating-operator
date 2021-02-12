@@ -1,5 +1,5 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-aws-t4g-micro
   namespace: {{ .Release.Namespace }}
@@ -9,7 +9,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-aws-t4g-micro
   namespace: {{ .Release.Namespace }}

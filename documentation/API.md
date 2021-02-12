@@ -76,9 +76,9 @@ Let's create a RatingRuleModel with cURL as an example:
 ```sh
 $ curl -X POST
        -H "Content-Type: application/json"
-       -d '{"name": "rating-rule-models-test","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
-       http://rating-operator-api.rating:80/models/new
-RatingRuleModel rating-rule-models-test created.
+       -d '{"name": "test","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
+       http://rating-operator-api.rating:80/models/add
+RatingRuleModel test created.
 ```
 
 ----
@@ -168,52 +168,6 @@ Expect a payload with:
 - `namespace`
 - `tenant_id`
 - `token`
-
-### ***CONFIGS***
-
-**GET `/ratingrules`** **Public**
-
-Get the list of all RatingRules as object.
-
-**GET `/ratingrules/list/local`** **Public**
-
-Get the list of all the RatingRules names from the local configuration directory.
-
-**GET `/ratingrules/list/cluster`** **Public**
-
-Get the list of all the RatingRules names from the cluster.
-
-**GET `/ratingrules/<timestamp>`** ***[URL]***
-
-Get the RatingRule for a given timestamp.
-
-**POST `/ratingrules/add`** **[PL]** **Admin**
-
-Add a new configuration.
-
-Expect a payload with:
-
-- `rules`
-- `metrics`
-- `timestamp`
-
-**POST `/ratingrules/update`** **[PL]** **Admin**
-
-Update a configuration.
-
-Expect a payload with:
-
-- `rules`
-- `metrics`
-- `timestamp`
-
-**POST `/ratingrules/delete`** **[PL]** **Admin**
-
-Delete a configuration.
-
-Expect a payload with:
-
-- `timestamp`
 
 ### ***METRICS***
 
@@ -434,3 +388,95 @@ Parameters expected:
 
 - `start`
 - `end`
+
+## ***CONFIGS***
+
+### ***RatingRules***
+
+**GET `/ratingrules`** **Public**
+
+Get the list of all RatingRules as object.
+
+**GET `/ratingrules/list/local`** **Public**
+
+Get the list of all the RatingRules names from the local configuration directory.
+
+**GET `/ratingrules/list/cluster`** **Public**
+
+Get the list of all the RatingRules names from the cluster.
+
+**GET `/ratingrules/<timestamp>`** ***[URL]***
+
+Get the RatingRule for a given timestamp.
+
+**POST `/ratingrules/add`** **[PL]** **Admin**
+
+Add a new configuration.
+
+Expect a payload with:
+
+- `rules`
+- `metrics`
+- `timestamp`
+
+**POST `/ratingrules/update`** **[PL]** **Admin**
+
+Update a configuration.
+
+Expect a payload with:
+
+- `rules`
+- `metrics`
+- `timestamp`
+
+**POST `/ratingrules/delete`** **[PL]** **Admin**
+
+Delete a configuration.
+
+Expect a payload with:
+
+- `timestamp`
+
+### ***RatingRulesModels***
+
+**GET `/models/list`** **Public**
+
+Get the list of all the RatingRuleModels.
+
+**GET `/models/get`** **Public**
+
+Get a RatingRuleModel.
+
+Expect a payload with:
+
+- `name`
+
+**POST `/models/add`** **[PL]** **Admin**
+
+Add a new RatingRuleModel.
+
+Expect a payload with:
+
+- `name`
+- `timeframe`
+- `metric_name`
+- `metric`
+
+**POST `/models/update`** **[PL]** **Admin**
+
+Update a RatingRuleModel.
+
+Expect a payload with:
+
+- `name`
+- `timeframe`
+- `metric_name`
+- `metric`
+
+**POST `/models/delete`** **[PL]** **Admin**
+
+Delete a RatingRuleModel.
+
+Expect a payload with:
+
+- `name`

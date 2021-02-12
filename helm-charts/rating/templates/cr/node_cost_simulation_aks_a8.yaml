@@ -1,6 +1,6 @@
 # AKS -> 8 vCPU + 56GB Ram A8   1.466/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-aks-a8
   namespace: {{ .Release.Namespace }}
@@ -10,7 +10,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-aks-a8
   namespace: {{ .Release.Namespace }}

@@ -1,5 +1,5 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cpu-memory-ratio
   namespace: {{ .Release.Namespace }}

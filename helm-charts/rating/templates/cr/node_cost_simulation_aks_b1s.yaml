@@ -1,6 +1,6 @@
 # AKS -> 1 vCPU + 1GB Ram b1s 0.0164/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-aks-b1s
   namespace: {{ .Release.Namespace }}
@@ -10,7 +10,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-aks-b1s
   namespace: {{ .Release.Namespace }}

@@ -1,7 +1,7 @@
 # GCP -> 1 vCPU + 4GB Ram e2-highcpu-2
 # 48.92e per month / 730h = 0.067/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-gcp-e2-highcpu-4
   namespace: {{ .Release.Namespace }}
@@ -11,7 +11,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-gcp-e2-highcpu-4
   namespace: {{ .Release.Namespace }}

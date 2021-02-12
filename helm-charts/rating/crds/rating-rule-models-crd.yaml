@@ -10,8 +10,8 @@ spec:
   group: rating.alterway.fr
   names:
     kind: RatingRuleModel
-    plural: ratingRuleModels
-    singular: ratingRuleModel
+    plural: ratingrulemodels
+    singular: ratingrulemodel
   versions:
     - name: v1
       served: true

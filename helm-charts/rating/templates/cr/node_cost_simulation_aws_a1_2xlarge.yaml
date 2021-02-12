@@ -1,6 +1,6 @@
 # AWS -> 2 vCPU + 4GB Ram a1.xlarge 0.102/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-node-cost-simulation-aws-a1-2-xlarge
   namespace: {{ .Release.Namespace }}
@@ -10,7 +10,7 @@ spec:
   timeframe: 3600s
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModels
+kind: RatingRuleModel
 metadata:
   name: rating-rule-model-number-instance-simulation-aws-a1-2-xlarge
   namespace: {{ .Release.Namespace }}

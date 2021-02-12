@@ -18,7 +18,7 @@ spec:
       containers:
         - name: rating-operator
           resources: {}
-          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
+          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:rename
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -51,4 +51,4 @@ spec:
             - name: ALLOW_ORIGIN
               value: "http://localhost:8080"
             - name: CLUSTER_AUTH
-              value: "true"
+              value: "false"
