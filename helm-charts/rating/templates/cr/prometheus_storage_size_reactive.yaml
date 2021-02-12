@@ -1,9 +1,0 @@
-apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
-metadata:
-  name: reactive-rule-prometheus-storage-size
-  namespace: {{ .Release.Namespace }}
-spec:
-  metric: sum(prometheus_tsdb_storage_blocks_bytes) / (1024*1024*1024)
-  name: prometheus_storage_size
-  timeframe: 3600s

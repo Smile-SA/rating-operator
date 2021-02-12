@@ -1,9 +1,0 @@
-apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
-metadata:
-  name: reactive-rule-node-cpu-memory-ratio
-  namespace: {{ .Release.Namespace }}
-spec:
-  metric: sum(instance:node_cpu:ratio) by (instance) / on (instance) group_left sum(instance:node_memory_utilisation:ratio) by (instance)
-  name: node_cpu_memory_ratio
-  timeframe: 3600s

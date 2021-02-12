@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "rating.api.fullname" . }}
+  name: {{ include "rating.operator.api.fullname" . }}
   labels:
-    app: {{ include "rating.api.fullname" . }}
+    app: {{ include "rating.operator.api.fullname" . }}
     app.kubernetes.io/name: {{ include "rating.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
@@ -16,7 +16,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: {{ include "rating.api.fullname" . }}
+      app: {{ include "rating.operator.api.fullname" . }}
       app.kubernetes.io/name: {{ include "rating.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: api
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "rating.api.fullname" . }}
+        app: {{ include "rating.operator.api.fullname" . }}
         app.kubernetes.io/name: {{ include "rating.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: api
@@ -59,7 +59,7 @@ spec:
             - name: AUTH
               value: "{{ .Values.security.auth }}"
             - name: RATING_API_URL
-              value: {{ include "rating.api.fullname" . }}-{{ .Release.Namespace }}
+              value: {{ include "rating.operator.api.fullname" . }}-{{ .Release.Namespace }}
             {{- if eq .Values.security.keycloak.enabled "true" }}
             - name: KEYCLOAK
               value: "true"

@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rating.operator.manager.fullname" . }}
+  labels:
+    app.kubernetes.io/component: rating-operator-manager
+    {{- include "rating.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rating.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: rating-operator-manager
+  template:
+    metadata:
+      labels:
+        {{- include "rating.labels" . | nindent 8 }}
+        app.kubernetes.io/component: rating-operator-manager
+    spec:
+    {{- if .Values.manager.pullSecretsName }}
+      imagePullSecrets:
+        - name: {{ .Values.manager.pullSecretsName }}
+    {{- end }}
+      serviceAccountName: {{ include "rating.fullname" . }}-{{ .Release.Namespace }}
+      automountServiceAccountToken: True
+      containers:
+        - name: rating-operator-manager
+          image: "{{ .Values.manager.image.repository }}:{{ .Values.manager.image.tag }}"
+          imagePullPolicy: {{ .Values.manager.image.pullPolicy }}
+          env:
+          - name: AUTH
+            value: "{{ .Values.security.auth }}"
+          - name: RATING_API_URL
+            value: http://{{ include "rating.operator.api.fullname" . }}:{{ .Values.api.service.port }}
+          - name: RATING_NAMESPACE
+            value: {{ .Release.Namespace }}
+          resources:
+            {{- toYaml .Values.manager.resources | nindent 12 }}
+      {{- with .Values.manager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

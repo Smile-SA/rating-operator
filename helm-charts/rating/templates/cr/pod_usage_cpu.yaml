@@ -1,0 +1,9 @@
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-pod-usage-cpu
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: usage_cpu * on() group_right sum(rate(container_cpu_usage_seconds_total[1m])) BY (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""}) by (pod, namespace, node) * 0)
+  name: pods_usage_cpu
+  timeframe: 3600s

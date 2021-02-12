@@ -32,13 +32,13 @@ The end product of each mechanism is accessible through the same api endpoints, 
 
 This rating work is done by the `rating-operator-engine` component.
 
-The `rating-operator-api` exposes the latest `RatingRules` values and labels to Prometheus, which can then be used with **PromQL** to generate dataset to be rated. It uses `ReactiveRules` to configure which metrics to process.
+The `rating-operator-api` exposes the latest `RatingRules` values and labels to Prometheus, which can then be used with **PromQL** to generate dataset to be rated. It uses `RatingRuleModels` to configure which metrics to process.
 
 ```yml
 apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
+kind: RatingRuleModel
 metadata:
-  name: reactive-rule-example
+  name: rating-rule-model-example
 spec:
   metric: your_metric_in_prom
   name: example
@@ -48,7 +48,7 @@ spec:
 Once configured, the `rating-operator-engine` will pick up the new configuration and start processing right away.
 You can expect to have rated frames after **timeframe** seconds.
 
-More informations on `RatingRules` and `ReactiveRules` can be found [here](/documentation/CRD.md).
+More informations on `RatingRules` and `RatingRuleModels` can be found [here](/documentation/CRD.md).
 
 ---
 

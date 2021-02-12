@@ -1,9 +1,0 @@
-apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
-metadata:
-  name: reactive-rule-pod-request-memory
-  namespace: {{ .Release.Namespace }}
-spec:
-  metric: request_memory * on () group_right sum(kube_pod_container_resource_requests_memory_bytes) by (pod, namespace, node) / 1000000000
-  name: pods_request_memory
-  timeframe: 3600s  

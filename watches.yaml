@@ -11,8 +11,8 @@
     security.auth: ${CLUSTER_AUTH}
     security.token.admin: ${RATING_ADMIN_API_KEY}
     api.pullSecretsName: ${PULLSECRETS_API}
-    processing.pullSecretsName: ${PULLSECRETS_PROCESSING}
-    reactive.pullSecretsName: ${PULLSECRETS_REACTIVE}
+    manager.pullSecretsName: ${PULLSECRETS_MANAGER}
+    engine.pullSecretsName: ${PULLSECRETS_ENGINE}
     frontend.pullSecretsName: ${PULLSECRETS_FRONTEND}
     postgresql.postgresqlPassword: ${POSTGRESQL_PASSWORD}
     frontend.url: ${FRONTEND_URL}

@@ -15,13 +15,13 @@ spec:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: rating-api
+  name: rating-operator-api
 spec:
   tls:
     insecureEdgeTerminationPolicy: Allow
     termination: edge
   to:
     kind: Service
-    name: rating-api
+    name: rating-operator-api
     weight: 100
   wildcardPolicy: None

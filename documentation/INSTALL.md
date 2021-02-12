@@ -410,12 +410,12 @@ To check if everything is running correctly:
 
 ```sh
 $ kubectl -n rating get pods
-NAME                                READY   STATUS    RESTARTS   AGE
-rating-api-66c9484866-rvdjj         1/1     Running   0          45s
-rating-operator-755d6bdbd9-27vcj    1/1     Running   0          45s
-rating-postgresql-0                 1/1     Running   0          45s
-rating-processing-bdf55cd99-k4ffs   1/1     Running   0          45s
-rating-reactive-5bc9948b88-lt49q    1/1     Running   0          45s
+NAME                                        READY   STATUS    RESTARTS   AGE
+rating-operator-755d6bdbd9-27vcj            1/1     Running   0          45s
+rating-operator-api-66c9484866-rvdjj        1/1     Running   0          45s
+rating-operator-postgresql-0                1/1     Running   0          45s
+rating-operator-manager-bdf55cd99-k4ffs     1/1     Running   0          45s
+rating-operator-engine-5bc9948b88-lt49q     1/1     Running   0          45s
 ```
 
 ## Uninstall

@@ -1,0 +1,19 @@
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-node-cost-simulation-aws-t4g-micro
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric:  ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_t4g_micro_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_micro_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_micro_cpu)) * sum(aws_t4g_micro)
+  name: node_cost_simulation_aws_t4g_micro
+  timeframe: 3600s
+---
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-number-instance-simulation-aws-t4g-micro
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aws_t4g_micro_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_t4g_micro_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_t4g_micro_cpu))
+  name: number_instance_simulation_aws_t4g_micro
+  timeframe: 3600s

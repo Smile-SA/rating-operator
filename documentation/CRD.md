@@ -115,7 +115,7 @@ usage_cpu{[...], foo="bar"}
 To get a list of the metrics exposed to Prometheus, query the `/rules_metrics` endpoint of the **rating-operator-api**.
 
 ```sh
-$ curl http://rating-api.rating:80/rules_metrics
+$ curl http://rating-operator-api.rating:80/rules_metrics
 request_cpu 1
 usage_cpu 1
 request_memory 1
@@ -123,16 +123,16 @@ usage_memory 1
 # EOF
 ```
 
-## ***reactiverules**.rating.alterway.fr*
+## ***ratingrulemodel**.rating.alterway.fr*
 
-A `ReactiveRule` describe the configuration of a metric to be rated.
+A `RatingRuleModel` describe the configuration of a metric to be rated.
 Let's consider this example:
 
 ```yml
 apiVersion: rating.alterway.fr/v1
-kind: ReactiveRule
+kind: RatingRuleModel
 metadata:
-  name: reactive-rule-test-metric
+  name: rating-rule-model-test-metric
 spec:
   metric: (sum(rate(container_memory_usage_bytes[2h])) BY (pod, namespace) + on (pod,
     namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""})
@@ -141,7 +141,7 @@ spec:
   timeframe: 10s
 ```
 
-Three keys have to be defined in a `ReactiveRule`:
+Three keys have to be defined in a `RatingRuleModel`:
 
 - **metric** defines what to query from Prometheus. Every valid PromQL expression can be used here.
 - **name** is the future name of the metric
@@ -149,7 +149,7 @@ Three keys have to be defined in a `ReactiveRule`:
 
 As soon as this resource is created, the rating will pick it up and start processing frames.
 
-**Hint** Before lowering the **timeframe** parameter too much, make sure your storage capatibilities can handle it (Depending of the metric, it can produce big storage imprint quite quickly). There's no mechanism yet to rotate the data in the database, and multiple, low timeframes `ReactiveRules` can generate lots of data.
+**Hint** Before lowering the **timeframe** parameter too much, make sure your storage capatibilities can handle it (Depending of the metric, it can produce big storage imprint quite quickly). There's no mechanism yet to rotate the data in the database, and multiple, low timeframes `RatingRuleModels` can generate lots of data.
 
 It is also possible to use `PrometheusRules` to let Prometheus pre-process your customized metrics, and only let the rating query it.
 Consider this example:

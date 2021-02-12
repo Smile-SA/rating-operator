@@ -34,7 +34,7 @@ spec:
               value: "rating-operator"
             - name: PULLSECRETS_API
               value: rating-regcred
-            - name: PULLSECRETS_PROCESSING
+            - name: PULLSECRETS_MANAGER
               value: rating-regcred
             - name: PULLSECRETS_FRONTEND
               value: rating-regcred-front

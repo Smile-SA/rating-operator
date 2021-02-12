@@ -1,0 +1,9 @@
+apiVersion: rating.alterway.fr/v1
+kind: RatingRuleModel
+metadata:
+  name: rating-rule-model-pod-usage-memory
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: (usage_memory * on () group_right sum(container_memory_usage_bytes) by (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""}) by (pod, namespace, node) * 0)) / 10000000000
+  name: pods_usage_memory
+  timeframe: 3600s

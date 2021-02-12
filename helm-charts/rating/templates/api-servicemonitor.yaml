@@ -2,12 +2,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "rating.api.fullname" . }}
+  name: {{ include "rating.operator.api.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "rating.api.fullname" . }}
+      app: {{ include "rating.operator.api.fullname" . }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

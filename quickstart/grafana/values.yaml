@@ -24,7 +24,7 @@ datasources:
       - name: Rating-operator
         type: simpod-json-datasource
         access: proxy
-        url: http://rating-api.rating-operator.svc.cluster.local:80
+        url: http://rating-operator-api.rating-operator.svc.cluster.local:80
         withCredentials: true
         editable: true
         jsonData:

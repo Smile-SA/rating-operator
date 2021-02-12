@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "rating.api.fullname" . }}
+  name: {{ include "rating.operator.api.fullname" . }}
   labels:
-    app: {{ include "rating.api.fullname" . }}
+    app: {{ include "rating.operator.api.fullname" . }}
     app.kubernetes.io/name: {{ include "rating.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
@@ -17,7 +17,7 @@ spec:
     port: {{ .Values.api.service.port }}
     targetPort: 5012
   selector:
-    app: {{ include "rating.api.fullname" . }}
+    app: {{ include "rating.operator.api.fullname" . }}
     app.kubernetes.io/name: {{ include "rating.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: api
