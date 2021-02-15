@@ -172,7 +172,7 @@ frontend:
     # Helpers for cookies
     # Grafana session through HTTPS requires specific cookie handling
     env:
-      domain: "none"
+      domain: ""
       httponly: "false"
       secure: "false"
       samesite: "none"
