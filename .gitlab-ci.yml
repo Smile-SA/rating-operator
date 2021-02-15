@@ -4,57 +4,26 @@ image: docker:stable
 services:
 - docker:dind
 
-.docker_login: &docker_login |
+.docker_login_gitlab: &docker_login_gitlab |
   echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
 
 stages:
-# - config
 - build
-
-# generate-jsonet:
-#   stage: config
-#   script:
-#     - hack/generate_grafonet.sh # Ici on genere les fichier grafonet depuis le jsonet
-#     - hack/update_dashboards.sh # Ici on change le values.yaml de grafana avec les fichiers generer
-
 
 build-master:
   stage: build
   script:
-  - *docker_login
+  - *docker_login_gitlab
   - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:latest" .
   - docker push "$CI_REGISTRY_IMAGE"
   only:
     refs:
     - master
 
-# build-okd:
-#   stage: build
-#   script:
-#   - hack/okd_prepare.sh # Deplace les fichiers specifiques OKD dans le dossier helm-charts/rating/templates
-#   - cp -r quickstart/openshift/* helm-charts/rating/templates
-#   - *docker_login
-#   - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:okd-latest" .
-#   - docker push "$CI_REGISTRY_IMAGE"
-#   only:
-#     refs:
-#     - master
-
-# build-kube:
-#   stage: build
-#   script:
-#   - *docker_login
-#   - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:kube-latest" .
-#   - docker push "$CI_REGISTRY_IMAGE"
-#   only:
-#     refs:
-#     - master
-
-
 build:
   stage: build
   script:
-  - *docker_login
+  - *docker_login_gitlab
   - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME" .
   - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME"
   except:
