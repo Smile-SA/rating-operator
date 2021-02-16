@@ -155,7 +155,7 @@ engine:
 frontend:
 
   # The address to which you'll be redirected once logged in through the rating-operator
-  url: "prometheus-grafana.monitoring.svc.cluster.local"
+  url: "localhost:3000"
 
   # If you try to connect a different frontend to the application, this might be needed
   allowOrigin: "*"

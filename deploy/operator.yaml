@@ -18,7 +18,7 @@ spec:
       containers:
         - name: rating-operator
           resources: {}
-          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:rename
+          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -47,7 +47,7 @@ spec:
             - name: GRAFANA_BACKEND_URL
               value: "prometheus-grafana.rating.svc.cluster.local"
             - name: FRONTEND_URL
-              value: "prometheus-grafana.rating.svc.cluster.local"
+              value: "localhost:3000"
             - name: ALLOW_ORIGIN
               value: "http://localhost:8080"
             - name: CLUSTER_AUTH
