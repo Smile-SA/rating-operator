@@ -1,7 +1,5 @@
 <img src="./img/Circle_Logo-Rating-Operator.png" width="100">
 
-[![pipeline status](https://git.rnd.alterway.fr/overboard/5gbiller/rating-operator/badges/master/pipeline.svg)](https://git.rnd.alterway.fr/overboard/5gbiller/rating-operator/-/commits/master)
-
 # **RATING-OPERATOR**
 
 
