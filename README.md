@@ -1,6 +1,4 @@
-<img src="./img/Circle_Logo-Rating-Operator.png" width="100">
-
-# **RATING-OPERATOR**
+<img src="./img/rating-operator-logo.png" width="400">
 
 
 ## Overview
