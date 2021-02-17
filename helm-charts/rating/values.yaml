@@ -34,6 +34,8 @@ security:
 prometheus:
   service: prometheus-prometheus-oper-prometheus
   namespace: monitoring
+  schema: http
+  domain: svc.cluster.local
 
 ## Configuration of the api component
 api:
