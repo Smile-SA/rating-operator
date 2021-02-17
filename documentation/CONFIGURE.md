@@ -65,7 +65,7 @@ api:
   # Base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
+    repository: alterwayrnd/rating-operator-api
     tag: master
 
   # Resources allocation
@@ -126,7 +126,7 @@ manager:
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
+    repository: alterwayrnd/rating-operator-manager
     tag: master
 
   # Resources allocation
@@ -146,7 +146,7 @@ engine:
   # Mostly for developpers, the base values should satisfy user needs
   image:
     pullPolicy: Always
-    repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
+    repository: alterwayrnd/rating-operator-engine
     tag: master
 
   # Resources allocation

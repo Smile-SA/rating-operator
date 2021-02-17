@@ -18,7 +18,7 @@ spec:
       containers:
         - name: rating-operator
           resources: {}
-          image: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator:master
+          image: alterwayrnd/rating-operator:master
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
