@@ -36,7 +36,7 @@ prometheus:
   namespace: monitoring
   schema: http
   domain: svc.cluster.local
-
+  port: 9090
 ## Configuration of the api component
 api:
 

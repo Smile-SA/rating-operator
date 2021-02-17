@@ -49,7 +49,7 @@ spec:
           - name: RATING_NAMESPACE
             value: {{ .Release.Namespace }}
           - name: PROMETHEUS_URL
-            value: "{{ .Values.prometheus.schema }}://{{ .Values.prometheus.service }}.{{ .Values.prometheus.namespace }}.{{ .Values.prometheus.domain }}:9090"
+            value: "{{ .Values.prometheus.schema }}://{{ .Values.prometheus.service }}.{{ .Values.prometheus.namespace }}.{{ .Values.prometheus.domain }}:{{ .Values.prometheus.port }}"
           resources:
             {{- toYaml .Values.engine.resources | nindent 12 }}
       {{- with .Values.manager.nodeSelector }}
