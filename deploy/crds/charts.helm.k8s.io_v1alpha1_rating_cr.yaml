@@ -23,11 +23,21 @@ spec:
     # Usually, the default "admin" is enough. Some external applications already using the "admin" name could motivate to change this parameter.
     # Don't forget to edit the Grafana deployment accordingly, to syncronise both adminAccount values.
     adminAccount: admin
-    # Keycloak can be used as an authentication method through the operator.
-    # Setting enabled to "false" will configure the rating-operator to use its own local user management
-    keycloak:
-      enabled: "false"
 
+    # To authentication users in Rating operator three options are possible
+    # Choose one authentication option from the three options (local/ldap/keycloak)
+
+    authentication_type: local
+
+    #  If you set authentication_type to ldap, set the following configuration information of keycloak
+    ldap:
+      ## Below the configuration for the ldap server
+      # serverUrl: "ldap://openldap.{namespace}.svc.cluster:{port}"
+      # adminpassword: ""
+      # ldap_schema: "ou=Tenants,dc=example,dc=org"
+
+    # If you set authentication_type to keycloak, set the following configuration information of keycloak
+    keycloak:
       ## Below the configuration for the Keycloak server
       # serverUrl: "my_url_keycloak"
       # clientID: rating-operator

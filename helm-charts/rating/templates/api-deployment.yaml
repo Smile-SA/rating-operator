@@ -60,7 +60,20 @@ spec:
               value: "{{ .Values.security.auth }}"
             - name: RATING_API_URL
               value: {{ include "rating.operator.api.fullname" . }}-{{ .Release.Namespace }}
-            {{- if eq .Values.security.keycloak.enabled "true" }}
+            {{- if eq .Values.security.authentication_type "ldap" }}
+            - name: LDAP
+              value: "true"
+            - name: LDAP_URL
+              value: {{ .Values.security.ldap.serverUrl }}
+            - name: LDAP_ADMIN_PASSWORD
+              value: {{ .Values.security.ldap.adminpassword }}
+            - name: LDAP_SCHEMA
+              value: {{ .Values.security.ldap.ldap_schema }}
+            {{- else }}
+            - name: LDAP
+              value: "false"
+            {{ end }}  
+            {{- if eq .Values.security.authentication_type "keycloak" }}
             - name: KEYCLOAK
               value: "true"
             - name: KEYCLOAK_URL
