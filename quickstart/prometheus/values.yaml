@@ -13,7 +13,7 @@ grafana:
       defaultDatasourceEnabled: True
   image:
     repository: grafana/grafana
-    tag: 7.3.5
+    tag: 7.5.5
     pullPolicy: IfNotPresent
   # The plugins below are required by the rating-operator datasource
   # Feel free to add more
@@ -916,1542 +916,468 @@ grafana:
     admin:
       admin-static-dashboard:
         json: |-
-          {
-          "__inputs": [ ],
-          "__requires": [ ],
-          "annotations": {
-              "list": [ ]
-          },
-          "editable": true,
-          "gnetId": null,
-          "graphTooltip": 0,
-          "hideControls": false,
-          "id": null,
-          "links": [ ],
-          "panels": [
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 0,
-                    "y": 10
-                },
-                "id": 2,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_medium_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_medium_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_medium_cpu)) * sum(gcp_e2_medium)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-medium",
-                "transparent": true,
-                "type": "stat"
+            {
+              "__inputs": [ ],
+              "__requires": [ ],
+              "annotations": {
+                  "list": [ ]
               },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 4,
-                    "y": 10
-                },
-                "id": 3,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_large_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_large_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_large_cpu)) * sum(gcp_e2_large)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-large",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 8,
-                    "y": 10
-                },
-                "id": 4,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_xlarge_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_xlarge_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_xlarge_cpu)) * sum(gcp_e2_xlarge)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-xlarge",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 12,
-                    "y": 10
-                },
-                "id": 5,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_highmem_2_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu)) * sum(gcp_e2_highmem_2)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-highmem-2",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 16,
-                    "y": 10
-                },
-                "id": 6,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_highcpu_4_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highcpu_4_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highcpu_4_cpu)) * sum(gcp_e2_highcpu_4)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-highcpu-4",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 20,
-                    "y": 10
-                },
-                "id": 7,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_micro_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_micro_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_micro_cpu)) * sum(gcp_e2_micro)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "e2-micro",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 0,
-                    "y": 29
-                },
-                "id": 8,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_medium_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_medium_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_medium_cpu)) * sum(aws_a1_medium)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "a1-medium",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 4,
-                    "y": 29
-                },
-                "id": 9,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_large_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_large_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_large_cpu)) * sum(aws_a1_large)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "a1-large",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 8,
-                    "y": 29
-                },
-                "id": 10,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_xlarge_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_xlarge_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_xlarge_cpu)) * sum(aws_a1_xlarge)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "a1-xlarge",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 12,
-                    "y": 29
-                },
-                "id": 11,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_2_xlarge_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_2_xlarge_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_2_xlarge_cpu)) * sum(aws_a1_2_xlarge)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "a1-2-xlarge",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 16,
-                    "y": 29
-                },
-                "id": 12,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_t4g_micro_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_micro_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_micro_cpu)) * sum(aws_t4g_micro)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "t4g-micro",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 20,
-                    "y": 29
-                },
-                "id": 13,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_t4g_nano_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_nano_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_t4g_nano_cpu)) * sum(aws_t4g_nano)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "t4g-nano",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 0,
-                    "y": 48
-                },
-                "id": 14,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b2s_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b2s_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b2s_cpu)) * sum(aks_b2s)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "b2s",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 4,
-                    "y": 48
-                },
-                "id": 15,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b2ms_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b2ms_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b2ms_cpu)) * sum(aks_b2ms)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "b2ms",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 8,
-                    "y": 48
-                },
-                "id": 16,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b4ms_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b4ms_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b4ms_cpu)) * sum(aks_b4ms)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "b4ms",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 12,
-                    "y": 48
-                },
-                "id": 17,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b1s_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b1s_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b1s_cpu)) * sum(aks_b1s)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "b1s",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 16,
-                    "y": 48
-                },
-                "id": 18,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b1ms_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b1ms_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b1ms_cpu)) * sum(aks_b1ms)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "b1ms",
-                "transparent": true,
-                "type": "stat"
-              },
-              {
-                "datasource": "Prometheus",
-                "fieldConfig": {
-                    "defaults": {
-                      "links": [ ],
-                      "mappings": [ ],
-                      "thresholds": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                          ]
-                      },
-                      "unit": "none"
-                    }
-                },
-                "gridPos": {
-                    "h": 2,
-                    "w": 4,
-                    "x": 20,
-                    "y": 48
-                },
-                "id": 19,
-                "links": [ ],
-                "options": {
-                    "colorMode": "value",
-                    "graphMode": "area",
-                    "justifyMode": "auto",
-                    "orientation": "auto",
-                    "reduceOptions": {
-                      "calcs": [
-                          "mean"
-                      ],
-                      "fields": "",
-                      "values": false
-                    }
-                },
-                "pluginVersion": "7",
-                "targets": [
-                    {
-                      "expr": "((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_a8_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_a8_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_a8_cpu)) * sum(aks_a8)",
-                      "format": "time_series",
-                      "intervalFactor": 2,
-                      "legendFormat": "",
-                      "refId": "A"
-                    }
-                ],
-                "title": "a8",
-                "transparent": true,
-                "type": "stat"
-              }
-          ],
-          "refresh": "",
-          "rows": [ ],
-          "schemaVersion": 26,
-          "style": "dark",
-          "tags": [ ],
-          "templating": {
-              "list": [
-                {
-                    "current": {
-                      "text": "Prometheus",
-                      "value": "Prometheus"
+              "editable": true,
+              "gnetId": null,
+              "graphTooltip": 0,
+              "hideControls": false,
+              "id": null,
+              "links": [ ],
+              "panels": [
+                  {
+                    "collapse": false,
+                    "collapsed": false,
+                    "gridPos": {
+                        "h": 1,
+                        "w": 24,
+                        "x": 0,
+                        "y": 0
                     },
-                    "hide": 0,
-                    "label": null,
-                    "name": "PROMETHEUS_DS",
-                    "options": [ ],
-                    "query": "prometheus",
-                    "refresh": 1,
-                    "regex": "",
-                    "type": "datasource"
-                }
-              ]
-          },
-          "time": {
-              "from": "now-6h",
-              "to": "now"
-          },
-          "timepicker": { },
-          "timezone": "browser",
-          "title": "[Grafonnet] Cost Simulation Static",
-          "version": 0
-        }
-      admin-dynamic-dashboard:
-        json: |-
-          {
-            "__inputs": [ ],
-            "__requires": [ ],
-            "annotations": {
-                "list": [ ]
-            },
-            "editable": true,
-            "gnetId": null,
-            "graphTooltip": 0,
-            "hideControls": false,
-            "id": null,
-            "links": [ ],
-            "panels": [
-                {
-                  "collapse": false,
-                  "collapsed": false,
-                  "gridPos": {
-                      "h": 1,
-                      "w": 24,
-                      "x": 0,
-                      "y": 0
-                  },
-                  "id": 2,
-                  "panels": [ ],
-                  "repeat": null,
-                  "repeatIteration": null,
-                  "repeatRowId": null,
-                  "showTitle": true,
-                  "title": "GCP Biling",
-                  "titleSize": "h6",
-                  "type": "row"
-                },
-                {
-                  "collapse": false,
-                  "collapsed": false,
-                  "gridPos": {
-                      "h": 1,
-                      "w": 24,
-                      "x": 0,
-                      "y": 4
-                  },
-                  "id": 3,
-                  "panels": [ ],
-                  "repeat": null,
-                  "repeatIteration": null,
-                  "repeatRowId": null,
-                  "showTitle": true,
-                  "title": "AWS Biling",
-                  "titleSize": "h6",
-                  "type": "row"
-                },
-                {
-                  "collapse": false,
-                  "collapsed": false,
-                  "gridPos": {
-                      "h": 1,
-                      "w": 24,
-                      "x": 0,
-                      "y": 8
-                  },
-                  "id": 4,
-                  "panels": [ ],
-                  "repeat": null,
-                  "repeatIteration": null,
-                  "repeatRowId": null,
-                  "showTitle": true,
-                  "title": "Azure Biling",
-                  "titleSize": "h6",
-                  "type": "row"
-                },
-                {
-                  "datasource": "Rating-operator",
-                  "fieldConfig": {
-                      "defaults": {
-                        "links": [ ],
-                        "mappings": [ ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                              {
-                                  "color": "green",
-                                  "value": null
-                              }
-                            ]
-                        },
-                        "unit": "none"
-                      }
-                  },
-                  "gridPos": {
-                      "h": 3,
-                      "w": 4,
-                      "x": 0,
-                      "y": 1
-                  },
-                  "id": 5,
-                  "links": [ ],
-                  "maxPerRow": null,
-                  "options": {
-                      "colorMode": "value",
-                      "graphMode": "area",
-                      "justifyMode": "auto",
-                      "orientation": "auto",
-                      "reduceOptions": {
-                        "calcs": [
-                            "mean"
-                        ],
-                        "fields": "",
-                        "values": false
-                      }
-                  },
-                  "pluginVersion": "7",
-                  "repeat": "gcp",
-                  "repeatDirection": "h",
-                  "targets": [
-                      {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"aggregator\": \"$interval\"}",
-                        "refId": "A",
-                        "target": "/metrics/<metric>/<aggregator>",
-                        "type": "table"
-                      }
-                  ],
-                  "title": "$interval gcp_$gcp",
-                  "transparent": true,
-                  "type": "stat"
-                },
-                {
-                  "datasource": "Rating-operator",
-                  "fieldConfig": {
-                      "defaults": {
-                        "links": [ ],
-                        "mappings": [ ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                              {
-                                  "color": "green",
-                                  "value": null
-                              }
-                            ]
-                        },
-                        "unit": "none"
-                      }
-                  },
-                  "gridPos": {
-                      "h": 3,
-                      "w": 4,
-                      "x": 0,
-                      "y": 5
-                  },
-                  "id": 6,
-                  "links": [ ],
-                  "maxPerRow": null,
-                  "options": {
-                      "colorMode": "value",
-                      "graphMode": "area",
-                      "justifyMode": "auto",
-                      "orientation": "auto",
-                      "reduceOptions": {
-                        "calcs": [
-                            "mean"
-                        ],
-                        "fields": "",
-                        "values": false
-                      }
-                  },
-                  "pluginVersion": "7",
-                  "repeat": "aws",
-                  "repeatDirection": "h",
-                  "targets": [
-                      {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_$aws\", \"aggregator\": \"$interval\"}",
-                        "refId": "A",
-                        "target": "/metrics/<metric>/<aggregator>",
-                        "type": "table"
-                      }
-                  ],
-                  "title": "$interval aws_$aws",
-                  "transparent": true,
-                  "type": "stat"
-                },
-                {
-                  "datasource": "Rating-operator",
-                  "fieldConfig": {
-                      "defaults": {
-                        "links": [ ],
-                        "mappings": [ ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                              {
-                                  "color": "green",
-                                  "value": null
-                              }
-                            ]
-                        },
-                        "unit": "none"
-                      }
-                  },
-                  "gridPos": {
-                      "h": 3,
-                      "w": 4,
-                      "x": 0,
-                      "y": 9
-                  },
-                  "id": 7,
-                  "links": [ ],
-                  "maxPerRow": null,
-                  "options": {
-                      "colorMode": "value",
-                      "graphMode": "area",
-                      "justifyMode": "auto",
-                      "orientation": "auto",
-                      "reduceOptions": {
-                        "calcs": [
-                            "mean"
-                        ],
-                        "fields": "",
-                        "values": false
-                      }
-                  },
-                  "pluginVersion": "7",
-                  "repeat": "azure",
-                  "repeatDirection": "h",
-                  "targets": [
-                      {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_$azure\", \"aggregator\": \"$interval\"}",
-                        "refId": "A",
-                        "target": "/metrics/<metric>/<aggregator>",
-                        "type": "table"
-                      }
-                  ],
-                  "title": "$interval azure_$azure",
-                  "transparent": true,
-                  "type": "stat"
-                }
-            ],
-            "refresh": "",
-            "rows": [ ],
-            "schemaVersion": 26,
-            "style": "dark",
-            "tags": [ ],
-            "templating": {
-                "list": [
-                  {
-                      "current": {
-                        "text": "Rating-operator",
-                        "value": "Rating-operator"
-                      },
-                      "hide": 2,
-                      "label": null,
-                      "name": "Rating-operator",
-                      "options": [ ],
-                      "query": "JSON",
-                      "refresh": 1,
-                      "regex": "",
-                      "type": "datasource"
+                    "id": 2,
+                    "panels": [ ],
+                    "repeat": null,
+                    "repeatIteration": null,
+                    "repeatRowId": null,
+                    "showTitle": true,
+                    "title": "GCP Biling",
+                    "titleSize": "h6",
+                    "type": "row"
                   },
                   {
-                      "allValue": null,
-                      "current": {
-                        "text": "daily",
-                        "value": "daily"
-                      },
-                      "hide": 0,
-                      "includeAll": false,
-                      "label": "",
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                        {
-                            "text": "daily",
-                            "value": "daily"
-                        },
-                        {
-                            "text": "weekly",
-                            "value": "weekly"
-                        },
-                        {
-                            "text": "monthly",
-                            "value": "monthly"
+                    "collapse": false,
+                    "collapsed": false,
+                    "gridPos": {
+                        "h": 1,
+                        "w": 24,
+                        "x": 0,
+                        "y": 4
+                    },
+                    "id": 3,
+                    "panels": [ ],
+                    "repeat": null,
+                    "repeatIteration": null,
+                    "repeatRowId": null,
+                    "showTitle": true,
+                    "title": "AWS Biling",
+                    "titleSize": "h6",
+                    "type": "row"
+                  },
+                  {
+                    "collapse": false,
+                    "collapsed": false,
+                    "gridPos": {
+                        "h": 1,
+                        "w": 24,
+                        "x": 0,
+                        "y": 8
+                    },
+                    "id": 4,
+                    "panels": [ ],
+                    "repeat": null,
+                    "repeatIteration": null,
+                    "repeatRowId": null,
+                    "showTitle": true,
+                    "title": "Azure Biling",
+                    "titleSize": "h6",
+                    "type": "row"
+                  },
+                  {
+                    "datasource": "Rating-operator",
+                    "fieldConfig": {
+                        "defaults": {
+                          "links": [ ],
+                          "mappings": [ ],
+                          "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                              ]
+                          },
+                          "unit": "none"
                         }
-                      ],
-                      "query": "daily,weekly,monthly",
-                      "refresh": 0,
-                      "type": "custom"
+                    },
+                    "gridPos": {
+                        "h": 3,
+                        "w": 4,
+                        "x": 0,
+                        "y": 1
+                    },
+                    "id": 5,
+                    "links": [ ],
+                    "maxPerRow": null,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                          "calcs": [
+                              "mean"
+                          ],
+                          "fields": "",
+                          "values": false
+                        }
+                    },
+                    "pluginVersion": "7",
+                    "repeat": "gcp",
+                    "repeatDirection": "h",
+                    "targets": [
+                        {
+                          "data": "{\"metric\": \"node_cost_simulation_gcp_$gcp\", \"aggregator\": \"$interval\"}",
+                          "refId": "A",
+                          "target": "/metrics/<metric>/<aggregator>",
+                          "type": "table"
+                        }
+                    ],
+                    "title": "$interval gcp_$gcp",
+                    "transparent": true,
+                    "type": "stat"
                   },
                   {
-                      "allValue": null,
-                      "current": {
-                        "selected": true,
-                        "text": "All",
-                        "value": [
-                            "$__all"
-                        ]
-                      },
-                      "hide": 0,
-                      "includeAll": true,
-                      "label": "",
-                      "multi": true,
-                      "name": "gcp",
-                      "options": [
-                        {
-                            "selected": true,
-                            "text": "All",
-                            "value": "$__all"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_medium",
-                            "value": "e2_medium"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_large",
-                            "value": "e2_large"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_xlarge",
-                            "value": "e2_xlarge"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_highmem_2",
-                            "value": "e2_highmem_2"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_highcpu_4",
-                            "value": "e2_highcpu_4"
-                        },
-                        {
-                            "selected": false,
-                            "text": "e2_micro",
-                            "value": "e2_micro"
+                    "datasource": "Rating-operator",
+                    "fieldConfig": {
+                        "defaults": {
+                          "links": [ ],
+                          "mappings": [ ],
+                          "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                              ]
+                          },
+                          "unit": "none"
                         }
-                      ],
-                      "query": "e2_medium,e2_large,e2_xlarge,e2_highmem_2,e2_highcpu_4,e2_micro",
-                      "refresh": 0,
-                      "type": "custom"
+                    },
+                    "gridPos": {
+                        "h": 3,
+                        "w": 4,
+                        "x": 0,
+                        "y": 5
+                    },
+                    "id": 6,
+                    "links": [ ],
+                    "maxPerRow": null,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                          "calcs": [
+                              "mean"
+                          ],
+                          "fields": "",
+                          "values": false
+                        }
+                    },
+                    "pluginVersion": "7",
+                    "repeat": "aws",
+                    "repeatDirection": "h",
+                    "targets": [
+                        {
+                          "data": "{\"metric\": \"node_cost_simulation_aws_$aws\", \"aggregator\": \"$interval\"}",
+                          "refId": "A",
+                          "target": "/metrics/<metric>/<aggregator>",
+                          "type": "table"
+                        }
+                    ],
+                    "title": "$interval aws_$aws",
+                    "transparent": true,
+                    "type": "stat"
                   },
                   {
-                      "allValue": null,
-                      "current": {
-                        "selected": true,
-                        "text": "All",
-                        "value": [
-                            "$__all"
-                        ]
-                      },
-                      "hide": 0,
-                      "includeAll": true,
-                      "label": "",
-                      "multi": true,
-                      "name": "aws",
-                      "options": [
-                        {
-                            "selected": true,
-                            "text": "All",
-                            "value": "$__all"
-                        },
-                        {
-                            "selected": false,
-                            "text": "a1_medium",
-                            "value": "a1_medium"
-                        },
-                        {
-                            "selected": false,
-                            "text": "a1_large",
-                            "value": "a1_large"
-                        },
-                        {
-                            "selected": false,
-                            "text": "a1_xlarge",
-                            "value": "a1_xlarge"
-                        },
-                        {
-                            "selected": false,
-                            "text": "a1_2_xlarge",
-                            "value": "a1_2_xlarge"
-                        },
-                        {
-                            "selected": false,
-                            "text": "t4g_micro",
-                            "value": "t4g_micro"
-                        },
-                        {
-                            "selected": false,
-                            "text": "t4g_nano",
-                            "value": "t4g_nano"
+                    "datasource": "Rating-operator",
+                    "fieldConfig": {
+                        "defaults": {
+                          "links": [ ],
+                          "mappings": [ ],
+                          "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                              ]
+                          },
+                          "unit": "none"
                         }
-                      ],
-                      "query": "a1_medium,a1_large,a1_xlarge,a1_2_xlarge,t4g_micro,t4g_nano",
-                      "refresh": 0,
-                      "type": "custom"
-                  },
-                  {
-                      "allValue": null,
-                      "current": {
-                        "selected": true,
-                        "text": "All",
-                        "value": [
-                            "$__all"
-                        ]
-                      },
-                      "hide": 0,
-                      "includeAll": true,
-                      "label": "",
-                      "multi": true,
-                      "name": "azure",
-                      "options": [
-                        {
-                            "selected": true,
-                            "text": "All",
-                            "value": "$__all"
-                        },
-                        {
-                            "selected": false,
-                            "text": "b2s",
-                            "value": "b2s"
-                        },
-                        {
-                            "selected": false,
-                            "text": "b2ms",
-                            "value": "b2ms"
-                        },
-                        {
-                            "selected": false,
-                            "text": "b4ms",
-                            "value": "b4ms"
-                        },
-                        {
-                            "selected": false,
-                            "text": "b1s",
-                            "value": "b1s"
-                        },
-                        {
-                            "selected": false,
-                            "text": "b1ms",
-                            "value": "b1ms"
-                        },
-                        {
-                            "selected": false,
-                            "text": "a8",
-                            "value": "a8"
+                    },
+                    "gridPos": {
+                        "h": 3,
+                        "w": 4,
+                        "x": 0,
+                        "y": 9
+                    },
+                    "id": 7,
+                    "links": [ ],
+                    "maxPerRow": null,
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                          "calcs": [
+                              "mean"
+                          ],
+                          "fields": "",
+                          "values": false
                         }
-                      ],
-                      "query": "b2s,b2ms,b4ms,b1s,b1ms,a8",
-                      "refresh": 0,
-                      "type": "custom"
+                    },
+                    "pluginVersion": "7",
+                    "repeat": "azure",
+                    "repeatDirection": "h",
+                    "targets": [
+                        {
+                          "data": "{\"metric\": \"node_cost_simulation_aks_$azure\", \"aggregator\": \"$interval\"}",
+                          "refId": "A",
+                          "target": "/metrics/<metric>/<aggregator>",
+                          "type": "table"
+                        }
+                    ],
+                    "title": "$interval azure_$azure",
+                    "transparent": true,
+                    "type": "stat"
                   }
-                ]
-            },
-            "time": {
-                "from": "now-6h",
-                "to": "now"
-            },
-            "timepicker": { },
-            "timezone": "browser",
-            "title": "[Grafonnet] Cost Simulation Dynamic",
-            "version": 0
-          }
+              ],
+              "refresh": "",
+              "rows": [ ],
+              "schemaVersion": 26,
+              "style": "dark",
+              "tags": [ ],
+              "templating": {
+                  "list": [
+                    {
+                        "current": {
+                          "text": "Rating-operator",
+                          "value": "Rating-operator"
+                        },
+                        "hide": 2,
+                        "label": null,
+                        "name": "Rating-operator",
+                        "options": [ ],
+                        "query": "JSON",
+                        "refresh": 1,
+                        "regex": "",
+                        "type": "datasource"
+                    },
+                    {
+                        "allValue": null,
+                        "current": {
+                          "text": "daily",
+                          "value": "daily"
+                        },
+                        "hide": 0,
+                        "includeAll": false,
+                        "label": "",
+                        "multi": false,
+                        "name": "interval",
+                        "options": [
+                          {
+                              "text": "daily",
+                              "value": "daily"
+                          },
+                          {
+                              "text": "weekly",
+                              "value": "weekly"
+                          },
+                          {
+                              "text": "monthly",
+                              "value": "monthly"
+                          }
+                        ],
+                        "query": "daily,weekly,monthly",
+                        "refresh": 0,
+                        "type": "custom"
+                    },
+                    {
+                        "allValue": null,
+                        "current": {
+                          "selected": true,
+                          "text": "All",
+                          "value": [
+                              "$__all"
+                          ]
+                        },
+                        "hide": 0,
+                        "includeAll": true,
+                        "label": "",
+                        "multi": true,
+                        "name": "gcp",
+                        "options": [
+                          {
+                              "selected": true,
+                              "text": "All",
+                              "value": "$__all"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_medium",
+                              "value": "e2_medium"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_large",
+                              "value": "e2_large"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_xlarge",
+                              "value": "e2_xlarge"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_highmem_2",
+                              "value": "e2_highmem_2"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_highcpu_4",
+                              "value": "e2_highcpu_4"
+                          },
+                          {
+                              "selected": false,
+                              "text": "e2_micro",
+                              "value": "e2_micro"
+                          }
+                        ],
+                        "query": "e2_medium,e2_large,e2_xlarge,e2_highmem_2,e2_highcpu_4,e2_micro",
+                        "refresh": 0,
+                        "type": "custom"
+                    },
+                    {
+                        "allValue": null,
+                        "current": {
+                          "selected": true,
+                          "text": "All",
+                          "value": [
+                              "$__all"
+                          ]
+                        },
+                        "hide": 0,
+                        "includeAll": true,
+                        "label": "",
+                        "multi": true,
+                        "name": "aws",
+                        "options": [
+                          {
+                              "selected": true,
+                              "text": "All",
+                              "value": "$__all"
+                          },
+                          {
+                              "selected": false,
+                              "text": "a1_medium",
+                              "value": "a1_medium"
+                          },
+                          {
+                              "selected": false,
+                              "text": "a1_large",
+                              "value": "a1_large"
+                          },
+                          {
+                              "selected": false,
+                              "text": "a1_xlarge",
+                              "value": "a1_xlarge"
+                          },
+                          {
+                              "selected": false,
+                              "text": "a1_2_xlarge",
+                              "value": "a1_2_xlarge"
+                          },
+                          {
+                              "selected": false,
+                              "text": "t4g_micro",
+                              "value": "t4g_micro"
+                          },
+                          {
+                              "selected": false,
+                              "text": "t4g_nano",
+                              "value": "t4g_nano"
+                          }
+                        ],
+                        "query": "a1_medium,a1_large,a1_xlarge,a1_2_xlarge,t4g_micro,t4g_nano",
+                        "refresh": 0,
+                        "type": "custom"
+                    },
+                    {
+                        "allValue": null,
+                        "current": {
+                          "selected": true,
+                          "text": "All",
+                          "value": [
+                              "$__all"
+                          ]
+                        },
+                        "hide": 0,
+                        "includeAll": true,
+                        "label": "",
+                        "multi": true,
+                        "name": "azure",
+                        "options": [
+                          {
+                              "selected": true,
+                              "text": "All",
+                              "value": "$__all"
+                          },
+                          {
+                              "selected": false,
+                              "text": "b2s",
+                              "value": "b2s"
+                          },
+                          {
+                              "selected": false,
+                              "text": "b2ms",
+                              "value": "b2ms"
+                          },
+                          {
+                              "selected": false,
+                              "text": "b4ms",
+                              "value": "b4ms"
+                          },
+                          {
+                              "selected": false,
+                              "text": "b1s",
+                              "value": "b1s"
+                          },
+                          {
+                              "selected": false,
+                              "text": "b1ms",
+                              "value": "b1ms"
+                          },
+                          {
+                              "selected": false,
+                              "text": "a8",
+                              "value": "a8"
+                          }
+                        ],
+                        "query": "b2s,b2ms,b4ms,b1s,b1ms,a8",
+                        "refresh": 0,
+                        "type": "custom"
+                    }
+                  ]
+              },
+              "time": {
+                  "from": "now-6h",
+                  "to": "now"
+              },
+              "timepicker": { },
+              "timezone": "browser",
+              "title": "[Grafonnet] Cost Simulation Dynamic",
+              "version": 0
+            }
       admin-dashboard:
         json: |-
           {
@@ -2570,9 +1496,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2626,9 +1552,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2682,9 +1608,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_medium\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2738,9 +1664,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2794,9 +1720,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2850,9 +1776,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_large\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2906,9 +1832,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -2962,9 +1888,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3018,9 +1944,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_xlarge\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3074,9 +2000,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3130,9 +2056,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3186,9 +2112,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highmem_2\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3242,9 +2168,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3298,9 +2224,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3354,9 +2280,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_highcpu_4\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3410,9 +2336,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3466,9 +2392,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3522,9 +2448,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_gcp_e2_micro\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3578,9 +2504,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3634,9 +2560,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3690,9 +2616,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_medium\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3746,9 +2672,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3802,9 +2728,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3858,9 +2784,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_large\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3914,9 +2840,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -3970,9 +2896,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4026,9 +2952,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_xlarge\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4082,9 +3008,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4138,9 +3064,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4194,9 +3120,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_a1_2_xlarge\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4250,9 +3176,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4306,9 +3232,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4362,9 +3288,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_micro\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4418,9 +3344,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4474,9 +3400,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4530,9 +3456,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aws_t4g_nano\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4586,9 +3512,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4642,9 +3568,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4698,9 +3624,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2s\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4754,9 +3680,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4810,9 +3736,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4866,9 +3792,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b2ms\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4922,9 +3848,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -4978,9 +3904,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5034,9 +3960,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b4ms\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5090,9 +4016,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5146,9 +4072,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5202,9 +4128,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1s\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5258,9 +4184,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5314,9 +4240,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5370,9 +4296,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_b1ms\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5426,9 +4352,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"daily\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/daily",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5482,9 +4408,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"weekly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/weekly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -5538,9 +4464,9 @@ grafana:
                   "pluginVersion": "7",
                   "targets": [
                       {
-                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\"}",
+                        "data": "{\"metric\": \"node_cost_simulation_aks_a8\", \"aggregator\": \"monthly\"}",
                         "refId": "A",
-                        "target": "/metrics/<metric>/monthly",
+                        "target": "/metrics/<metric>/<aggregator>",
                         "type": "table"
                       }
                   ],
@@ -6538,6 +5464,6 @@ grafana:
             },
             "timepicker": { },
             "timezone": "browser",
-            "title": "[Grafonnet] Cost Simulation",
+            "title": "[Grafonnet] Cloud Cost Simulation",
             "version": 0
           }

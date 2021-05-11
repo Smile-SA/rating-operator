@@ -37,7 +37,7 @@ You can also install both to try it out.
 
 Once the storage provider is installed, if you do not intend on testing both, we recommand skipping to the next step.
 
-To modify the provider storageClass, follow the instructions in [configuration](/documentation/CONFIGURATION.md).
+To modify the provider storageClass, follow the instructions in [configuration](/documentation/CONFIGURE.md).
 
 #### *Longhorn*
 
@@ -259,9 +259,9 @@ After the above installation, the prometheus URL inside the cluster should be
 `http://prometheus-prometheus-oper-prometheus.monitoring:9090/`, without
 authentication.
 
-#### Grafana
+#### *Grafana*
 
-##### Standard
+##### 1. Standard
 
 **prometheus-operator** deploys its own **Grafana** instance.
 Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana configuration that includes:
@@ -273,12 +273,137 @@ Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana confi
   - Application specifics
   - Rating-operator resources consumption
 
-##### Non-standard
+##### 2. Non-standard
 
 If, for any reason, you cannot access or modify the main Grafana instance of your cluster, we provide a script to install Grafana along the rating-operator.
 Don't forget to update the `deploy/operator.yaml` with the adress of your Grafana instance.
 
-More infos in the [configuration documentation](/documentation/CONFIGURATION.md).
+More infos in the [configuration documentation](/documentation/CONFIGURE.md).
+
+### *Users authentication*
+In Rating operator, we provide three options for users authentication:
+
+1. **Local authentication** using the Postgresql database.
+2. **Keycloack**: an open source identity and access management.
+3. **Lightweight Directory Access Protocol (LDAP)**: compatible with LDAP open source solutions such as OpenLDAP. 
+
+
+More details for each option is depicted in this [document](/documentation/FEATURES.md).
+
+In the following, we showcase how to install locally keycloak or openldap.
+
+#### 1. Keycloak installation 
+
+Before deploying keycloak, you can set the password of your keycloak admin user in this [file](/quickstart/keycloak/keycloak.yaml): 
+```yml
+ spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:12.0.2
+        env:
+        - name: KEYCLOAK_USER
+          value: "admin"
+        - name: KEYCLOAK_PASSWORD
+          value: "admin_password"
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+
+```
+Deploy keycloak with:
+
+```sh
+$ ./quickstart/keycloak/install.sh
+``` 
+
+After few seconds:
+
+```sh
+$ kubectl get all -n keycloak
+
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/keycloak-7fbc885b8d-cxvnm   0/1     Running   0          11s
+
+NAME               TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/keycloak   LoadBalancer   10.152.183.253   <pending>     8080:31783/TCP   12s
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/keycloak   0/1     1            0           11s
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/keycloak-7fbc885b8d   1         1         0       11s
+
+```
+
+Once deployed, you can access to keycloak web interface and configure it. You also need to create a `namespaces` variable, see more details on how to configure keycloak in this [document](/documentation/CONFIGURE.md). 
+
+#### 2. Openldap installation and configuration
+
+We will use the chart of the helm-openldap repository for this deployment:
+
+**https://github.com/jp-gouin/helm-openldap**
+
+```sh
+$ helm repo add helm-openldap https://jp-gouin.github.io/helm-openldap/
+"helm search repo helm-openldap" has been added to your repositories
+```
+
+Once added to your helm repository, update it to be sure to have the latest version
+
+```sh
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "helm-openldap" chart repository
+Update Complete. ⎈ Happy Helming!⎈
+```
+The openldap configuration file is set by default in this [config file](https://github.com/jp-gouin/helm-openldap/blob/master/values.yaml). You can modify the configuration before deployement in this [file](/quickstart/openldap/values.yaml):
+
+```yml
+# Default Passwords to use, stored as a secret.
+# You can override these at install time with
+# helm install openldap --set openldap.adminPassword=<passwd>,openldap.configPassword=<passwd>
+adminPassword: Not@SecurePassw0rd
+configPassword: Not@SecurePassw0rd
+
+```
+When the helm repository is updated, deploy the openldap with:
+
+```sh
+$ ./quickstart/openldap/install.sh
+``` 
+This chart will deploy the following:
+
+- Instantiate 3 instances of OpenLDAP server with multi-master replication
+- A phpldapadmin to administrate the OpenLDAP server
+- ltb-passwd for self service password
+
+After few seconds:
+
+```sh
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/openldap-0                               1/1     Running   0          6s
+pod/openldap-1                               1/1     Running   0          11s
+pod/openldap-2                               1/1     Running   0          12s
+pod/openldap-ltb-passwd-685f74546-4smsb      1/1     Running   0          10s
+pod/openldap-phpldapadmin-579d4bc8cd-fdpl6   1/1     Running   0          7s
+
+NAME                            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+service/openldap                ClusterIP   10.152.183.97   <none>        389/TCP,636/TCP   10s
+service/openldap-headless       ClusterIP   None            <none>        389/TCP           10s
+service/openldap-ltb-passwd     ClusterIP   10.152.183.51   <none>        80/TCP            10s
+service/openldap-phpldapadmin   ClusterIP   10.152.183.93   <none>        80/TCP            10s
+
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/openldap-ltb-passwd     1/1     1            1            6s
+deployment.apps/openldap-phpldapadmin   1/1     1            1            6s
+
+NAME                                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/openldap-ltb-passwd-685f74546      1         1         1       10s
+replicaset.apps/openldap-phpldapadmin-579d4bc8cd   1         1         1       12s
+
+NAME                        READY   AGE
+statefulset.apps/openldap   3/3     10s
+```
+Once deployed, you can configure it. You also need to create the ldap schema including the `namespaces` variable, see more details on how to configure openldap in this [document](/documentation/CONFIGURE.md). 
 
 ### *Metering Operator* (OPTIONAL, DEPRECATED)
 
@@ -501,4 +626,20 @@ If you installed Grafana manually, run:
 
 ```sh
 $ GRAFANA_NAMESPACE=rating ./quickstart/grafana/uninstall.sh
+```
+
+### Keycloak
+
+To remove keycloak, run:
+
+```sh
+$ ./quickstart/keycloak/uninstall.sh
+```
+
+### Keycloak
+
+To remove openldap, run:
+
+```sh
+$ ./quickstart/openldap/uninstall.sh
 ```

@@ -1,0 +1,20 @@
+# Default Passwords to use, stored as a secret.
+# You can override these at install time with
+# helm install openldap --set openldap.adminPassword=<passwd>,openldap.configPassword=<passwd>
+adminPassword: Not@SecurePassw0rd
+configPassword: Not@SecurePassw0rd
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "longhorn"
+  existingClaim: openldap-pvc
+  accessModes:
+    - ReadWriteOnce
+  size: 2Gi

@@ -23,184 +23,209 @@ This is the common value file, containing what will be used to generate the rati
 
 ```yml
 ## The security part of the configuration is related to your cluster authentication method (cert files, token, non local users management)
-security:
-  # The "auth" flag enables TLS/HTTPS verification in the component
-  # Enable it if your cluster uses HTTPS
-  auth: "true"
+ security:
+    # The "auth" flag enables TLS/HTTPS verification in the component
+    # Enable it if your cluster uses HTTPS
+    auth: "false"
 
-  # The "adminToken" string configure the application security key
-  # It is used for administrator requests to the rating-operator-api and as a secret key for session encoding
-  token:
-    admin: thisisadmintoken
+    # The "adminToken" string configure the application security key
+    # It is used for administrator requests to the rating-operator-api and as a secret key for session encoding
+    token:
+      admin: thisisadmintoken
 
-  # Keycloak can be used as an authentication method through the operator.
-  # Setting enabled to "false" will configure the rating-operator to use its own local user management
-  keycloak:
-    enabled: "true"
+    # The "adminAccount" variable defines the which tenant is considered super-admin.
+    # Usually, the default "admin" is enough. Some external applications already using the "admin" name could motivate to change this parameter.
+    # Don't forget to edit the Grafana deployment accordingly, to syncronise both adminAccount values.
+    # the super-admin account password is the same with Grafana password 
+    adminAccount: admin
 
-    ## Below the configuration for the Keycloak server
-    serverUrl: your_url
-    clientID: rating-operator
-    realmName: your_realm
-    clientSecretKey: "random_secret_key"
+    # To authentication users in Rating operator three options are possible
+    # Choose one authentication option from the three options (local/ldap/keycloak)
 
-## Location of the prometheus component
-prometheus:
-  service: prometheus-prometheus-oper-prometheus
-  namespace: monitoring
+    authentication_type: ldap
 
-## Configuration of the api component
-api:
+    #  If you set authentication_type to ldap, set the following configuration information of keycloak
+    ldap:
+      ## Below the configuration for the ldap server
+      serverUrl: "ldap://openldap.ns1.svc.cluster.local:389"
+      adminpassword: ""
+      ldap_schema: "ou=Tenants,dc=example,dc=org"
 
-  # Pod name 
-  name: api
+    # If you set authentication_type to keycloak, set the following configuration information of keycloak
+    keycloak:
+      ## Below the configuration for the Keycloak server
+      # serverUrl: "http://keycloak.default.svc.cluster.local:8080/auth/"
+      # clientID: Rating
+      # realmName: "Rating operator"
+      # clientSecretKey: "your client secret key"
 
-  # Below lies the name of the postgresql pod running along the rating-operator-api
-  config:
-    postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
-    postgres_secret: "{{ .Release.Name }}-postgresql"
+  ## Location of the prometheus component
+  prometheus:
+    service: prometheus-prometheus-oper-prometheus
+    namespace: monitoring
+    schema: http
+    domain: svc.cluster.local
+    port: 9090
 
-  # Image tags
-  # These options are mostly for developpers
-  # Base values should satisfy user needs
-  image:
-    pullPolicy: Always
-    repository: alterwayrnd/rating-operator-api
-    tag: master
+  ## Configuration of the api component
+  api:
 
-  # Resources allocation
-  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
-  affinity: {}
-  nodeSelector: {}
-  resources: {}
-  tolerations: []
+    # Pod name 
+    name: api
 
-  # rating-operator-api service configuration
-  # To be used to expose the api to the web
+    # Below lies the name of the postgresql pod running along the rating-operator-api
+    config:
+      postgres_hostname: "{{ .Release.Name }}-postgresql-headless"
+      postgres_secret: "{{ .Release.Name }}-postgresql"
+
+    # Image tags
+    # These options are mostly for developpers
+    # Base values should satisfy user needs
+    image:
+      pullPolicy: Always
+      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
+      tag: master-test-2
+
+    # Resources allocation
+    # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+    affinity: {}
+    nodeSelector: {}
+    resources: {}
+    tolerations: []
+
+    # rating-operator-api service configuration
+    # To be used to expose the api to the web
+    service:
+      port: 80
+      type: ClusterIP
+    
+    # The rating-operator supports rook-ceph and longhorn storageClasses out of the box
+    # Follow the rating-operator documentation for more details about their installation and configuration.
+    # Different storageClass / provider could be used, but we do not warranty positive results.
+    storage:
+      storageClass: longhorn
+
+  # This value configuration where to reach the metering-operator storage system
+  # Do not modify if you don't have a specific need
+  # The usage of metering-operator is deprecated
+  metering:
+    presto_database_uri: presto://root@presto.metering:8080/hive/metering
+
+  # Storage pod configuration
+  # Uses a compressed bitnami/postgresql chart
+  # See https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml for more options
+  global:
+    storageClass: longhorn
+    postgresql:
+      storageClass: longhorn
+  storageClass: longhorn
+  postgresql:
+    enabled: true
+    
+    # As mentionned above, rating-operator support rook-ceph and longhorn out of the box
+    storageClass: longhorn
+
+    # Both password and PostgresPassword have to be set if your postgresqlUsername is "postgres"
+    postgresqlUsername: postgres
+    postgresqlPassword: notasecret
+    postgresqlPostgresPassword: notasecret
+
+    # Openshift/OKD specifics
+    # Modify only if you have trouble allocating / RBAC problems with your storage pod on Openshift
+    # securityContext:                                                                                                                                                                 
+    #   enabled: true                                                                                                                                                                  
+    #   fsGroup: 1000600000
+    #   runAsUser: 1000600000
+    # volumePermissions:                                                                                                                                                               
+    #   enabled: false                                                                                                                                                                 
+    #   securityContext:                                                                                                                                                               
+    #     runAsUser: 1000600000
+
+  ## Configuration of the manager component
+  manager:
+
+    # Pod name
+    name: manager
+
+    # Image tags
+    # Mostly for developpers, the base values should satisfy user needs
+    image:
+      pullPolicy: Always
+      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
+      tag: master
+
+    # Resources allocation
+    # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+    affinity: {}
+    nodeSelector: {}
+    resources: {}
+    tolerations: []
+
+  ## Configuration of the engine component
+  engine:
+    
+    # Pod name
+    name: engine
+
+    # Image tags
+    # Mostly for developpers, the base values should satisfy user needs
+    image:
+      pullPolicy: Always
+      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
+      tag: master
+
+    # Resources allocation
+    # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
+    affinity: {}
+    nodeSelector: {}
+    resources: {}
+    tolerations: []
+
+  ## Configuration of the frontend component 
+  # Grafana is used as the base frontend for the rating-operator
+  frontend:
+
+    # The address to which you'll be redirected once logged in through the rating-operator
+    url: "localhost:3000"
+
+    # If you try to connect a different frontend to the application, this might be needed
+    allowOrigin: "*"
+
+    # Grafana configuration
+    grafana:
+
+      # Password for the administrator account
+      password: prom-operator
+
+      # The address toward which the requests made to Grafana will be directed
+      backend: "prometheus-grafana.monitoring.svc.cluster.local"
+
+      # Helpers for cookies
+      # Grafana session through HTTPS requires specific cookie handling
+      env:
+        domain: ""
+        httponly: "false"
+        secure: "false"
+        samesite: "none"
+
+
+  # Convenience options, usually left as default
+  rbac:
+    create: true
   service:
     port: 80
     type: ClusterIP
-  
-  # The rating-operator supports rook-ceph-block and longhorn storageClasses out of the box
-  # Follow the rating-operator documentation for more details about their installation and configuration.
-  # Different storageClass / provider could be used, but we do not warranty positive results.
-  storage:
-    storageClass: longhorn
-
-# This value configuration where to reach the metering-operator storage system
-# Do not modify if you don't have a specific need
-# The usage of metering-operator is deprecated
-metering:
-  presto_database_uri: presto://root@presto.metering:8080/hive/metering
-
-# Storage pod configuration
-# Uses a compressed bitnami/postgresql chart
-# See https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml for more options
-postgresql:
-  enabled: true
-  
-  # As mentionned above, rating-operator support rook-ceph-block and longhorn out of the box
-  storageClass: longhorn
-
-  # Both password and PostgresPassword have to be set if your postgresqlUsername is "postgres"
-  postgresqlUsername: postgres
-  postgresqlPassword: notasecret
-  postgresqlPostgresPassword: notasecret
-
-  # Openshift/OKD specifics
-  # Modify only if you have trouble allocating / RBAC problems with your storage pod on Openshift
-    enabled: true
-    fsGroup: 1000600000
-    runAsUser: 1000600000
-  volumePermissions:                                                                                                                                                               
+  nameOverride: null
+  networkPolicy:
     enabled: false
-      runAsUser: 1000600000
-
-## Configuration of the manager component
-manager:
-
-  # Pod name
-  name: manager
-
-  # Image tags
-  # Mostly for developpers, the base values should satisfy user needs
-  image:
-    pullPolicy: Always
-    repository: alterwayrnd/rating-operator-manager
-    tag: master
-
-  # Resources allocation
-  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
-  affinity: {}
-  nodeSelector: {}
-  resources: {}
-  tolerations: []
-
-## Configuration of the engine component
-engine:
-  
-  # Pod name
-  name: engine
-
-  # Image tags
-  # Mostly for developpers, the base values should satisfy user needs
-  image:
-    pullPolicy: Always
-    repository: alterwayrnd/rating-operator-engine
-    tag: master
-
-  # Resources allocation
-  # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
-  affinity: {}
-  nodeSelector: {}
-  resources: {}
-  tolerations: []
-
-## Configuration of the frontend component 
-# Grafana is used as the base frontend for the rating-operator
-frontend:
-
-  # The address to which you'll be redirected once logged in through the rating-operator
-  url: "your_grafana_url"
-
-  # If you try to connect a different frontend to the application, this might be needed
-  allowOrigin: "*"
-
-  # Grafana configuration
-  grafana:
-
-    # Password for the administrator account
-    password: admin
-
-    # The address toward which the requests made to Grafana will be directed
-    backend: your_grafana_url
-
-    # Helpers for cookies
-    # Grafana session through HTTPS requires specific cookie handling
-    env:
-      domain: "your_domain"
-      httponly: "true"
-      secure: "true"
-      samesite: "none"
-
-
-# Convenience options, usually left as default
-rbac:
-  create: true
-service:
-  port: 80
-  type: ClusterIP
-nameOverride: null
-networkPolicy:
-  enabled: false
-fullnameOverride: null
-ingress:
-  annotations: {}
-  enabled: false
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
+  fullnameOverride: null
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts:
+      - host: chart-example.local
+        paths: []
+    tls: []
 ```
 
 ### Watches.yaml
@@ -360,3 +385,100 @@ grafana:
 The Grafana configuration is included in the Prometheus one. Please refer to the above.
 
 The configuration for the standalone Grafana installation is located at `./quickstart/grafana/values.yaml`.
+
+## Keycloak
+To access to the keycloak web interface:
+
+```sh
+kubectl port-forward keycloak-pod-name 8080:8080
+
+```
+You can then access to: http://localhost:8080
+
+To configure keycloak, follow this resumed steps (see more configuration details in [this page](https://www.keycloak.org/docs/latest/server_admin/)):
+1. Start first by creating your realm with a specific name `e.g. rating` (a *realm* manages a set of users, credentials, roles, and groups. A user belongs to and logs into a realm. Realms are isolated from one another and can only manage and authenticate the users that they control.):
+
+
+<img style="BORDER-TOP-COLOR: #000000; BORDER-LEFT-COLOR: #000000; BORDER-RIGHT-COLOR: #000000;
+          BORDER-BOTTOM-COLOR: #000000;" border="5" src="/img/realm.png" width="500">
+
+2. Access to the created realm and click to clients in the left sidebar to create a new client (*clients* are entities that can request Keycloak to authenticate a user. Most often, clients are applications and services that want to use Keycloak to secure themselves and provide a single sign-on solution.). Set the parameters as follows:
+
+      - Access type: confidential
+      - Standard flow enabled: OFF
+      - Direct access grant: ON
+
+<img src="/img/client.png" width="800">
+
+3. Create a user set the password to not temporary (*users* are entities that are able to log into the rating operator application).
+
+<img src="/img/user.png" width="800">
+
+4. Configure namespaces for the user:
+
+  1. Add the `namespaces` variable for the user in the user attributes:
+
+   <img src="/img/namespaces.png" width="800">
+  
+  2. Add a mapper to the client, to enable sending this attribute in the user login token:
+  
+  <img src="/img/mappers.png" width="700">
+
+Once done, you can add the realm, client id and secret in the configuation [file](/deploy/crds/charts.helm.k8s.io_v1alpha1_rating_cr.yaml) as described above.
+The client secret can be found in the `credentials` tab:
+<img src="/img/key.png" width="580">
+
+**NOTE**: the namespaces should be separated with a dash "-" (e.g. namespaces= "ns1-ns2").
+
+Each created user in keycloak belongs to a group either `admin` or `user`. To specify the group of a user, create the attribute named `group` in keycloak with the same steps as the `namespaces` attribute. Set the value of the `group` attribute to `admin` for admin-user and `user` for a normal user (see types of Rating operator users in his [file](/documentation/CONFIGURE.md)).
+
+## Openldap
+
+Once openldap is deployed (see how to install openldap in this [file](/documentation/install.md)), create the ldap schema following the steps below:
+
+### Create the ldap schema 
+
+1. access to one of the openldap pods:
+```sh
+kubectl exec -it openldap_pod -- /bin/bash
+```
+
+2. Create the `structure.ldif` file containing the following ldap schema: 
+
+```sh
+echo "dn: ou=Tenants,dc=example,dc=org
+objectclass: organizationalUnit
+ou: Tenants
+
+dn: cn=user,ou=Tenants,dc=example,dc=org
+objectClass: inetOrgPerson
+givenName: user
+sn: user
+cn: user user
+uid: ns1-ns2
+userPassword: mdp
+" > structure.ldif
+```
+3. Deploy the `structure.ldif` file:
+
+```sh
+ldapadd -x -D 'cn=admin,dc=example,dc=org' -w Not@SecurePassw0rd -H ldapi:/// -f structure.ldif
+```
+4. Each time you want to create a new user, redo the same steps with the following `structure.ldif` file:
+```sh
+echo "dn: cn=user,ou=Tenants,dc=example,dc=org
+objectClass: inetOrgPerson
+givenName: user
+sn: admin /or user
+cn: user user
+uid: ns3-ns4
+userPassword: mdp
+" > structure.ldif
+```
+
+**NOTE**: the namespaces of users are defined in the Object attribute `uid` with the same format as keycloak (i.e. the namespaces should be separated with a dash "-" (e.g. uid: ns1-ns2)).
+**NOTE**: you can use the `phpadmin`web interface to do this steps.
+
+Each created user in ldap belongs to a group either `admin` or `user`. To specify the group of a user, set **sn** to `admin` for admin-user and `user` for normal user.
+
+**NOTE**: for the local authentication option, the group of a user is specified while the user account is created in the `api/signup`.
