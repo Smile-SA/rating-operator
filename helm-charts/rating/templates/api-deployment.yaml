@@ -56,8 +56,14 @@ spec:
               containerPort: 5012
           args: ["./entrypoint.sh"]
           env:
+            - name: VERSION
+              value: "{{ .Values.security.version }}"
+            - name: DISTRIBUTION
+              value: "{{ .Values.security.distribution }}"
             - name: AUTH
               value: "{{ .Values.security.auth }}"
+            - name: AUTH_METHOD
+              value: "{{ .Values.security.authentication_type }}"
             - name: RATING_API_URL
               value: {{ include "rating.operator.api.fullname" . }}-{{ .Release.Namespace }}
             {{- if eq .Values.security.authentication_type "ldap" }}

@@ -4,12 +4,13 @@ metadata:
   name: rating
 spec:
   # RATING-OPERATOR CONFIGURATION
-
   # This file holds the default, immutable configuration for the application.
   # This WILL override any options defined in helm-charts/rating/values.yaml, but values that doesn't exist here will be taken from it.
 
   ## The security part of the configuration is related to your cluster authentication method (cert files, token, non local users management)
   security:
+    version: v1.0
+    distribution: Kubernetes
     # The "auth" flag enables TLS/HTTPS verification in the component
     # Enable it if your cluster uses HTTPS
     auth: "false"
@@ -69,7 +70,7 @@ spec:
     image:
       pullPolicy: Always
       repository: alterwayrnd/rating-operator-api
-      tag: master
+      tag: latest
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -137,7 +138,7 @@ spec:
     image:
       pullPolicy: Always
       repository: alterwayrnd/rating-operator-manager
-      tag: master
+      tag: latest
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -157,7 +158,7 @@ spec:
     image:
       pullPolicy: Always
       repository: alterwayrnd/rating-operator-engine
-      tag: master
+      tag: latest
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
