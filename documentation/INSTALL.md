@@ -17,11 +17,10 @@ considered trusted.
 
 - Note that if you deploy with OpenShift apply the **master-okd** branch for Rating-operator-api. The main differences between kubernetes and OpenShift Rating-operator-api are described in the following table:
 
-|                       | Kubernetes                                                                                                                              | Openshift                                            |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| Namespaces management | local:<br>user/namespace dans postgres<br>keycloak:<br>user attribute “namespaces”<br>ldap:<br>user attributes “uid”                    | <br>Get the namespaces from OKD : projects.openshift |
-| Group admin           | Local:  create an admin group table in postgres<br>Keycloak: define an attribute variable in keycloak<br>LDAP: group attributes in Ldap | super_admin and users are managed by keycloak        |
-
+|                       | Kubernetes                                                                                                                                                                                                                                                                                                                                          | Openshift                                                               |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| namespaces management | The namespaces management depends on the applied authentication type:<br>1. Local:<br>user/namespace dans postgres<br>2. Keycloak:<br>user attribute “namespaces”<br>3. ldap:<br>user attributes “uid”                                                                                                                                              | The namespaces are provided from OpenShift projects: projects.openshift |
+| Tenants types         | Three types of tenants  are applied in kubernetes [see this table](https://git.rnd.alterway.fr/overboard/5gbiller/rating-operator/-/blob/master/documentation/FEATURES.md) . The  tenant type is specified as the following :<br><br>1. Local:  the tenant and its type are stored  in an tenant_group table in postgres<br>2. Keycloak: the tenant type is defined in an attribute variable in keycloak<br>3. LDAP: the tenant type is defined in an attributes in Ldap | super_admin and users are managed by keycloak                           |
 
 ### *Helm*
 
