@@ -15,6 +15,13 @@ considered trusted.
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
 
+- Note that if you deploy with OpenShift apply the **master-okd** branch for Rating-operator-api. The main differences between kubernetes and OpenShift Rating-operator-api are described in the following table:
+
+|                       | Kubernetes                                                                                                                              | Openshift                                            |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| Namespaces management | local:<br>user/namespace dans postgres<br>keycloak:<br>user attribute “namespaces”<br>ldap:<br>user attributes “uid”                    | <br>Get the namespaces from OKD : projects.openshift |
+| Group admin           | Local:  create an admin group table in postgres<br>Keycloak: define an attribute variable in keycloak<br>LDAP: group attributes in Ldap | super_admin and users are managed by keycloak        |
+
 
 ### *Helm*
 
