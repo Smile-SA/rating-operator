@@ -15,6 +15,7 @@ We decided to use multiple operators, to ensure some important aspect:
 
 For more informations on their respectives custom resources, read this [document](/documentation/CRD.md).
 
+
 ---
 
 ## **Rating**
@@ -316,3 +317,12 @@ The `hack` folder is filled with utility scripts to help you use the `rating-ope
 - `forward-presto` exposes presto to port **8080**
 - `hive-cli` run the internal hive cli
 - `presto-cli` run the presto cli, to verify reports data
+
+## Kubernetes vs Openshift
+In the following table, we cite the main differences between the rating operator with kubernetes vs Openshift.
+|                       | Kubernetes                                                                                                                                                                                                                                                                                                                                          | Openshift                                                               |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| namespaces management | The namespaces management depends on the applied authentication type:<br>1. Local:<br>user/namespace dans postgres<br>2. Keycloak:<br>user attribute “namespaces”<br>3. LDAP:<br>user attributes “uid”                                                                                                                                              | The namespaces are provided from OpenShift projects: projects.openshift |
+| Tenants types         | Three types of tenants  are applied in kubernetes [see this table](https://git.rnd.alterway.fr/overboard/5gbiller/rating-operator/-/blob/master/documentation/FEATURES.md) . The  tenant type is specified as the following :<br><br>1. Local:  the tenant and its type are stored  in a tenant_group table in postgres<br>2. Keycloak: the tenant type is defined in an attribute variable in keycloak<br>3. LDAP: the tenant type is defined in an attributes in LDAP | super_admin and users are managed by keycloak                           |
+
+
