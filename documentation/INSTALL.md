@@ -15,6 +15,7 @@ considered trusted.
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
 
+Note that as of today, our strategy is not to support both OKD and Kubernetes, but rather focus over Kubernetes in the future versions of Rating Operator. 
 
 ### *Helm*
 
