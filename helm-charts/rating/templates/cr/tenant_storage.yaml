@@ -1,7 +1,7 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-tenant-storage-use
+  name: rating-rule-instance-tenant-storage-use
   namespace: {{ .Release.Namespace }}
 spec:
   metric: (sum(kubelet_volume_stats_capacity_bytes) by (namespace, node, persistentvolumeclaim) - sum(kubelet_volume_stats_available_bytes) by (namespace, node, persistentvolumeclaim))/(1024*1024*1024)

@@ -1,7 +1,7 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-node-cpu-memory-ratio-advanced
+  name: rating-rule-instance-node-cpu-memory-ratio-advanced
 spec:
   metric: avg without (instance) (sum(instance:node_cpu:ratio) by (instance) / on (instance) group_left sum(instance:node_memory_utilisation:ratio) by (instance))
   name: node_cpu_memory_ratio_advanced

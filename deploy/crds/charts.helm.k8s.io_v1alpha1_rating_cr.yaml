@@ -9,7 +9,7 @@ spec:
 
   ## The security part of the configuration is related to your cluster authentication method (cert files, token, non local users management)
   security:
-    version: v1.0
+    version: v2.0
     distribution: Kubernetes
     # The "auth" flag enables TLS/HTTPS verification in the component
     # Enable it if your cluster uses HTTPS
@@ -44,6 +44,7 @@ spec:
       # clientID: rating-operator
       # realmName: "my_realm"
       # clientSecretKey: "bakshdhb-dkjashbdjh-dkjahdfskl"
+
 
   ## Location of the prometheus component
   prometheus:

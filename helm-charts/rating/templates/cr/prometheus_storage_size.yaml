@@ -1,7 +1,7 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-prometheus-storage-size
+  name: rating-rule-instance-prometheus-storage-size
   namespace: {{ .Release.Namespace }}
 spec:
   metric: sum(prometheus_tsdb_storage_blocks_bytes) / (1024*1024*1024)

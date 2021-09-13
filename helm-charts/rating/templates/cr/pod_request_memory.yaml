@@ -1,7 +1,7 @@
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-pod-request-memory
+  name: rating-rule-instance-pod-request-memory
   namespace: {{ .Release.Namespace }}
 spec:
   metric: request_memory * on () group_right sum(kube_pod_container_resource_requests_memory_bytes) by (pod, namespace, node) / 1000000000
