@@ -1,21 +1,27 @@
 # GCP -> 1 vCPU + 4GB Ram e2-highmem-2
 # 48.92e per month / 730h = 0.067/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-node-cost-simulation-gcp-e2-highmem-2
+  name: rating-rule-instance-node-cost-simulation-gcp-e2-highmem-2
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(gcp_e2_highmem_2_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(gcp_e2_highmem_2_cpu)) * sum(gcp_e2_highmem_2)
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/{memory} > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / {cpu} or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/{cpu}) * {price}
   name: node_cost_simulation_gcp_e2_highmem_2
   timeframe: 3600s
+  cpu: "1"
+  memory: "4"
+  price: "0.067"
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-number-instance-simulation-gcp-e2-highmem-2
+  name: rating-rule-instance-number-instance-simulation-gcp-e2-highmem-2
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(gcp_e2_highmem_2_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_highmem_2_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(gcp_e2_highmem_2_cpu))
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
   name: number_instance_simulation_gcp_e2_highmem_2
   timeframe: 3600s
+  cpu: "1"
+  memory: "4"
+  price: "0.067"

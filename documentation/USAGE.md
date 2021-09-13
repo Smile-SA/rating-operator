@@ -76,20 +76,20 @@ More information on `RatingRules` can be found in the [custom resources document
 
 #### RatedRules
 
-The other part of the configuration is composed of **RatingRuleModels**, describing metrics using **promQL** and of a base **RatingRule** that holds values to be used in queries.
+The other part of the configuration is composed of **RatingRuleInstances**, describing metrics using **promQL** and of a base **RatingRule** that holds values to be used in queries.
 
 ```sh
-$ kubectl get ratingrulemodels.rating.alterway.fr
+$ kubectl get ratingruleinstances.rating.alterway.fr
 NAME                                                           AGE
-rating-rule-model-pod-request-cpu                              2m
-rating-rule-model-pod-request-memory                           2m
-rating-rule-model-pod-usage-cpu                                2m
-rating-rule-model-pod-usage-memory                             2m
+rating-rule-instance-pod-request-cpu                              2m
+rating-rule-instance-pod-request-memory                           2m
+rating-rule-instance-pod-usage-cpu                                2m
+rating-rule-instance-pod-usage-memory                             2m
 
-$ kubectl get ratingrulemodels.rating.alterway.fr rating-rule-model-pod-usage-cpu -o yaml
-kind: RatingRuleModel
+$ kubectl get ratingruleinstances.rating.alterway.fr rating-rule-instance-pod-usage-cpu -o yaml
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-pod-usage-cpu
+  name: rating-rule-instance-pod-usage-cpu
 spec:
   metric: usage_cpu * on() group_right sum(rate(container_cpu_usage_seconds_total[1m]))
     BY (pod, namespace) + on (pod, namespace) group_left(node) (sum(kube_pod_info{pod_ip!="",node!="",host_ip!=""})
@@ -98,26 +98,26 @@ spec:
   timeframe: 60s
 ```
 
-More informations on `RatingRuleModels` can be found in the [custom resources documentation](/documentation/CRD.md).
+More informations on `RatingRuleInstances` can be found in the [custom resources documentation](/documentation/CRD.md).
 
 ----
 
 ## Adding new metrics
 
-To rate a new metric, you need to create a `RatingRuleModel`:
+To rate a new metric, you need to create a `RatingRuleInstance`:
 
 ```sh
-$ kubectl get ratingRuleModels.rating.alterway.fr                             
+$ kubectl get ratingRuleInstances.rating.alterway.fr                             
 NAME                            AGE
-rating-rule-model-rated-usage-cpu   21s
+rating-rule-instance-rated-usage-cpu   21s
 
-$ kubectl describe ratingRuleModels.rating.alterway.fr rating-rule-model-rated-usage-cpu
-Name:         rating-rule-model-rated-usage-cpu
+$ kubectl describe ratingRuleInstances.rating.alterway.fr rating-rule-instance-rated-usage-cpu
+Name:         rating-rule-instance-rated-usage-cpu
 Namespace:    rating
 Labels:       <none>
 Annotations:  <none>
 API Version:  rating.alterway.fr/v1
-Kind:         RatingRuleModel
+Kind:         RatingRuleinstance
 [...]
 Spec:
   # Metric have to be a valid prometheus query
@@ -133,7 +133,7 @@ Spec:
 [...]
 ```
 
-Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in RatingRuleModels.
+Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in RatingRuleInstances.
 
-As soon as the `RatingRuleModels` is validated, the `rating-operator-engine` will start processing frames.
-More information on `RatingRuleModels` can be found in the [custom resources documentation](/documentation/CRD.md).
+As soon as the `RatingRuleInstances` is validated, the `rating-operator-engine` will start processing frames.
+More information on `RatingRuleInstances` can be found in the [custom resources documentation](/documentation/CRD.md).

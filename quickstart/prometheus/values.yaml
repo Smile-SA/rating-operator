@@ -128,7 +128,7 @@ grafana:
                   "steppedLine": false,
                   "targets": [
                       {
-                        "data": "{\"metric\": \"pods_usage_cpu\", \"namespace\": \"rating-operator\"}",
+                        "data": "{\"metric\": \"pods_usage_cpu\", \"namespace\": \"rating\"}",
                         "refId": "A",
                         "target": "/namespaces/<namespace>/metrics/<metric>/rating",
                         "type": "timeseries"
@@ -213,7 +213,7 @@ grafana:
                   "steppedLine": false,
                   "targets": [
                       {
-                        "data": "{\"metric\": \"pods_usage_memory\", \"namespace\": \"rating-operator\"}",
+                        "data": "{\"metric\": \"pods_usage_memory\", \"namespace\": \"rating\"}",
                         "refId": "A",
                         "target": "/namespaces/<namespace>/metrics/<metric>/rating",
                         "type": "timeseries"

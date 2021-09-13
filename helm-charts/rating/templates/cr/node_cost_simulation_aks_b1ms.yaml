@@ -1,20 +1,26 @@
 # AKS -> 1 vCPU + 2GB Ram b1ms 0.0288/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-node-cost-simulation-aks-b1ms
+  name: rating-rule-instance-node-cost-simulation-aks-b1ms
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aks_b1ms_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / sum(aks_b1ms_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aks_b1ms_cpu)) * sum(aks_b1ms)
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/{memory} > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / {cpu} or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/{cpu}) * {price}
   name: node_cost_simulation_aks_b1ms
   timeframe: 3600s
+  cpu: "1"
+  memory: "2"
+  price: "0.0288"
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-number-instance-simulation-aks-b1ms
+  name: rating-rule-instance-number-instance-simulation-aks-b1ms
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aks_b1ms_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_b1ms_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aks_b1ms_cpu))
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
   name: number_instance_simulation_aks_b1ms
   timeframe: 3600s
+  cpu: "1"
+  memory: "2"
+  price: "0.0288"

@@ -1,20 +1,26 @@
 # AWS -> 2 vCPU + 4GB Ram a1.large 0.051/h
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-node-cost-simulation-aws-a1-large
+  name: rating-rule-instance-node-cost-simulation-aws-a1-large
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/sum(aws_a1_large_memory) > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_large_cpu) or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/sum(aws_a1_large_cpu)) * sum(aws_a1_large)
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/{memory} > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / {cpu} or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/{cpu}) * {price}
   name: node_cost_simulation_aws_a1_large
   timeframe: 3600s
+  cpu: "2"
+  memory: "4"
+  price: "0.051"
 ---
 apiVersion: rating.alterway.fr/v1
-kind: RatingRuleModel
+kind: RatingRuleInstance
 metadata:
-  name: rating-rule-model-number-instance-simulation-aws-a1-large
+  name: rating-rule-instance-number-instance-simulation-aws-a1-large
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / sum(aws_a1_large_memory)) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_a1_large_cpu)) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / sum(aws_a1_large_cpu))
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
   name: number_instance_simulation_aws_a1_large
   timeframe: 3600s
+  cpu: "2"
+  memory: "4"
+  price: "0.051"

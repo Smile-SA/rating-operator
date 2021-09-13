@@ -76,9 +76,9 @@ Let's create a RatingRuleModel with cURL as an example:
 ```sh
 $ curl -X POST
        -H "Content-Type: application/json"
-       -d '{"name": "test","metric_name": "test","metric": "my_test_promql","timeframe": "3600s"}'
-       http://rating-operator-api.rating:80/models/add
-RatingRuleModel test created.
+       -d '{"metric_name": "aws-cost","metric_group": "cloud-cost","template_name": "my_test_promql","timeframe": "3600s", "cpu" : "1", "memory" : "2", "price" : "1.5"}'
+       http://rating-operator-api.rating:80/instances/add
+RatingRuleInstance test created.
 ```
 
 ----
@@ -437,46 +437,121 @@ Expect a payload with:
 
 - `timestamp`
 
-### ***RatingRulesModels***
+### ***Rating rules***
 
-**GET `/models/list`** **Public**
+**Rating rules templates**
 
-Get the list of all the RatingRuleModels.
+**GET `/templates/list`** 
 
-**GET `/models/get`** **Public**
+Get the list of all the RatingRules templates names from the local configuration directory.
 
-Get a RatingRuleModel.
+**GET `/templates/get`**
+
+Get the RatingRule template object for a given template.
+Expect a payload with:
+
+- `query_name `
+
+**POST `/templates/add`**
+
+Add a new RatingRule template.
 
 Expect a payload with:
 
-- `name`
+- `query_name `
+- `query_group`
+- `query_template`
+- `query_variables`
 
-**POST `/models/add`** **[PL]** **Admin**
+**POST `/templates/delete`** 
 
-Add a new RatingRuleModel.
+Delete a template configuration.
 
 Expect a payload with:
 
-- `name`
-- `timeframe`
+- `query_name `
+
+***Rating rules values***
+
+**GET `templates/metric/list`** **Public**
+
+Get the list of all the Rating Rule values.
+
+**GET `templates/metric/get`** **Public**
+
+Get a Rating Rule value configuration with its name.
+Expect a payload with:
+
+- `metric_name `
+
+
+**POST `templates/metric/add`** 
+
+Stroe the rating rule value configuration in a database.
+
+Expect a payload with:
+
 - `metric_name`
-- `metric`
+- `metric_group`
+- `tamplate_name`
+and the values of variables e.g. `'cpu' : 1 `
 
-**POST `/models/update`** **[PL]** **Admin**
 
-Update a RatingRuleModel.
+**POST `templates/metric/delete`** 
 
+Delete a rating rule value configuration in a database.
 Expect a payload with:
 
-- `name`
-- `timeframe`
 - `metric_name`
-- `metric`
 
-**POST `/models/delete`** **[PL]** **Admin**
 
-Delete a RatingRuleModel.
+**POST `templates/metric/edit`** 
+
+Edit a rating rule value configuration in a database.
+Expect a payload with:
+
+- `metric_name`
+- `metric_group`
+- `tamplate_name`
+and the values of variables e.g. `'cpu' : 1 `
+
+
+***Rating rules instance***
+
+**POST `/instances/add`** 
+
+Deploy the rating rule instance.
 
 Expect a payload with:
 
-- `name`
+- `metric_name`
+- `template_name`
+and variables values
+
+**POST `/instances/edit`** 
+
+edit the rating rule instance.
+
+Expect a payload with:
+
+- `metric-name`
+- `template-name`
+and variables values
+
+**GET `/instances/list`** 
+
+Get the list of all the rating rules instances from the local configuration directory.
+
+**GET `/instances/get`**
+
+Get the rating rule instance object for a given instance name.
+Expect a payload with:
+
+- `metric-name`
+
+**POST `/instances/delete`** 
+
+Delete a rating rule instance.
+Expect a payload with:
+
+- `metric-name`
