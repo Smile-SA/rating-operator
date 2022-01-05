@@ -1,4 +1,4 @@
-# AWS -> 2 vCPU + 4GB Ram a1.xlarge 0.102/h
+# AWS -> 8 vCPU + 16GB Ram a1.xlarge 0.204/h
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
@@ -8,9 +8,9 @@ spec:
   metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/{memory} > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / {cpu} or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/{cpu}) * {price}
   name: node_cost_simulation_aws_a1_2_xlarge
   timeframe: 3600s
-  cpu: "2"
-  memory: "4"
-  price: "0.102"
+  cpu: "8"
+  memory: "16"
+  price: "0.204"
 ---
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
@@ -18,9 +18,9 @@ metadata:
   name: rating-rule-instance-number-instance-simulation-aws-a1-2-xlarge
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu})
   name: number_instance_simulation_aws_a1_2_xlarge
   timeframe: 3600s
-  cpu: "2"
-  memory: "4"
-  price: "0.102"
+  cpu: "8"
+  memory: "16"
+  price: "0.204"

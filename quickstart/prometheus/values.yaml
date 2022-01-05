@@ -15,6 +15,17 @@ grafana:
     repository: grafana/grafana
     tag: 7.5.5
     pullPolicy: IfNotPresent
+## Enable persistence using Persistent Volume Claims 
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+    # annotations: {}
+    finalizers:
+      - kubernetes.io/pvc-protection
   # The plugins below are required by the rating-operator datasource
   # Feel free to add more
   plugins:
@@ -751,7 +762,7 @@ grafana:
                   "steppedLine": false,
                   "targets": [
                       {
-                        "data": "{\"metric\": \"storage_ram_ratio\"}",
+                        "data": "{\"metric\": \"storage_ram_ratio_test\"}",
                         "refId": "A",
                         "target": "/metrics/<metric>/ratio",
                         "type": "table"

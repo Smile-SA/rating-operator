@@ -1,4 +1,4 @@
-# AKS -> 8 vCPU + 56GB Ram A8   1.466/h
+# AKS -> 8 vCPU + 16GB Ram A8   0.4000/h
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
@@ -9,18 +9,18 @@ spec:
   name: node_cost_simulation_aks_a8
   timeframe: 3600s
   cpu: "8"
-  memory: "56"
-  price: "1.466"
+  memory: "16"
+  price: "0.4000"
 ---
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aks-a8
-  namespace: rating
+  namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu})
   name: number_instance_simulation_aks_a8
   timeframe: 3600s
   cpu: "8"
-  memory: "56"
-  price: "1.466"
+  memory: "16"
+  price: "0.4000"
