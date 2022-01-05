@@ -1,4 +1,4 @@
-# AWS -> 2 vCPU + 1GB Ram 0.0094/h
+# AWS -> 2 vCPU + 1GB Ram 0.0084/h
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
@@ -10,7 +10,7 @@ spec:
   timeframe: 3600s
   cpu: "2"
   memory: "1"
-  price: "0.0094"
+  price: "0.0084"
 ---
 apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
@@ -18,9 +18,9 @@ metadata:
   name: rating-rule-instance-number-instance-simulation-aws-t4g-micro
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu})
   name: number_instance_simulation_aws_t4g_micro
   timeframe: 3600s
   cpu: "2"
   memory: "1"
-  price: "0.0094"
+  price: "0.0084"

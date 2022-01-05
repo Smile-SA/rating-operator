@@ -132,8 +132,23 @@ Spec:
   Timeframe:  10s
 [...]
 ```
-
-Every variable present in the **LATEST** RatingRule will be available through Prometheus, and usable in RatingRuleInstances.
-
 As soon as the `RatingRuleInstances` is validated, the `rating-operator-engine` will start processing frames.
 More information on `RatingRuleInstances` can be found in the [custom resources documentation](/documentation/CRD.md).
+
+
+## Templates and instances historization
+
+In Rating operator, we keep a history of the templates and instances modification in the Postgres database.
+
+
+1. Templates historization:
+
+| id                         | template_name | template_group | template_var     | template_query |
+|----------------------------|---------------|----------------|------------------|----------------|
+| 2021-10-26 10:28:27.266831 | name          | gname          | cpu-memory-price | ceil(ceil...   |
+
+2. Instances historization:
+
+| start_time                 | end_time                   | instance_name                          | instance_promql | instance_values                                   |
+|----------------------------|----------------------------|----------------------------------------|-----------------|---------------------------------------------------|
+| 2021-10-26 10:25:53.735273 | 2021-10-26 10:25:54.193911 | umber_instance_simulation_aws_a1_large | ceil(ceil...    | {'cpu': '2', 'price': '0.05<br>1', 'memory': '4'} |

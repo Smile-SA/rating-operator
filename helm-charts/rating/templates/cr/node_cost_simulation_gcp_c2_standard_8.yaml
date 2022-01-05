@@ -18,7 +18,7 @@ metadata:
   name: rating-rule-instance-number-instance-simulation-gcp-c2-standard-8
   namespace: {{ .Release.Namespace }}
 spec:
-  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {price})
+  metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu})
   name: number_instance_simulation_gcp_c2_standard_8
   timeframe: 3600s
   cpu: "8"

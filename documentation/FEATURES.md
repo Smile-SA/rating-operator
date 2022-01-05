@@ -3,7 +3,7 @@
 ## **Operator**
 
 As the name imply, `rating-operator` is an operator, a native Kubernetes program.
-The operator pattern helps creating and managing [**Custom Resources**](/documentation/CRD.md) natively, aswell as integrating them easily in the Kubernetes ecosystem.
+The operator pattern helps creating and managing [**Custom Resources**](/documentation/CRD.md) natively, as well as integrating them easily in the Kubernetes ecosystem.
 
 ### *Multiple operator*
 
