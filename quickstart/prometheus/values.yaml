@@ -15,7 +15,7 @@ grafana:
     repository: grafana/grafana
     tag: 7.5.5
     pullPolicy: IfNotPresent
-## Enable persistence using Persistent Volume Claims 
+# Enable persistence using Persistent Volume Claims 
   persistence:
     type: pvc
     enabled: true
@@ -31,7 +31,7 @@ grafana:
   plugins:
     - digrich-bubblechart-panel  # Required
     - grafana-clock-panel  # Required
-    - simpod-json-datasource  # Required
+    - simpod-json-datasource # Required
     - grafana-piechart-panel  # Required
   grafana.ini:
     panels:

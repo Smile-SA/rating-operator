@@ -257,7 +257,7 @@ NOTE: If Prometheus is using Ceph volumes, it can't effectively alert you on the
 availability of the storage. When Ceph goes down, so does Prometheus.
 
 After the above installation, the prometheus URL inside the cluster should be
-`http://prometheus-prometheus-oper-prometheus.monitoring:9090/`, without
+`http://prometheus-kube-prometheus-prometheus.monitoring:9090/`, without
 authentication.
 
 #### *Grafana*

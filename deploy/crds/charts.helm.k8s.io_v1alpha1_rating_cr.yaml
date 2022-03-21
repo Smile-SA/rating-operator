@@ -1,4 +1,4 @@
-apiVersion: charts.helm.k8s.io/v1alpha1
+apiVersion: charts.helm.k8s.io/v1
 kind: Rating
 metadata:
   name: rating
@@ -48,7 +48,7 @@ spec:
 
   ## Location of the prometheus component
   prometheus:
-    service: prometheus-prometheus-oper-prometheus
+    service: prometheus-kube-prometheus-prometheus
     namespace: monitoring
     schema: http
     domain: svc.cluster.local

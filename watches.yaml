@@ -3,7 +3,7 @@
 # If you need to change the base configuration of the application without any pod manipulation,
 # edit the environmnent variables in the rating-operator pods.
 # If the variable exist in this file, and in the pods, it can be overrided.
-- version: v1alpha1
+- version: v1
   group: charts.helm.k8s.io
   kind: Rating
   chart: helm-charts/rating
