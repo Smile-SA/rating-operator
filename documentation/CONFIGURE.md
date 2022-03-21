@@ -61,7 +61,7 @@ This is the common value file, containing what will be used to generate the rati
 
   ## Location of the prometheus component
   prometheus:
-    service: prometheus-prometheus-oper-prometheus
+    service: prometheus-kube-prometheus-prometheus
     namespace: monitoring
     schema: http
     domain: svc.cluster.local

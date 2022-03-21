@@ -3,7 +3,7 @@
 # 2/ Holding the values to use in the rating. Those values can be considered as variables, and will be available in prometheus (exposed by the rating-operator-api)
 # Those values can be separated in different rulesets (as an ordered list), and holds labels.
 # For any rating action, the operator will try to match each ruleset, labels and metrics to find the one to use.
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: ratingrules.rating.alterway.fr
@@ -20,18 +20,20 @@ spec:
     - name: v1
       served: true
       storage: true
-  validation:
-    openAPIV3Schema:
-      type: object
-      properties:
-        spec:
+      schema:
+        openAPIV3Schema:
           type: object
           properties:
-            valid_from:
-              type: string
-            rules:
-              type: array
-              items:
-                type: object
-            metrics:
+            spec:
               type: object
+              properties:
+                valid_from:
+                  type: string
+                rules:
+                  type: array
+                  items:
+                    x-kubernetes-preserve-unknown-fields: true
+                    type: object
+                metrics:
+                  x-kubernetes-preserve-unknown-fields: true
+                  type: object

@@ -13,7 +13,7 @@ spec:
         enabled: false
       config:
         prometheus:
-          url: "http://prometheus-prometheus-oper-prometheus.monitoring:9090/"
+          url: "http://prometheus-kube-prometheus-prometheus.monitoring:9090/"
           certificateAuthority:
             useServiceAccountCA: false
           metricsImporter:
