@@ -2,20 +2,38 @@
 
 ## Introduction
 
-In this document we show how to set up a test/minimal instance. In a production
+In this document we show how to set up a test/minimal cluster instance. In a production
 environment, you may want to add Network policies for increased security, and
 HA storage for resilience. In this tutorial the in-cluster communications are
 considered trusted.
 
 ## Requirements
 
-- A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x
+- A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x, configured to be accessible from the local machine.
 - A storage provider (By default Longhorn, rook-ceph available)
 - Helm 3
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
 
 Note that as of today, our strategy is not to support both OKD and Kubernetes, but rather focus over Kubernetes in the future versions of Rating Operator. 
+
+
+For **local installation**, a light weight cluster can be installed locally using k3s:
+
+```sh
+$ curl -sfL https://get.k3s.io | sh -
+```
+
+A kubernetes config file is required, if using a remote cluster - it can be found on the master node, in case of local cluster we can get it from ```/etc/rancher/k3s/k3s.yaml``` and add it to ```~/.kube/config```.  
+
+Check if kubectl is working fine:
+```sh
+$ kubectl get namespaces
+```
+This should return default kubernetes namespaces  
+
+Once we have a local/remote kubernetes cluster, we can proceed with Helm installation.
+
 
 ### *Helm*
 
@@ -25,6 +43,14 @@ To prevent compatibility problems, we recommend using version 3.1.2 of helm.
 ```sh
 $ curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar xfz -
 $ sudo mv linux-amd64/helm /usr/local/bin/helm
+```
+
+### Cloning project
+
+Before proceeding, please clone the project repository and ```cd``` into it:
+
+```sh
+$ git clone https://github.com/Smile-SA/rating-operator.git
 ```
 
 ### Storage provider
@@ -83,6 +109,11 @@ deployment.apps/longhorn-driver-deployer **configured**
 
 ```
 
+If there are security/privilege issues, allow privileged access on the cluster, a juju cluster command looks like this:
+```
+juju config kubernetes-master allow-privileged=true
+```
+
 Wait a minute, then verify everything is working as expected by running:
 
 ```sh
@@ -118,12 +149,14 @@ longhorn-ui-6c5b56bb9c-x6ldw                1/1     Running   0          1m4s
 ```
 
 To test the volumes provisionning, run:
-`./quickstart/longhorn/longhorn/examples/simple_pvc.yaml`
+```sh
+$ kubectl apply -f ./quickstart/longhorn/longhorn/examples/simple_pvc.yaml
+```
 
 Then, confirm with:
 
 ```sh
-$ kubectl get pvc -n longhorn-system
+$ kubectl get pvc
 NAME                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 longhorn-simple-pvc        Bound    pvc-432e9316-6fbc-4bcb-8e7a-b7eb97011826   1Gi        RWO            longhorn       10s
 ```
@@ -234,6 +267,19 @@ LAST DEPLOYED: Thu Oct 10 16:17:01 2019
 NAMESPACE: monitoring
 STATUS: DEPLOYED
 [...]
+```
+
+Wait a minute, then verify everything is working as expected by running:
+```sh
+$ kubectl get pods -n monitoring
+NAME                                                     READY   STATUS    RESTARTS   AGE
+prometheus-kube-prometheus-operator-9f9748b4-pzs94       1/1     Running   0          48s
+prometheus-prometheus-node-exporter-dlfjq                1/1     Running   0          48s
+prometheus-kube-state-metrics-6ccff77dbb-6k4xc           1/1     Running   0          48s
+alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0          44s
+prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0          44s
+prometheus-grafana-5845df476-nnvq8                       3/3     Running   0          48s
+
 ```
 
 Data persistence is off by default, but can be enabled in <https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml[values.yaml>],
@@ -406,89 +452,6 @@ statefulset.apps/openldap   3/3     10s
 ```
 Once deployed, you can configure it. You also need to create the ldap schema including the `namespaces` variable, see more details on how to configure openldap in this [document](/documentation/CONFIGURE.md). 
 
-### *Metering Operator* (OPTIONAL, DEPRECATED)
-
-**DISCLAIMER**: The metering-operator project is not maintained anymore. We consider the metering based rating to be deprecated.
-**DISCLAIMER**: The `metering-operator` is only required  for the *scalable* rating, as it uses the operator's `Reports` objects. If you only need a *light* solution to rate dataframes, skip this step.
-
-#### Operator configuration
-
-Check the metering configuration file. Do not apply it with kubectl, since the corresponding CRD does not exist yet.
-
-NOTE: You need to change the prometheus URL with your own if you installed it with another method.
-
-
-```sh
-$ cat ./metering/metering-custom.yaml
-[...]
-  storage:
-    type: "hive"
-    hive:
-      type: "sharedPVC"
-      sharedPVC:
-        createPVC: true
-        storageClass: "csi-cephfs"
-        size: 5Gi
-```
-
-
-#### Installing the operator
-
-Clone the repository, then run the install script:
-
-```sh
-$ git clone https://github.com/operator-framework/operator-metering.git -b release-4.2 ./quickstart/metering/operator-metering
-Cloning into 'operator-metering'...
-[...]
-
-$ ./quickstart/metering/install.sh
-[...]
-Creating namespace metering
-namespace/metering created
-Installing Custom Resource Definitions
-customresourcedefinition.apiextensions.k8s.io/hivetables.metering.openshift.io created
-customresourcedefinition.apiextensions.k8s.io/reportdatasources.metering.openshift.io created
-[...]
-meteringconfig.metering.openshift.io/operator-metering created
-Before retry #1: sleeping 10 seconds
-Before retry #2: sleeping 20 seconds
-Before retry #3: sleeping 40 seconds
-Before retry #4: sleeping 60 seconds
-Before retry #5: sleeping 60 seconds
-Installing reports...
-[...]
-report.metering.openshift.io/pod-cpu-request-hourly created
-report.metering.openshift.io/pod-cpu-usage-hourly created
-report.metering.openshift.io/pod-memory-request-hourly created
-report.metering.openshift.io/pod-memory-usage-hourly created
-```
-
-You can check that the operator is running correctly with:
-
-```sh
-$ kubectl -n metering get pods
-NAME                                  READY   STATUS    RESTARTS   AGE
-hive-metastore-0                      1/1     Running   0          14m
-hive-server-0                         1/1     Running   0          14m
-metering-operator-6c746c5cb6-tnbq7    2/2     Running   0          18m
-presto-coordinator-0                  1/1     Running   0          13m
-reporting-operator-56c49bcc4b-zwhd9   1/1     Running   1          12m
-```
-
-The running status of the reports should slowly transition from InvalidReport to ReportingPeriodWaiting:
-
-```sh
-$ kubectl get report -n metering
-NAME                                QUERY                        SCHEDULE   RUNNING                  FAILED   LAST REPORT TIME   AGE
-cluster-cpu-capacity-daily          cluster-cpu-capacity         daily      ReportingPeriodWaiting                               3m53s
-cluster-cpu-capacity-hourly         cluster-cpu-capacity         hourly     ReportingPeriodWaiting                               3m53s
-cluster-cpu-usage-daily             cluster-cpu-usage            daily      ReportingPeriodWaiting                               3m53s
-cluster-cpu-usage-hourly            cluster-cpu-usage            hourly     ReportingPeriodWaiting                               3m53s
-[...]
-```
-
-**DISCLAIMER**: Please wait for the first `Reports` to be generated before proceeding with the next step, at it may cause hazards. More info in [this document](/documentation/TROUBLESHOOT.md)
-
 ### *Rating*
 
 There's two installation method for the rating-operator:
@@ -503,6 +466,7 @@ Before installing the operator, please consider reading [this document](/documen
 
 #### Installing as an operator
 
+Make sure that all pods are running in ```monitoring``` namespace before proceeding
 Choose a namespace and deploy the operator in it.
 
 ```sh
@@ -544,6 +508,18 @@ rating-operator-manager-bdf55cd99-k4ffs     1/1     Running   0          45s
 rating-operator-engine-5bc9948b88-lt49q     1/1     Running   0          45s
 ```
 
+#### Accessing rating operator  
+
+While inside the rating operator repo, we can access the rating-api, prometheus and grafana using:
+
+
+```sh
+./hack/forward-api
+
+./hack/forward-prometheus
+
+./hack/forward-grafana
+```
 ## Uninstall
 
 ### Rating
@@ -556,20 +532,6 @@ or if you installed with Helm:
 
 ```sh
 $ RATING_NAMESPACE=rating ./hack/uninstall-chart.sh
-```
-
-### Metering operator and configuration
-
-```sh
-$ ./metering/uninstall.sh
-Deleting metering reports...
-report.metering.openshift.io "cluster-cpu-capacity-daily" deleted
-report.metering.openshift.io "cluster-cpu-capacity-hourly" deleted
-[...]
-customresourcedefinition.apiextensions.k8s.io "prestotables.metering.openshift.io" deleted
-customresourcedefinition.apiextensions.k8s.io "reports.metering.openshift.io" deleted
-Deleting PVCs
-No resources found
 ```
 
 ### Longhorn

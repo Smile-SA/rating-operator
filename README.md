@@ -8,7 +8,6 @@
 
 - [Configuration](/documentation/CONFIGURE.md)
 - [Installation](/documentation/INSTALL.md)
-- [Local Installation](/documentation/LOCAL.md)
 - [Usage](/documentation/USAGE.md)
 - [Custom Resources](/documentation/CRD.md)
 - [Advanced Features](/documentation/FEATURES.md)
