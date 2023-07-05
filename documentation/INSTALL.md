@@ -20,17 +20,29 @@ Note that as of today, our strategy is not to support both OKD and Kubernetes, b
 
 For **local installation**, a light weight cluster can be installed locally using k3s:
 
+If not installing locally, please proceed to Helm installation:
+
 ```sh
 $ curl -sfL https://get.k3s.io | sh -
 ```
 
-A kubernetes config file is required, if using a remote cluster - it can be found on the master node, in case of local cluster we can get it from ```/etc/rancher/k3s/k3s.yaml``` and add it to ```~/.kube/config```.  
+A kubernetes config file is required, if using a remote cluster - it can be found on the master node, in case of local cluster it can be found at ```/etc/rancher/k3s/k3s.yaml```.
 
+```sh
+$ sudo chmod +r /etc/rancher/k3s/k3s.yaml
+$ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml 
+```
 Check if kubectl is working fine:
 ```sh
 $ kubectl get namespaces
 ```
 This should return default kubernetes namespaces  
+
+Local installtion also requires open-iscsi: 
+```sh
+$ sudo apt install open-iscsi
+```
+
 
 Once we have a local/remote kubernetes cluster, we can proceed with Helm installation.
 
@@ -510,7 +522,11 @@ rating-operator-engine-5bc9948b88-lt49q     1/1     Running   0          45s
 
 #### Accessing rating operator  
 
-While inside the rating operator repo, we can access the rating-api, prometheus and grafana using:
+While inside the rating operator repo, and inside the rating namespace, we can access the rating-api, prometheus and grafana using:
+
+```sh
+$ kubectl config set-context –current –-namespace=rating
+```
 
 
 ```sh
