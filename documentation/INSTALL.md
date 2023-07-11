@@ -1,19 +1,23 @@
 # **Installation**
 
-## Introduction
+## 1. Introduction
 
 In this document we show how to set up a test/minimal cluster instance. In a production
 environment, you may want to add Network policies for increased security, and
 HA storage for resilience. In this tutorial the in-cluster communications are
 considered trusted.
 
-## Requirements
+## 2. Requirements
 
 - A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x, configured to be accessible from the local machine.
-- A storage provider (By default Longhorn, rook-ceph available)
 - Helm 3
+- 'Rating Operator' project cloned to local machine
+- A storage provider (By default Longhorn, rook-ceph available)
 - A Prometheus instance configured to collect from kubelet and kube-state-metrics.
    In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
+- Users authentication (optional)
+
+### 2.1. Kubernetes
 
 Note that as of today, our strategy is not to support both OKD and Kubernetes, but rather focus over Kubernetes in the future versions of Rating Operator. 
 
@@ -47,7 +51,7 @@ $ sudo apt install open-iscsi
 Once we have a local/remote kubernetes cluster, we can proceed with Helm installation.
 
 
-### *Helm*
+### 2.2. Helm 3
 
 Helm 3 does away with some security issues of its previous versions (no server-side Tiller component), but you may want to restrict Helm's permissions in a production environment. To know more, see [Securing Helm 3 - Matthew Fisher, Microsoft](https://static.sched.com/hosted_files/helmsummit2019/08/Securing%20Helm%203%20-%20Helm%20Summit%20EU%202019.pptx).
 To prevent compatibility problems, we recommend using version 3.1.2 of helm.
@@ -57,7 +61,7 @@ $ curl https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz | tar xfz -
 $ sudo mv linux-amd64/helm /usr/local/bin/helm
 ```
 
-### Cloning project
+### 2.3. Cloning project
 
 Before proceeding, please clone the project repository and ```cd``` into it:
 
@@ -65,7 +69,7 @@ Before proceeding, please clone the project repository and ```cd``` into it:
 $ git clone https://github.com/Smile-SA/rating-operator.git
 ```
 
-### Storage provider
+### 2.4. Storage provider
 
 Two solutions are available for storage, each one having advantages and uses-cases.
 
@@ -78,7 +82,7 @@ Once the storage provider is installed, if you do not intend on testing both, we
 
 To modify the provider storageClass, follow the instructions in [configuration](/documentation/CONFIGURE.md).
 
-#### *Longhorn*
+#### 2.4.1. Longhorn
 
 To install Longhorn, go through the following steps:
 
@@ -173,7 +177,7 @@ NAME                       STATUS   VOLUME                                     C
 longhorn-simple-pvc        Bound    pvc-432e9316-6fbc-4bcb-8e7a-b7eb97011826   1Gi        RWO            longhorn       10s
 ```
 
-#### *Rook-Ceph*
+#### 2.4.2. Rook-Ceph
 
 From [helm-operator documentation](https://github.com/rook/rook/blob/master/Documentation/helm-operator.md):
 
@@ -235,6 +239,9 @@ After a few seconds, you should see a new Persistent Volume, to which the pvc is
 
 ```sh
 $ kubectl get pv,pvc
+```
+Receive:
+```sh
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                                                                                                       STORAGECLASS             REASON   AGE
 persistentvolume/pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            Delete           Bound    marco/test-pv-claim                                                                                                         rook-ceph-block                   2m
 
@@ -242,8 +249,8 @@ NAME                                  STATUS   VOLUME                           
 persistentvolumeclaim/test-pv-claim   Bound    pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            rook-ceph-block   2m5s
 ```
 
-### *Prometheus*
-
+### 2.5. Prometheus
+#### 2.5.1. Installation
 **DISCLAIMER** Be sure to take a look at the Prometheus `./quickstart/prometheus/values.yaml` file before proceeding with the installation.
 
 For more informations, please read the [configuration documentation](/documentation/CONFIGURE.md).
@@ -254,6 +261,9 @@ We will use the chart of the prometheus-community repository for this example:
 
 ```sh
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+```
+If done successfully:
+```sh
 "prometheus-community" has been added to your repositories
 ```
 
@@ -261,6 +271,9 @@ Once added to your helm repository, update it to be sure to have the latest vers
 
 ```sh
 $ helm repo update
+```
+After updating successfully:
+```sh
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "prometheus-community" chart repository
 Update Complete. ⎈ Happy Helming!⎈
@@ -273,7 +286,10 @@ When the helm repository is updated, deploy the Prometheus Operator with:
 
 ```sh
 $ ./quickstart/prometheus/install.sh
+```
 
+Information shown as:
+```sh
 NAME:   prometheus
 LAST DEPLOYED: Thu Oct 10 16:17:01 2019
 NAMESPACE: monitoring
@@ -284,6 +300,9 @@ STATUS: DEPLOYED
 Wait a minute, then verify everything is working as expected by running:
 ```sh
 $ kubectl get pods -n monitoring
+```
+After running:
+```sh
 NAME                                                     READY   STATUS    RESTARTS   AGE
 prometheus-kube-prometheus-operator-9f9748b4-pzs94       1/1     Running   0          48s
 prometheus-prometheus-node-exporter-dlfjq                1/1     Running   0          48s
@@ -318,9 +337,9 @@ After the above installation, the prometheus URL inside the cluster should be
 `http://prometheus-kube-prometheus-prometheus.monitoring:9090/`, without
 authentication.
 
-#### *Grafana*
+#### 2.5.2. Grafana
 
-##### 1. Standard
+##### a. Standard
 
 **prometheus-operator** deploys its own **Grafana** instance.
 Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana configuration that includes:
@@ -332,14 +351,14 @@ Through the `quickstart/prometheus/values.yaml`, we provide a base Grafana confi
   - Application specifics
   - Rating-operator resources consumption
 
-##### 2. Non-standard
+##### b. Non-standard
 
 If, for any reason, you cannot access or modify the main Grafana instance of your cluster, we provide a script to install Grafana along the rating-operator.
 Don't forget to update the `deploy/operator.yaml` with the adress of your Grafana instance.
 
 More infos in the [configuration documentation](/documentation/CONFIGURE.md).
 
-### *Users authentication*
+### 2.6. Users authentication
 In Rating operator, we provide three options for users authentication:
 
 1. **Local authentication** using the Postgresql database.
@@ -351,7 +370,7 @@ More details for each option is depicted in this [document](/documentation/FEATU
 
 In the following, we showcase how to install locally keycloak or openldap.
 
-#### 1. Keycloak installation 
+#### 2.6.1. Keycloak installation 
 
 Before deploying keycloak, you can set the password of your keycloak admin user in this [file](/quickstart/keycloak/keycloak.yaml): 
 ```yml
@@ -377,7 +396,7 @@ $ ./quickstart/keycloak/install.sh
 After few seconds:
 
 ```sh
-$ kubectl get all -n keycloak
+kubectl get all -n keycloak
 
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/keycloak-7fbc885b8d-cxvnm   0/1     Running   0          11s
@@ -395,7 +414,7 @@ replicaset.apps/keycloak-7fbc885b8d   1         1         0       11s
 
 Once deployed, you can access to keycloak web interface and configure it. You also need to create a `namespaces` variable, see more details on how to configure keycloak in this [document](/documentation/CONFIGURE.md). 
 
-#### 2. Openldap installation and configuration
+#### 2.6.2. Openldap installation and configuration
 
 We will use the chart of the helm-openldap repository for this deployment:
 
@@ -403,6 +422,9 @@ We will use the chart of the helm-openldap repository for this deployment:
 
 ```sh
 $ helm repo add helm-openldap https://jp-gouin.github.io/helm-openldap/
+```
+If done successfully:
+```sh
 "helm search repo helm-openldap" has been added to your repositories
 ```
 
@@ -410,6 +432,9 @@ Once added to your helm repository, update it to be sure to have the latest vers
 
 ```sh
 $ helm repo update
+```
+If done successfully:
+```sh
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "helm-openldap" chart repository
 Update Complete. ⎈ Happy Helming!⎈
@@ -464,8 +489,9 @@ statefulset.apps/openldap   3/3     10s
 ```
 Once deployed, you can configure it. You also need to create the ldap schema including the `namespaces` variable, see more details on how to configure openldap in this [document](/documentation/CONFIGURE.md). 
 
-### *Rating*
+## 3. Rating Operator
 
+### 3.1. Installation
 There's two installation method for the rating-operator:
 
 - As an operator
@@ -476,13 +502,16 @@ Use the chart only if you want full control over updates, configuration and Cust
 
 Before installing the operator, please consider reading [this document](/documentation/CONFIGURE.md), as the default configuration that comes included in the rating-operator might not suit your case.
 
-#### Installing as an operator
+#### 3.1.1. Installing as an operator
 
 Make sure that all pods are running in ```monitoring``` namespace before proceeding
 Choose a namespace and deploy the operator in it.
 
 ```sh
 $ RATING_NAMESPACE=rating hack/install.sh
+```
+By running the above command, we should receive similar results:
+```sh
 customresourcedefinition.apiextensions.k8s.io/ratings.charts.helm.k8s.io created
 rating.charts.helm.k8s.io/rating created
 deployment.apps/rating-operator created
@@ -493,12 +522,15 @@ serviceaccount/rating-operator created
 
 Beware: the installation script modifies in place the file deploy/role_bindings.yaml, so be careful not to commit its changes back to the repository.
 
-#### Installing as a chart
+#### 3.1.2. Installing as a chart
 
 Call Helm to install the charts in the namespace of your choice:
 
 ```sh
 $ helm install -n rating rating ./helm-charts/rating -f ./values.yaml
+```
+By running the above command, we should receive the following results:
+```sh
 NAME: rating
 LAST DEPLOYED: Wed Apr  8 14:42:54 2020
 NAMESPACE: rating-mm
@@ -512,6 +544,9 @@ To check if everything is running correctly:
 
 ```sh
 $ kubectl -n rating get pods
+```
+By running the above command, we should receive the following results:
+```sh
 NAME                                        READY   STATUS    RESTARTS   AGE
 rating-operator-755d6bdbd9-27vcj            1/1     Running   0          45s
 rating-operator-api-66c9484866-rvdjj        1/1     Running   0          45s
@@ -520,28 +555,32 @@ rating-operator-manager-bdf55cd99-k4ffs     1/1     Running   0          45s
 rating-operator-engine-5bc9948b88-lt49q     1/1     Running   0          45s
 ```
 
-#### Accessing rating operator  
+### 3.2. Accessing rating operator  
 
-While inside the rating operator repo, and inside the rating namespace, we can access the rating-api, prometheus and grafana using:
+While inside the rating operator repo, and inside the rating namespace, run:
 
 ```sh
 $ kubectl config set-context –current –-namespace=rating
 ```
 
-
+Then we can access the rating-api, prometheus and grafana using:
 ```sh
-./hack/forward-api
-
-./hack/forward-prometheus
-
-./hack/forward-grafana
+$ ./hack/forward-api
 ```
-## Uninstall
+Or
+```sh
+$ ./hack/forward-prometheus
+```
+Or
+```sh
+$ ./hack/forward-grafana
+```
+## 4. Uninstallation
 
-### Rating
+### 4.1. Rating Operator
 
 ```sh
-$ RATING_NAMESPACE=rating ./hack/uninstall.sh
+RATING_NAMESPACE=rating ./hack/uninstall.sh
 ```
 
 or if you installed with Helm:
@@ -550,26 +589,33 @@ or if you installed with Helm:
 $ RATING_NAMESPACE=rating ./hack/uninstall-chart.sh
 ```
 
-### Longhorn
+### 4.2. Longhorn
 
 To remove Longhorn, run:
+- First, to run the uninstaller
 
 ```sh
-# First, to run the uninstaller
 $ kubectl apply -f ./quickstart/longhorn/longhorn/uninstall/uninstall.yaml
-
-# Then
+```
+- Then:
+```sh
 $ kubectl delete -f /quickstart/longhorn/longhorn/deploy/longhorn.yaml
+```
+- Finally:
+```sh
 $ kubectl delete -f /quickstart/longhorn/longhorn/uninstall/uninstall.yaml
 ```
 
-### Rook-Ceph
+### 4.3. Rook-Ceph
 
 Removing the rook-ceph chart does not remove the pods nor the /var/lib/rook
 directory on each of the nodes. To completely remove the rook-ceph components:
 
 ```sh
 $ ./quickstart/rook/uninstall.sh
+```
+The above command will produce the texts as follows:
+```sh
 Removing cephblockpool: replicapool...
 cephblockpool.ceph.rook.io "replicapool" deleted
 Removing storageclass: rook-ceph-block...
@@ -578,7 +624,13 @@ storageclass.storage.k8s.io "rook-ceph-block" deleted
 Removing services...
 service "csi-cephfsplugin-metrics" deleted
 service "csi-rbdplugin-metrics" deleted
+```
+Then run:
+```sh
 $ ./rook/remove-directory.sh
+```
+The above command will produce the texts as follows:
+```sh
 Removing /var/lib/rook on each node...
 ```
 
@@ -586,12 +638,16 @@ Adapt these scripts to your environment, especially `remove-directory.sh` which
 needs to connect with ssh to each worker node.
 
 
-### Prometheus
+### 4.4. Prometheus
 
 Helm does not remove CRD objects, hence the need of a script to do so.
 
 ```sh
 $ ./quickstart/prometheus/uninstall.sh
+```
+The above command will produce the texts as follows:
+
+```sh
 release "prometheus" deleted
 customresourcedefinition.apiextensions.k8s.io "alertmanagers.monitoring.coreos.com" deleted
 [...]
@@ -599,7 +655,7 @@ customresourcedefinition.apiextensions.k8s.io "prometheusrules.monitoring.coreos
 customresourcedefinition.apiextensions.k8s.io "servicemonitors.monitoring.coreos.com" deleted
 ```
 
-### Grafana
+### 4.5. Grafana
 
 If you installed Grafana manually, run:
 
@@ -607,17 +663,17 @@ If you installed Grafana manually, run:
 $ GRAFANA_NAMESPACE=rating ./quickstart/grafana/uninstall.sh
 ```
 
-### Keycloak
+### 4.6. Keycloak
 
-To remove keycloak, run:
+To remove `keycloak`, run:
 
 ```sh
 $ ./quickstart/keycloak/uninstall.sh
 ```
 
-### Keycloak
+### 4.7. openldap
 
-To remove openldap, run:
+To remove `openldap`, run:
 
 ```sh
 $ ./quickstart/openldap/uninstall.sh
