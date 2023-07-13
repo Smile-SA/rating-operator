@@ -63,7 +63,7 @@ $ sudo mv linux-amd64/helm /usr/local/bin/helm
 
 ### 2.3. Cloning project
 
-Before proceeding, please clone the project repository and ```cd``` into it:
+Before proceeding, please clone the project repository and `cd` into it:
 
 ```sh
 $ git clone https://github.com/Smile-SA/rating-operator.git
@@ -89,7 +89,11 @@ To install Longhorn, go through the following steps:
 First, clone the repository to your machine:
 
 ```sh
-$ git clone https://github.com/longhorn/longhorn ./quickstart/longhorn/longhorn
+$ git clone https://github.com/longhorn/longhorn ./
+```
+We will get the following output:
+```
+quickstart/longhorn/longhorn
 Cloning into './longhorn/longhorn'...
 remote: Enumerating objects: 1, done.
 [...]
@@ -99,6 +103,9 @@ Then, apply the manifest to install it:
 
 ```sh
 $ kubectl apply -f ./quickstart/longhorn/longhorn/deploy/longhorn.yaml
+```
+We will get the following output:
+```sh
 [...]
 namespace/longhorn-system configured
 serviceaccount/longhorn-service-account configured
@@ -127,13 +134,16 @@ deployment.apps/longhorn-driver-deployer **configured**
 
 If there are security/privilege issues, allow privileged access on the cluster, a juju cluster command looks like this:
 ```
-juju config kubernetes-master allow-privileged=true
+$ juju config kubernetes-master allow-privileged=true
 ```
 
 Wait a minute, then verify everything is working as expected by running:
 
 ```sh
 $ kubectl get pods -n longhorn-system
+```
+We will get the following output:
+```sh
 NAME                                        READY   STATUS    RESTARTS   AGE
 csi-attacher-7965bb8b59-cjgz5               1/1     Running   0          1m4s
 csi-attacher-7965bb8b59-gtq8b               1/1     Running   0          1m4s
@@ -173,20 +183,32 @@ Then, confirm with:
 
 ```sh
 $ kubectl get pvc
+```
+We will get the following output:
+```sh
 NAME                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 longhorn-simple-pvc        Bound    pvc-432e9316-6fbc-4bcb-8e7a-b7eb97011826   1Gi        RWO            longhorn       10s
 ```
 
 #### 2.4.2. Rook-Ceph
 
-From [helm-operator documentation](https://github.com/rook/rook/blob/master/Documentation/helm-operator.md):
+From [helm-operator documentation](https://github.com/rook/rook/blob/master/Documentation/helm-operator.md), clone its repository:
 
 ```sh
 $ git clone https://github.com/rook/rook.git -b v1.2.6 ./quickstart/rook/rook
+```
+We will get the following output:
+```sh
 Cloning into './rook/rook'...
 remote: Enumerating objects: 75, done.
 [...]
+```
+Then install it:
+```sh
 $ ./quickstart/rook/install.sh
+```
+We will get the following output:
+```sh
 Installing Helm release...
 NAME:   rook
 [...]
@@ -203,7 +225,7 @@ production you will want to use a robust configuration, by changing the
 etc. You can define multiple CephClusters, but they need to be installed in
 separate namespaces.
 
-When everything is running correcly, with two worker nodes you should see something like:
+When everything is running correcly, with two worker nodes you should see something as follows:
 
 ```sh
 $ kubectl get pods -n rook-ceph
@@ -240,7 +262,7 @@ After a few seconds, you should see a new Persistent Volume, to which the pvc is
 ```sh
 $ kubectl get pv,pvc
 ```
-Receive:
+The output should be similar to:
 ```sh
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                                                                                                       STORAGECLASS             REASON   AGE
 persistentvolume/pvc-15e45593-ad59-11e9-855f-52540001fa54   2Gi        RWO            Delete           Bound    marco/test-pv-claim                                                                                                         rook-ceph-block                   2m
@@ -262,7 +284,7 @@ We will use the chart of the prometheus-community repository for this example:
 ```sh
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 ```
-If done successfully:
+We will get the following output:
 ```sh
 "prometheus-community" has been added to your repositories
 ```
@@ -301,7 +323,7 @@ Wait a minute, then verify everything is working as expected by running:
 ```sh
 $ kubectl get pods -n monitoring
 ```
-After running:
+After running, we will get the following output:
 ```sh
 NAME                                                     READY   STATUS    RESTARTS   AGE
 prometheus-kube-prometheus-operator-9f9748b4-pzs94       1/1     Running   0          48s
@@ -423,7 +445,7 @@ We will use the chart of the helm-openldap repository for this deployment:
 ```sh
 $ helm repo add helm-openldap https://jp-gouin.github.io/helm-openldap/
 ```
-If done successfully:
+Output:
 ```sh
 "helm search repo helm-openldap" has been added to your repositories
 ```
@@ -433,7 +455,7 @@ Once added to your helm repository, update it to be sure to have the latest vers
 ```sh
 $ helm repo update
 ```
-If done successfully:
+We will get the following output::
 ```sh
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "helm-openldap" chart repository
@@ -510,7 +532,7 @@ Choose a namespace and deploy the operator in it.
 ```sh
 $ RATING_NAMESPACE=rating hack/install.sh
 ```
-By running the above command, we should receive similar results:
+By running the above command, we will get the following output:
 ```sh
 customresourcedefinition.apiextensions.k8s.io/ratings.charts.helm.k8s.io created
 rating.charts.helm.k8s.io/rating created
@@ -529,7 +551,7 @@ Call Helm to install the charts in the namespace of your choice:
 ```sh
 $ helm install -n rating rating ./helm-charts/rating -f ./values.yaml
 ```
-By running the above command, we should receive the following results:
+We will get the following output:
 ```sh
 NAME: rating
 LAST DEPLOYED: Wed Apr  8 14:42:54 2020
@@ -545,7 +567,7 @@ To check if everything is running correctly:
 ```sh
 $ kubectl -n rating get pods
 ```
-By running the above command, we should receive the following results:
+We will get the following output:
 ```sh
 NAME                                        READY   STATUS    RESTARTS   AGE
 rating-operator-755d6bdbd9-27vcj            1/1     Running   0          45s
@@ -618,7 +640,7 @@ directory on each of the nodes. To completely remove the rook-ceph components:
 ```sh
 $ ./quickstart/rook/uninstall.sh
 ```
-The above command will produce the texts as follows:
+The above command will produce the output as follows:
 ```sh
 Removing cephblockpool: replicapool...
 cephblockpool.ceph.rook.io "replicapool" deleted
@@ -633,7 +655,7 @@ Then run:
 ```sh
 $ ./rook/remove-directory.sh
 ```
-The above command will produce the texts as follows:
+The above command will produce the output as follows:
 ```sh
 Removing /var/lib/rook on each node...
 ```
@@ -649,7 +671,7 @@ Helm does not remove CRD objects, hence the need of a script to do so.
 ```sh
 $ ./quickstart/prometheus/uninstall.sh
 ```
-The above command will produce the texts as follows:
+The above command will produce the output as follows:
 
 ```sh
 release "prometheus" deleted
