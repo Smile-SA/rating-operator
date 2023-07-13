@@ -563,15 +563,19 @@ While inside the rating operator repo, and inside the rating namespace, run:
 $ kubectl config set-context –current –-namespace=rating
 ```
 
-Then we can access the rating-api, prometheus and grafana using:
+Then we can access rating operator components:
+
+**Rating-api**
 ```sh
 $ ./hack/forward-api
 ```
-Or
+
+**Prometheus**
 ```sh
 $ ./hack/forward-prometheus
 ```
-Or
+
+**Grafana**
 ```sh
 $ ./hack/forward-grafana
 ```
