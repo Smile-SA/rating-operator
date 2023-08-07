@@ -89,11 +89,10 @@ To install Longhorn, go through the following steps:
 First, clone the repository to your machine:
 
 ```sh
-$ git clone https://github.com/longhorn/longhorn ./
+$ git clone https://github.com/longhorn/longhorn ./quickstart/longhorn/longhorn
 ```
 We will get the following output:
 ```
-quickstart/longhorn/longhorn
 Cloning into './longhorn/longhorn'...
 remote: Enumerating objects: 1, done.
 [...]
