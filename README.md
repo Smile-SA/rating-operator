@@ -26,4 +26,4 @@ Kudos to the people behind:
 - `operator-sdk` from **Red hat**
 
 for their great tools that helped us build this solution.
-Made with **<3** by the **R&D team @ [`Alter way`](https://www.alterway.fr/)**
+Made with **<3** by the **R&D team @ [`Smile`](https://www.smile.eu/en)**
