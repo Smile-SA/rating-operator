@@ -22,7 +22,7 @@ considered trusted.
 Note that as of today, our strategy is not to support both OKD and Kubernetes, but rather focus over Kubernetes in the future versions of Rating Operator. 
 
 
-For **local installation**, a light weight cluster can be installed locally using k3s:
+For **local installation**, a light weight cluster can be installed locally using k3s, make sure the local machine has a minimum storage of 20GB.
 
 If not installing locally, please proceed to Helm installation:
 
