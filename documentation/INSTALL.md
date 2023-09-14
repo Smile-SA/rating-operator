@@ -581,7 +581,7 @@ rating-operator-engine-5bc9948b88-lt49q     1/1     Running   0          45s
 While inside the rating operator repo, and inside the rating namespace, run:
 
 ```sh
-$ kubectl config set-context –current –-namespace=rating
+$ sudo kubectl config set-context --current --namespace=rating
 ```
 
 Then we can access rating operator components:
