@@ -20,5 +20,9 @@ spec:
             spec:
               type: object
               properties:
-                template:
+                query_group:
+                  type: string
+                query_name:
+                  type: string
+                query_template:
                   type: string
