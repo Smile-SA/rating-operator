@@ -37,3 +37,5 @@ spec:
                   type: string
                 power:
                   type: string
+                baseCpu:
+                  type: string
