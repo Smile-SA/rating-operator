@@ -35,3 +35,5 @@ spec:
                   type: string
                 price:
                   type: string
+                power:
+                  type: string
