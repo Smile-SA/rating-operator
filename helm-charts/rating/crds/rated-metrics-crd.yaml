@@ -4,10 +4,10 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: ratedmetrics.rating.smile.fr
+  name: ratedmetrics.rating.alterway.fr
 spec:
   scope: Namespaced
-  group: rating.smile.fr
+  group: rating.alterway.fr
   names:
     kind: RatedMetric
     plural: ratedmetrics
