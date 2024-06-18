@@ -1,6 +1,6 @@
 # GCP -> 1 vCPU + 4GB Ram e2-medium
 # 24,46e per month / 730h = 0.0355/h
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-gcp-e2-medium
@@ -13,7 +13,7 @@ spec:
   memory: "4"
   price: "0.0355"
 ---
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-gcp-e2-medium

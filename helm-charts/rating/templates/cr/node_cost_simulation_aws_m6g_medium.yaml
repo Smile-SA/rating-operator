@@ -1,5 +1,5 @@
 # AWS -> 1 vCPU + 4GB Ram 0.0385/h
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aws-m6g-medium
@@ -12,7 +12,7 @@ spec:
   memory: "4"
   price: "0.0385"
 ---
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aws-m6g-medium

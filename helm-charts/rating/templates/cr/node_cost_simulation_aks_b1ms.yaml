@@ -1,5 +1,5 @@
 # AKS -> 1 vCPU + 2GB Ram b1ms 0.0250/h
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aks-b1ms
@@ -12,7 +12,7 @@ spec:
   memory: "2"
   price: "0.0250"
 ---
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aks-b1ms

@@ -1,6 +1,6 @@
 # GCP -> 1 vCPU + 1GB Ram e2-micro
 # 48.92e per month / 730h = 0.0084/h
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-gcp-e2-micro
@@ -13,7 +13,7 @@ spec:
   memory: "1"
   price: "0.0084"
 ---
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-gcp-e2-micro

@@ -1,5 +1,5 @@
 # AKS -> 8 vCPU + 16GB Ram A8   0.4000/h
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aks-a8
@@ -12,7 +12,7 @@ spec:
   memory: "16"
   price: "0.4000"
 ---
-apiVersion: rating.smile.fr/v1
+apiVersion: rating.alterway.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aks-a8
