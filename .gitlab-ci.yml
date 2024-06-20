@@ -12,6 +12,7 @@ services:
 
 stages:
 - build
+- verify
 
 build-master-gitlab:
   stage: build
@@ -52,3 +53,35 @@ build-gitlab:
   except:
     refs:
     - master
+
+verify-services:
+  stage: verify
+  image: google/cloud-sdk:latest
+  script:
+    - apt-get update && apt-get install -y curl
+    - kubectl config set-context --current --namespace=rating
+    - nohup ./hack/forward-api &
+    - nohup ./hack/forward-prometheus &
+    - nohup ./hack/forward-grafana &
+    - sleep 5 # wait for port-forwarding to establish
+    - |
+      API_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5012)
+      if [ "$API_RESPONSE" -ne 200 ]; then
+        echo "Failed to access API on port 5012. Status code: $API_RESPONSE"
+        exit 1
+      fi
+    - |
+      PROMETHEUS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9090)
+      if [ "$PROMETHEUS_RESPONSE" -ne 200 ]; then
+        echo "Failed to access Prometheus on port 9090. Status code: $PROMETHEUS_RESPONSE"
+        exit 1
+      fi
+    - |
+      GRAFANA_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+      if [ "$GRAFANA_RESPONSE" -ne 200 ]; then
+        echo "Failed to access Grafana on port 3000. Status code: $GRAFANA_RESPONSE"
+        exit 1
+      fi
+  only:
+    refs:
+    - v3-test
