@@ -4,10 +4,10 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: ratingruleinstances.rating.alterway.fr
+  name: ratingruleinstances.rating.smile.fr
 spec:
   scope: Namespaced
-  group: rating.alterway.fr
+  group: rating.smile.fr
   names:
     kind: RatingRuleInstance
     plural: ratingruleinstances
