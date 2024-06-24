@@ -1,4 +1,4 @@
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-prometheus-storage-size

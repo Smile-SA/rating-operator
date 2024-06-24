@@ -1,5 +1,5 @@
 # AWS -> 8 vCPU + 16GB Ram a1.xlarge 0.204/h
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aws-a1-2-xlarge
@@ -12,7 +12,7 @@ spec:
   memory: "16"
   price: "0.204"
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aws-a1-2-xlarge

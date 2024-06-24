@@ -1,7 +1,7 @@
 ---
 # GCP -> 4 vCPU + 16GB Ram e2-xlarge
 # 97.84e per month / 730h = 0.134/h
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-gcp-e2-xlarge
@@ -14,7 +14,7 @@ spec:
   memory: "16"
   price: "0.134"
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-gcp-e2-xlarge

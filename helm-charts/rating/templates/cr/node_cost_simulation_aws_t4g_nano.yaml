@@ -1,5 +1,5 @@
 # AWS -> 2 vCPU + 0.5GB Ram 0.0042/h
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aws-t4g-nano
@@ -12,7 +12,7 @@ spec:
   memory: "0.5"
   price: "0.0042"
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aws-t4g-nano
