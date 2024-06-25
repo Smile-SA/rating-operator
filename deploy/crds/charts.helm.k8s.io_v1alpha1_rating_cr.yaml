@@ -158,8 +158,8 @@ spec:
     # Mostly for developpers, the base values should satisfy user needs
     image:
       pullPolicy: Always
-      repository: smilernd/rating-operator-engine
-      tag: v3-test
+      repository: alterwayrnd/rating-operator-engine
+      tag: latest
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator

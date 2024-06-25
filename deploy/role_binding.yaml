@@ -5,9 +5,9 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: rating-operator
-  # Replace this with the namespace the operator is deployed in.
   namespace: rating
 roleRef:
   kind: ClusterRole
   name: rating-operator
   apiGroup: rbac.authorization.k8s.io
+

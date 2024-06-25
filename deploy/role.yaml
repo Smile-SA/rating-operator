@@ -11,9 +11,7 @@ rules:
   - secrets
   - events
   - pods
-  - configmaps
   - persistentvolumeclaims
-  - secrets
   - serviceaccounts
   - services
   verbs:
@@ -45,7 +43,6 @@ rules:
   - deployments
   - statefulsets
   - replicasets
-  - deployments
   verbs:
   - '*'
 - apiGroups:
@@ -104,7 +101,6 @@ rules:
   - patch
   - update
   - watch
-
 - apiGroups:
   - route.openshift.io
   resources:
