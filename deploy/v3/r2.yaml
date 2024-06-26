@@ -1,0 +1,41 @@
+# RatingRuleInstances configures metric to be rated by the rating-operator-engine.
+# It contains a promQL expression, aswell as a timeframe and a metric name.
+# Through this resource, you can exploit variables declared in the RatingRules
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ratingruleinstances.rating.alterway.fr
+spec:
+  scope: Namespaced
+  group: rating.alterway.fr
+  names:
+    kind: RatingRuleInstance
+    plural: ratingruleinstances
+    singular: ratingruleinstance
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                timeframe:
+                  type: string
+                metric:
+                  type: string
+                name:
+                  type: string
+                cpu:
+                  type: string
+                memory:
+                  type: string
+                price:
+                  type: string
+                power:
+                  type: string
+                surface:
+                  type: string
