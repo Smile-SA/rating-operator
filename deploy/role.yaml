@@ -11,9 +11,7 @@ rules:
   - secrets
   - events
   - pods
-  - configmaps
   - persistentvolumeclaims
-  - secrets
   - serviceaccounts
   - services
   verbs:
@@ -45,7 +43,6 @@ rules:
   - deployments
   - statefulsets
   - replicasets
-  - deployments
   verbs:
   - '*'
 - apiGroups:
@@ -82,6 +79,18 @@ rules:
   - '*'
 - apiGroups:
   - rating.alterway.fr
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rating.smile.fr
   resources:
   - '*'
   verbs:

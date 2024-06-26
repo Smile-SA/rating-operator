@@ -1,5 +1,5 @@
 # AWS -> 2 vCPU + 8GB Ram m6g.large 0.077/h
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-aws-m6g-large
@@ -12,7 +12,7 @@ spec:
   memory: "8"
   price: "0.077"
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-aws-m6g-large

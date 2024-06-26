@@ -6,4 +6,4 @@ set -o pipefail
 PROMETHEUS_NAMESPACE=${PROMETHEUS_NAMESPACE:-monitoring}
 
 podname=$(kubectl -n "$PROMETHEUS_NAMESPACE" get pods -l prometheus=prometheus-kube-prometheus-prometheus -o name | cut -d/ -f2 | head -1)
-kubectl -n "$PROMETHEUS_NAMESPACE" port-forward "$podname" 9090:9090
+kubectl -n "$PROMETHEUS_NAMESPACE" port-forward "$podname" 9090:9090 --address 0.0.0.0

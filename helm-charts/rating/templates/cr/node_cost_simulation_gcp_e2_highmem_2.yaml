@@ -1,6 +1,6 @@
 # GCP -> 2 vCPU + 16GB Ram e2-highmem-2
 # 48.92e per month / 730h = 0.0904/h
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-node-cost-simulation-gcp-e2-highmem-2
@@ -13,7 +13,7 @@ spec:
   memory: "16"
   price: "0.0904"
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-number-instance-simulation-gcp-e2-highmem-2

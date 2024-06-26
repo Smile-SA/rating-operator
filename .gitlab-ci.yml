@@ -12,6 +12,10 @@ services:
 
 stages:
 - build
+- verify
+
+before_script:
+  - export KUBECONFIG=$CI_PROJECT_DIR/.kube/config
 
 build-master-gitlab:
   stage: build
@@ -52,3 +56,5 @@ build-gitlab:
   except:
     refs:
     - master
+
+

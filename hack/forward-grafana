@@ -9,4 +9,4 @@ pwd=$(kubectl get -n "$PROMETHEUS_NAMESPACE" secret prometheus-grafana -o jsonpa
 echo "password: admin / $pwd"
 
 podname=$(kubectl -n "$PROMETHEUS_NAMESPACE" get pods -l app.kubernetes.io/name=grafana -o name | cut -d/ -f2 | head -1)
-kubectl -n "$PROMETHEUS_NAMESPACE" port-forward "$podname" 3000:3000
+kubectl -n "$PROMETHEUS_NAMESPACE" port-forward "$podname" 3000:3000 --address 0.0.0.0
