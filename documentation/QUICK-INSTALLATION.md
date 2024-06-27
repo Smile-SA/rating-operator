@@ -9,14 +9,6 @@ considered trusted.
 
 ## 2. Requirements
 
-- A Kubernetes cluster (tested on 1.14 through 1.17) or OpenShift 4.x, configured to be accessible from the local machine.
-- Helm 3
-- 'Rating Operator' project cloned to local machine
-- A storage provider (By default Longhorn, rook-ceph available)
-- A Prometheus instance configured to collect from kubelet and kube-state-metrics.
-   In OpenShift, you can use the provided monitoring stack (the `openshift-monitoring` project).
-- Users authentication (optional)
-
 ### 2.1. Kubernetes
 
 Note that as of today, our strategy is not to support both OKD and Kubernetes, but rather focus over Kubernetes in the future versions of Rating Operator. 
