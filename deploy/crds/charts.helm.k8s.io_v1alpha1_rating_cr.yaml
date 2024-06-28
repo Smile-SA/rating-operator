@@ -139,7 +139,7 @@ spec:
     image:
       pullPolicy: Always
       repository: smilernd/rating-operator-manager
-      tag: latest
+      tag: v3-proto-boumedienne
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
@@ -159,7 +159,7 @@ spec:
     image:
       pullPolicy: Always
       repository: smilernd/rating-operator-engine
-      tag: latest
+      tag: v3-proto-boumedienne
 
     # Resources allocation
     # Leaving empty is fine, use only if you know what you are doing, as lack of resources can starve the operator
