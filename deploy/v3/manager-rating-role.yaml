@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rating-manager-role
+rules:
+  - apiGroups: ["rating.smile.fr"]
+    resources: ["ratedmetrics", "ratingrules", "ratingruleinstances"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
