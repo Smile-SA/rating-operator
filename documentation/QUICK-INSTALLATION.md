@@ -2,11 +2,7 @@
 
 ## 1. Introduction
 
-In this document we show how to set up a test/minimal cluster instance. In a production
-environment, you may want to add Network policies for increased security, and
-HA storage for resilience. In this tutorial the in-cluster communications are
-considered trusted.
-
+In this document we show how to set up a test/minimal cluster instance.
 ## 2. Requirements
 
 ### 2.1. Kubernetes
@@ -28,11 +24,7 @@ For **local installation**, a light weight cluster can be installed locally usin
  sudo chmod +r /etc/rancher/k3s/k3s.yaml
  export KUBECONFIG=/etc/rancher/k3s/k3s.yaml 
 ```
-Check if kubectl is working fine:
-```sh
- kubectl get namespaces
-```
-This should return default kubernetes namespaces  
+
 
 Local installtion also requires open-iscsi: 
 ```sh
@@ -40,7 +32,7 @@ Local installtion also requires open-iscsi:
 ```
 
 
-Once we have a local/remote kubernetes cluster, we can proceed with Helm installation.
+
 
 
 ### 2.2. Helm 3
@@ -95,13 +87,6 @@ Wait a minute, then verify everything is working as expected by running:
 
 ### 2.5. Prometheus
 #### 2.5.1. Installation
-**DISCLAIMER** Be sure to take a look at the Prometheus `./quickstart/prometheus/values.yaml` file before proceeding with the installation.
-
-For more informations, please read the [configuration documentation](/documentation/CONFIGURE.md).
-
-We will use the chart of the prometheus-community repository for this example:
-
-**https://github.com/prometheus-community/helm-charts**
 
 ```sh
  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
