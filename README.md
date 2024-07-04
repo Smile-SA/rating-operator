@@ -5,9 +5,9 @@
 `rating-operator` is a Kubernetes native application that generate customizable **K**ey **P**erformance **I**ndicator as metrics and provide interfaces to exploit them. It features a multi-tenant, configurable and light operator to help users solve their rating needs.
 
 ## Table of content
-
+- [Quick Installation](/documentation/QUICK-INSTALLATION.md)
 - [Configuration](/documentation/CONFIGURE.md)
-- [Installation](/documentation/INSTALL.md)
+- [Detailed Installation](/documentation/INSTALL.md)
 - [Usage](/documentation/USAGE.md)
 - [Custom Resources](/documentation/CRD.md)
 - [Advanced Features](/documentation/FEATURES.md)
