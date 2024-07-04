@@ -6,13 +6,13 @@
 
 ## Table of content
 - [Quick Installation](/documentation/QUICK-INSTALLATION.md)
-- [Configuration](/documentation/CONFIGURE.md)
 - [Detailed Installation](/documentation/INSTALL.md)
+- [API endpoints](/documentation/API.md)
+- [Architecture](/documentation/ARCHITECTURE.md)
+- [Configuration](/documentation/CONFIGURE.md)
 - [Usage](/documentation/USAGE.md)
 - [Custom Resources](/documentation/CRD.md)
 - [Advanced Features](/documentation/FEATURES.md)
-- [Architecture](/documentation/ARCHITECTURE.md)
-- [API endpoints](/documentation/API.md)
 - [Troubleshooting](/documentation/TROUBLESHOOT.md)
 - [Contributing](documentation/CONTRIBUTING.md)
 
