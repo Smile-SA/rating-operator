@@ -1,0 +1,13 @@
+# de : 0.253, it : 0.297, fr : 0.28, eu : 0.238
+apiVersion: rating.smile.fr/v1
+kind: RatingRuleInstance
+metadata:
+  name: rating-rule-instance-co2-simulation-fr
+  namespace: {{ .Release.Namespace }}
+spec:
+  metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024))) + (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) + sum(storage_count_attachable_volumes_in_use)) * 220/1000 * {price}
+  name: co2-simulation-fr
+  timeframe: 36s
+  cpu: "4"
+  memory: "4"
+  price: "0.28"
