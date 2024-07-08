@@ -155,26 +155,7 @@ Then we can access rating operator components:
 ```sh
  ./hack/forward-api
 ```
-| **Endpoint**            | Description                                                           | Parameters                                      |
-|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------|
-| **GET `/instances/list`**           | Get the list of the rating rules instances from the local configuration directory.        | No parameters expected. |
-|  **GET `/instances/get`**             | Get the rating rule instance object for a given instance name                            |Expect a payload with : `name`  |
-| **POST `/instances/add`**        | Add and deploy the rating rule instance.| Expect a payload with : `metric_name`  `template_name` and variables values|
-| **POST `/instances/edit`**  | edit the rating rule instance.            | Expect a payload with : `metric_name`  `template_name` and variables values |
-| **POST `/instances/delete`** | Delete a rating rule instance.              | Expect a payload with : `metric_name` |
-| **GET `/templates/list`**           | Get the list of all the RatingRules templates names from the local configuration directory.        | No parameters expected. |
-|  **GET `/templates/get`**             | Get the RatingRule template object for a given template.                          |Expect a payload with : `query_name`  |
-| **POST `/templates/add`**        | Add a new RatingRule template. | Expect a payload with : `query_name`  `query_group` and `query_template`|
-| **POST `/templates/edit`**  | Edit a template configuration.            | Expect a payload with : `query_name`  `query_group` and `query_template` |
-| **POST `/templates/delete`** | Delete a template configuration.| Expect a payload with : `query_name` |
-| **GET `/metrics`**           | Get the list of metrics.| No parameters expected. |
-| **GET `/metrics/<metric_name>/rating`**           | Get the rating for a given metric.| Parameters expected : `start`  `end` |
-| **GET `/metrics/<metric_name>/total_rating`**           | Get the aggragated rating for a given metric. | Parameters expected : `start`  `end` |
-| **GET `/metrics/<metric>/<aggregator>`**           | Get the rating for a given metric, according to the aggregator. | Available aggregator are: `daily`  `weekly` `monthly` |
-| **GET `/metrics/<metric>/todate`**           | Get the rating, from the start of the month to now. | No parameters expected. |
-
 for more details about the API, please consult [API endpoints](/documentation/API.md)
-
 
 **Prometheus**
 ```sh
