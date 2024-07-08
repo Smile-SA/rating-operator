@@ -83,7 +83,7 @@ This is the common value file, containing what will be used to generate the rati
     # Base values should satisfy user needs
     image:
       pullPolicy: Always
-      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-api
+      repository: hub.rnd.smile.fr/overboard/5gbiller/rating-operator-api
       tag: master-test-2
 
     # Resources allocation
@@ -151,7 +151,7 @@ This is the common value file, containing what will be used to generate the rati
     # Mostly for developpers, the base values should satisfy user needs
     image:
       pullPolicy: Always
-      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-manager
+      repository: hub.rnd.smile.fr/overboard/5gbiller/rating-operator-manager
       tag: master
 
     # Resources allocation
@@ -171,7 +171,7 @@ This is the common value file, containing what will be used to generate the rati
     # Mostly for developpers, the base values should satisfy user needs
     image:
       pullPolicy: Always
-      repository: hub.rnd.alterway.fr/overboard/5gbiller/rating-operator-engine
+      repository: hub.rnd.smile.fr/overboard/5gbiller/rating-operator-engine
       tag: master
 
     # Resources allocation

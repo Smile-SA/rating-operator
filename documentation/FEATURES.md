@@ -36,7 +36,7 @@ This rating work is done by the `rating-operator-engine` component.
 The `rating-operator-api` exposes the latest `RatingRulesTemplates`, which can then be applied with `RatingRulesValues` to generate dataset to be rated. The processed metric is called `RatingRuleInstances`, see example below:
 
 ```yml
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-example
@@ -102,7 +102,7 @@ The operator will then do all the work again applying the new configurations.
 Below an example of this behavior:
 > I have one year worth of data stored, with a different configuration each month.
 February configuration was faulty but we realised only in May.
-Editing the february `RatingRule` and removing the `RatedMetrics` with `$ kubectl delete ratedmetrics.rating.alterway.fr <yourmetric>` will regenerate all the associated data in the next batch.
+Editing the february `RatingRule` and removing the `RatedMetrics` with `$ kubectl delete ratedmetrics.rating.smile.fr <yourmetric>` will regenerate all the associated data in the next batch.
 
 For more informations on `RatedMetrics` and `RatingRules`, read this [document](/documentation/CRD.md)
 
@@ -327,6 +327,6 @@ In the following table, we cite the main differences between the rating operator
 |                       | Kubernetes                                                                                                                                                                                                                                                                                                                                          | Openshift                                                               |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
 | namespaces management | The namespaces management depends on the applied authentication type:<br>1. Local:<br>user/namespace dans postgres<br>2. Keycloak:<br>user attribute “namespaces”<br>3. LDAP:<br>user attributes “uid”                                                                                                                                              | The namespaces are provided from OpenShift projects: projects.openshift |
-| Tenants types         | Three types of tenants  are applied in kubernetes [see this table](https://git.rnd.alterway.fr/overboard/5gbiller/rating-operator/-/blob/master/documentation/FEATURES.md) . The  tenant type is specified as the following :<br><br>1. Local:  the tenant and its type are stored  in a tenant_group table in postgres<br>2. Keycloak: the tenant type is defined in an attribute variable in keycloak<br>3. LDAP: the tenant type is defined in an attributes in LDAP | super_admin and users are managed by keycloak                           |
+| Tenants types         | Three types of tenants  are applied in kubernetes [see this table](https://git.rnd.smile.fr/overboard/5gbiller/rating-operator/-/blob/master/documentation/FEATURES.md) . The  tenant type is specified as the following :<br><br>1. Local:  the tenant and its type are stored  in a tenant_group table in postgres<br>2. Keycloak: the tenant type is defined in an attribute variable in keycloak<br>3. LDAP: the tenant type is defined in an attributes in LDAP | super_admin and users are managed by keycloak                           |
 
 

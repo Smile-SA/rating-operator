@@ -25,7 +25,7 @@ rating.charts.helm.k8s.io/rating edited
 
 Once the changes are accepted, you will see the operator reconfiguring the rating stack with the new parameters.
 
-## ***ratingrules**.rating.alterway.fr*
+## ***ratingrules**.rating.smile.fr*
 
  [This description is applicable from Rating operator v2.0]
 
@@ -40,7 +40,7 @@ Consider this minimal example of a `RatingRuleTemplate` that calculates the clou
 
 ```yml
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleTemplate
 metadata: 
     name: rating-rule-template-cloud-cost
@@ -72,7 +72,7 @@ Or `kubectl apply -f instance.yaml` :
 
 ```yml
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-aks-cost
@@ -92,7 +92,7 @@ The resulted `RatingRuleInstance` will be:
 
 ```yml
 ---
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatingRuleInstance
 metadata:
   creationTimestamp: "2021-08-19T23:06:12Z"
@@ -106,7 +106,7 @@ metadata:
     name: rating
     uid: 5e8bf7fd-04dc-4786-8745-f2e690c1029a
   resourceVersion: "74473530"
-  selfLink: /apis/rating.alterway.fr/v1/namespaces/rating/ratingruleinstances/rating-rule-instance-node-cost-simulation-aks-a8
+  selfLink: /apis/rating.smile.fr/v1/namespaces/rating/ratingruleinstances/rating-rule-instance-node-cost-simulation-aks-a8
   uid: 887ae58c-025e-41c6-8761-ad47960d36ce
 spec:
   cpu: "1"
@@ -179,13 +179,13 @@ usage_memory 1
 
 
 
-## *ratedmetrics.rating.alterway.fr*
+## *ratedmetrics.rating.smile.fr*
 
 Everytime a rated frames is written to the database, a `RatedMetric` is emitted.
 It contains informations about the metric, for other operators or applications to bind onto:
 
 ```yaml
-apiVersion: rating.alterway.fr/v1
+apiVersion: rating.smile.fr/v1
 kind: RatedMetric
 metadata:
   name: rated-test-metric
