@@ -207,3 +207,21 @@ To remove Longhorn, run:
 ```
 
 
+## API 
+
+
+| **Endpoint**            | Description                                                           | Parameters                                      |
+|-------------------|-----------------------------------------------------------------------|-----------------------------------------------------|
+| **GET `/instances/list`**           | Get the list of the rating rules instances from the local configuration directory.        | No parameters expected. |
+|  **GET `/instances/get`**             | Get the rating rule instance object for a given instance name                            |Expect a payload with : `name`  |
+| **POST `/instances/add`**        | Add and deploy the rating rule instance.| Expect a payload with : `metric_name`  `template_name` and variables values|
+| **POST `/instances/edit`**  | edit the rating rule instance.            | Expect a payload with : `metric_name`  `template_name` and variables values |
+| **POST `/instances/delete`** | Delete a rating rule instance.              | Expect a payload with : `metric_name` |
+| **GET `/templates/list`**           | Get the list of all the RatingRules templates names from the local configuration directory.        | No parameters expected. |
+|  **GET `/templates/get`**             | Get the RatingRule template object for a given template.                          |Expect a payload with : `query_name`  |
+| **POST `/templates/add`**        | Add a new RatingRule template. | Expect a payload with : `query_name`  `query_group` and `query_template`|
+| **POST `/templates/edit`**  | Edit a template configuration.            | Expect a payload with : `query_name`  `query_group` and `query_template` |
+| **POST `/templates/delete`** | Delete a template configuration.| Expect a payload with : `query_name` |
+| **GET `/metrics`**           | Get the list of metrics.| No parameters expected. |
+| **GET `/metrics/<metric_name>/rating`**           | Get the rating for a given metric.| Parameters expected : `start`  `end` |
+| **GET `/metrics/<metric_name>/total_rating`**           | Get the aggragated rating for a given metric. | Parameters expected : `start`  `end` |
