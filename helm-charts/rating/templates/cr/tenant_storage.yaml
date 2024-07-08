@@ -6,4 +6,4 @@ metadata:
 spec:
   metric: (sum(kubelet_volume_stats_capacity_bytes) by (namespace, node, persistentvolumeclaim) - sum(kubelet_volume_stats_available_bytes) by (namespace, node, persistentvolumeclaim))/(1024*1024*1024)
   name: tenant_storage_use
-  timeframe: 3600s
+  timeframe: 3s
