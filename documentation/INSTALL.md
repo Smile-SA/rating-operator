@@ -2,10 +2,10 @@
 
 ## 1. Introduction
 
-In this document we show how to set up a test/minimal cluster instance. In a production
-environment, you may want to add Network policies for increased security, and
-HA storage for resilience. In this tutorial the in-cluster communications are
-considered trusted.
+In this document we show how to set up a test/minimal cluster instance. In a production environment, you may want to add Network policies for increased security, and HA storage for resilience. In this tutorial the in-cluster communications are considered trusted. 
+
+For a quick installation, please refer this **[guide](/documentation/QUICK-INSTALLATION.md).**
+ 
 
 ## 2. Requirements
 
