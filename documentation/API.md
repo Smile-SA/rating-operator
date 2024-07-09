@@ -37,3 +37,78 @@ The endpoints are ordered by their resource (namespace, pods, etc..), and the gr
 | **GET `/namespaces/<namespace>/rating`**           | Get the rating on a time period, for a given namespace.| Parameters expected : `start`  `end`|
 | **GET `/namespaces/<namespace>/total_rating`**           | Get the sum of the rating on a time period, for a given namespace.| Parameters expected : `start`  `end`|
 | **GET `/namespaces/<namespace>/metrics/<metric>/rating`**           | Get the rating on a time period, for givens namespace and metric.| Parameters expected : `start`  `end`|
+| **GET `/pods`**           | Get the list of pods. | Parameters expected : `start`  `end` |
+| **GET `/pods/rating`**           | Get pods rating.| Parameters expected : `start`  `end`|
+| **GET `/pods/total_rating`**           | Get pods aggregated rating.| Parameters expected : `start`  `end`|
+| **GET `/pods/metrics/rating`**           | Get the rating on a time period, grouped by namespaces and metrics.| Parameters expected : `start` `end`|
+| **GET `/pods/<pod>/<aggregator>`**           | Get the pods rating by time aggregation.|Available aggregator are: `daily`  `weekly` `monthly`|
+| **GET `/pods/<pod>/rating`**           | Get the rating for a given pod.| Parameters expected : `start`  `end`|
+| **GET `/pods/<pod>/total_rating`**           | Get the sum of the rating , for a given pod.| Parameters expected : `start`  `end`|
+| **GET `/pods/<pod>/metrics/<metric>/rating`**           | Get the rating on a time period, for givens pod and metric.| Parameters expected : `start`  `end`|
+| **GET `/pods/<pod>/metrics/<metric>/rating`**           | Get the sum of the rating on a time period, for givens pod and metric.| Parameters expected : `start`  `end`|
+
+----
+
+
+#### Examples 
+
+- **Simple endpoints**
+
+No parameters required, call the endpoint, get a response.
+
+```sh
+$ curl http://127.0.0.1/namespaces
+{
+    "results":[...],
+    "total": ...
+}
+```
+
+- **Endpoints with url parameters**
+
+The endpoints using this method will be labelled `[URL]`.
+
+We'll use `/namespaces/<namespace>/<aggregator>` as an exemple here.
+
+In this query, the time range is handled by the **aggregator**, and the parameters are sent through the url.
+```sh
+# We use 'rating' namespace and the 'daily' aggregator for the example.
+$ curl http://127.0.0.1/namespaces/rating/daily
+{
+    "results": [...],
+    "total": ...
+}
+```
+
+- **Endpoints with time range (TR)**
+
+The endpoints using this method will be labelled `[TR]`.
+
+For this example, `/namespaces/<namespace>/rating` is a perfect choice.
+There's no time range specified in this query, so we need to specify it using url encoded parameters.
+The default value for those is from two hours to now.
+
+```sh
+$ curl http://127.0.0.1/namespaces/default/rating?start=2024-02-05+10%3A22%3A53.604Z&end=2024-02-05+16%3A22%3A53.604Z
+{
+    "results": [...],
+    "total": ...
+}
+```
+
+- **Endpoint with payload**
+
+The endpoints using this method will be labelled `[PL]`.
+
+These endpoints are the hardest to query, from a user perspective.
+They are generally available for resource handling, such as rules or tenant management.
+Let's create a RatingRuleModel with cURL as an example:
+
+```sh
+$ curl -X POST
+       -H "Content-Type: application/json"
+       -d '{"query_name": "example_query_name","query_group": "example_query_group","query_template: "exmaple_promql_query"}'
+       http://127.0.0.1/templates/add
+```
+
+
