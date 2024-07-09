@@ -186,11 +186,11 @@ To remove Longhorn, run:
 ```
 - Then:
 ```sh
- kubectl delete -f /quickstart/longhorn/longhorn/deploy/longhorn.yaml
+ kubectl delete -f ./quickstart/longhorn/longhorn/deploy/longhorn.yaml
 ```
 - Finally:
 ```sh
- kubectl delete -f /quickstart/longhorn/longhorn/uninstall/uninstall.yaml
+ kubectl delete -f ./quickstart/longhorn/longhorn/uninstall/uninstall.yaml
 ```
 
 ### 4.4. Prometheus
