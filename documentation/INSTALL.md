@@ -312,7 +312,7 @@ $ ./quickstart/prometheus/install.sh
 Information shown as:
 ```sh
 NAME:   prometheus
-LAST DEPLOYED: Thu Oct 10 16:17:01 2019
+LAST DEPLOYED: Thu Oct 10 16:17:01 2023
 NAMESPACE: monitoring
 STATUS: DEPLOYED
 [...]
@@ -553,7 +553,7 @@ $ helm install -n rating rating ./helm-charts/rating -f ./values.yaml
 We will get the following output:
 ```sh
 NAME: rating
-LAST DEPLOYED: Wed Apr  8 14:42:54 2020
+LAST DEPLOYED: Wed Apr  8 14:42:54 2024
 NAMESPACE: rating-mm
 STATUS: deployed
 [...]
