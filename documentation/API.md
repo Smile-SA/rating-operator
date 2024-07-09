@@ -24,8 +24,8 @@ The endpoints are ordered by their resource (namespace, pods, etc..), and the gr
 | **POST `/templates/edit`**  | Edit a template configuration.            | Expect a payload with : `query_name`  `query_group` and `query_template` |
 | **POST `/templates/delete`** | Delete a template configuration.| Expect a payload with : `query_name` |
 | **GET `/metrics`**           | Get the list of metrics.| No parameters expected. |
-| **GET `/metrics/<metric_name>/rating`**           | Get the rating for a given metric.| Parameters expected : `start`  `end` |
-| **GET `/metrics/<metric_name>/total_rating`**           | Get the aggragated rating for a given metric. | Parameters expected : `start`  `end` |
+| **GET `/metrics/<metric>/rating`**           | Get the rating for a given metric.| Parameters expected : `start`  `end` |
+| **GET `/metrics/<metric>/total_rating`**           | Get the aggragated rating for a given metric. | Parameters expected : `start`  `end` |
 | **GET `/metrics/<metric>/<aggregator>`**           | Get the rating for a given metric, according to the aggregator. | Available aggregator are: `daily`  `weekly` `monthly` |
 | **GET `/metrics/<metric>/todate`**           | Get the rating, from the start of the month to now. | No parameters expected. |
 | **GET `/metrics/<metric>/max`**           |Get the max rating for a given metric. | Parameters expected : `start`  `end` |
