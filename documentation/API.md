@@ -88,7 +88,7 @@ The default value for those is from two hours to now.
 ```sh
 $ curl http://127.0.0.1/metrics/co2-simulation-eu/rating?start=2024-07-10+10%3A22%3A53.604Z&end=2024-07-10+16%3A22%3A53.604Z
 {
-    "results":[{"frame_begin":"Wed, 10 Jul 2024 10:23:14 GMT", "metric":"co2-simulation-eu","price":0.62832},{"frame_begin":"Wed, 10 Jul 2024 10:23:50 GMT","metric":"co2-simulation-eu","value":0.62833},
+    "results":[{"frame_begin":"Wed, 10 Jul 2024 10:23:14 GMT", "metric":"co2-simulation-eu","value":0.62832},{"frame_begin":"Wed, 10 Jul 2024 10:23:50 GMT","metric":"co2-simulation-eu","value":0.62833},
     "total": 2
 }
 ```
