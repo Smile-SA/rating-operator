@@ -29,7 +29,7 @@ I'm alive!
 ```
 - After adding a new configuration, always verify that it is accepted. If the message below does not appear, the `RatingRules` have not been validated and thus will not be used.
 ```sh
-$> kubectl -n $RATING_NAMESPACE  describe ratingrules.rating.alterway.fr test-rules
+$> kubectl -n $RATING_NAMESPACE  describe ratingrules.rating.smile.fr test-rules
 [...]
  Type    Reason   Age   From  Message
   ----    ------   ----  ----  -------
@@ -39,19 +39,19 @@ $> kubectl -n $RATING_NAMESPACE  describe ratingrules.rating.alterway.fr test-ru
 - Do **NOT** create or modify `RatedMetrics` yourself, it's not designed to be used that way.
 - If a custom resource is stuck while deleting, the cause is probably the finalizer method. To solve this problem, we can use the `patch` command of kubectl:
 ```sh
-$ kubectl delete ratingrules.rating.alterway.fr rating-rating-default-rules
+$ kubectl delete ratingrules.rating.smile.fr rating-rating-default-rules
 # The command hangs
 
 # On another terminal
-$ kubectl get ratingrules.rating.alterway.fr
+$ kubectl get ratingrules.rating.smile.fr
 NAME                          AGE
 rating-rating-default-rules   3d
 
-$ kubectl patch ratingrules.rating.alterway.fr/rating-rating-default-rules -p '{"metadata":{"finalizers":[]}}' --type=merge
-ratingrule.rating.alterway.fr/rating-rating-default-rules patched
+$ kubectl patch ratingrules.rating.smile.fr/rating-rating-default-rules -p '{"metadata":{"finalizers":[]}}' --type=merge
+ratingrule.rating.smile.fr/rating-rating-default-rules patched
 
 # Then
-$ kubectl get ratingrules.rating.alterway.fr
+$ kubectl get ratingrules.rating.smile.fr
 No resources found in rating namespace.
 ```
 

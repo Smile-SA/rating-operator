@@ -6,4 +6,4 @@ metadata:
 spec:
   metric: sum(prometheus_tsdb_storage_blocks_bytes) / (1024*1024*1024)
   name: prometheus_storage_size
-  timeframe: 3600s
+  timeframe: 3s

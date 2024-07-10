@@ -5,4 +5,4 @@ metadata:
 spec:
   metric: avg without (instance) (sum(instance:node_cpu:ratio) by (instance) / on (instance) group_left sum(instance:node_memory_utilisation:ratio) by (instance))
   name: node_cpu_memory_ratio_advanced
-  timeframe: 3600s
+  timeframe: 3s

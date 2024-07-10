@@ -7,7 +7,7 @@ metadata:
 spec:
   metric: ((ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)))/{memory} > (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum))) / {cpu} or (ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)))/{cpu}) * {price}
   name: node_cost_simulation_aws_t4g_nano
-  timeframe: 3600s
+  timeframe: 3s
   cpu: "2"
   memory: "0.5"
   price: "0.0042"
@@ -20,7 +20,7 @@ metadata:
 spec:
   metric: ceil(ceil(sum(instance:node_memory_utilisation:ratio) * max(node_memory_MemTotal_bytes)/(1024*1024*1024)) / {memory}) > ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu}) or ceil(ceil(sum(instance:node_cpu:ratio) * max(instance:node_num_cpu:sum)) / {cpu})
   name: number_instance_simulation_aws_t4g_nano
-  timeframe: 3600s
+  timeframe: 3s
   cpu: "2"
   memory: "0.5"
   price: "0.0042"

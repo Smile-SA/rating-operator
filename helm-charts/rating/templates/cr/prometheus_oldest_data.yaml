@@ -6,4 +6,4 @@ metadata:
 spec:
   metric: min(prometheus_tsdb_lowest_timestamp)
   name: prometheus_oldest_data
-  timeframe: 3600s
+  timeframe: 3s

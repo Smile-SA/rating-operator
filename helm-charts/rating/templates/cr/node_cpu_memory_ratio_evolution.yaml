@@ -6,4 +6,4 @@ metadata:
 spec:
   metric: (sum(rate(instance:node_cpu:ratio[24h])) by (instance) / on (instance) group_left sum(rate(instance:node_memory_utilisation:ratio[24h])) by (instance))
   name: node_cpu_memory_ratio_evolution
-  timeframe: 3600s
+  timeframe: 3s

@@ -7,11 +7,11 @@ Within the `rating-operator` deployment is included a base configuration, a **Ra
 #### RatingRules
 
 ```sh
-$ kubectl get ratingrules.rating.alterway.fr
+$ kubectl get ratingrules.rating.smile.fr
 NAME                          AGE
 rating-default-rules          46m
 
-$ kubectl describe ratingrules.rating.alterway.fr rating-rating-default-rules
+$ kubectl describe ratingrules.rating.smile.fr rating-rating-default-rules
 [...]
 Spec:
 # The "Metrics" part describe the location of the metric in the metering-operator
@@ -62,7 +62,7 @@ This configuration will be used until a new one is created.
 You can edit the above with:
 
 ```sh
-$ kubectl edit ratingrules.rating.alterway.fr <yourconfig>
+$ kubectl edit ratingrules.rating.smile.fr <yourconfig>
 ```
 
 For more advanced use cases, we strongly advice to create a new configuration.
@@ -79,14 +79,14 @@ More information on `RatingRules` can be found in the [custom resources document
 The other part of the configuration is composed of **RatingRuleInstances**, describing metrics using **promQL** and of a base **RatingRule** that holds values to be used in queries.
 
 ```sh
-$ kubectl get ratingruleinstances.rating.alterway.fr
+$ kubectl get ratingruleinstances.rating.smile.fr
 NAME                                                           AGE
 rating-rule-instance-pod-request-cpu                              2m
 rating-rule-instance-pod-request-memory                           2m
 rating-rule-instance-pod-usage-cpu                                2m
 rating-rule-instance-pod-usage-memory                             2m
 
-$ kubectl get ratingruleinstances.rating.alterway.fr rating-rule-instance-pod-usage-cpu -o yaml
+$ kubectl get ratingruleinstances.rating.smile.fr rating-rule-instance-pod-usage-cpu -o yaml
 kind: RatingRuleInstance
 metadata:
   name: rating-rule-instance-pod-usage-cpu
@@ -107,16 +107,16 @@ More informations on `RatingRuleInstances` can be found in the [custom resources
 To rate a new metric, you need to create a `RatingRuleInstance`:
 
 ```sh
-$ kubectl get ratingRuleInstances.rating.alterway.fr                             
+$ kubectl get ratingRuleInstances.rating.smile.fr                             
 NAME                            AGE
 rating-rule-instance-rated-usage-cpu   21s
 
-$ kubectl describe ratingRuleInstances.rating.alterway.fr rating-rule-instance-rated-usage-cpu
+$ kubectl describe ratingRuleInstances.rating.smile.fr rating-rule-instance-rated-usage-cpu
 Name:         rating-rule-instance-rated-usage-cpu
 Namespace:    rating
 Labels:       <none>
 Annotations:  <none>
-API Version:  rating.alterway.fr/v1
+API Version:  rating.smile.fr/v1
 Kind:         RatingRuleinstance
 [...]
 Spec:
