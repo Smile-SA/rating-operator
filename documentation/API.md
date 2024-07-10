@@ -59,8 +59,8 @@ No parameters required, call the endpoint, get a response.
 ```sh
 $ curl http://127.0.0.1/namespaces
 {
-    "results":[...],
-    "total": ...
+    "results":[{"namespace":"kube-system","tenant_id":"default"},{"namespace":"longhorn-system","tenant_id":"default"},{"namespace":"monitoring","tenant_id":"default"},{"namespace":"rating","tenant_id":"default"},{"namespace":"unspecified","tenant_id":"default"}],"total":5
+
 }
 ```
 
@@ -72,27 +72,24 @@ We'll use `/namespaces/<namespace>/<aggregator>` as an exemple here.
 
 In this query, the time range is handled by the **aggregator**, and the parameters are sent through the url.
 ```sh
-# We use 'rating' namespace and the 'daily' aggregator for the example.
-$ curl http://127.0.0.1/namespaces/rating/daily
-{
-    "results": [...],
-    "total": ...
-}
+# We use  the 'daily' aggregator for the example.
+$ curl http://127.0.0.1/metrics/co2-simulation-eu/daily
+{"results":[{"frame_price":15.07968}],"total":1}}
 ```
 
 - **Endpoints with time range (TR)**
 
 The endpoints using this method will be labelled `[TR]`.
 
-For this example, `/namespaces/<namespace>/rating` is a perfect choice.
+For this example, `/metrics/<metric>/rating` is a perfect choice.
 There's no time range specified in this query, so we need to specify it using url encoded parameters.
 The default value for those is from two hours to now.
 
 ```sh
-$ curl http://127.0.0.1/namespaces/default/rating?start=2024-02-05+10%3A22%3A53.604Z&end=2024-02-05+16%3A22%3A53.604Z
+$ curl http://127.0.0.1/metrics/co2-simulation-eu/rating?start=2024-07-10+10%3A22%3A53.604Z&end=2024-07-10+16%3A22%3A53.604Z
 {
-    "results": [...],
-    "total": ...
+    "results":[{"frame_begin":"Wed, 10 Jul 2024 10:23:14 GMT", "metric":"co2-simulation-eu","node_count":1,"price":0.62832},{"frame_begin":"Wed, 10 Jul 2024 10:23:50 GMT","metric":"co2-simulation-eu","node_count":1,"price":0.62832},
+    "total": 2
 }
 ```
 
