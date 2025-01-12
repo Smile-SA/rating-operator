@@ -5,6 +5,12 @@
 prometheus:
   prometheusSpec:
     retention: 30d
+    additionalScrapeConfigs:
+      - job_name: "custom-metrics"
+        metrics_path: "/metrics"
+        static_configs:
+          - targets:
+              - "custom-metrics-service.monitoring.svc.cluster.local:8000"
 grafana:
   adminPassword: prom-operator
   sidecar:

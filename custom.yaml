@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: custom-metrics-app
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: custom-metrics-app
+  template:
+    metadata:
+      labels:
+        app: custom-metrics-app
+    spec:
+      containers:
+      - name: custom-metrics-container
+        image: python:3.10-slim
+        ports:
+        - containerPort: 8000
+        command: ["/bin/sh", "-c"]  # Use shell to run multiple commands
+        args: [
+          "pip install prometheus_client requests && python /app/script.py"
+        ]  # Install both dependencies and run script
+        volumeMounts:
+        - name: script-volume
+          mountPath: /app
+      volumes:
+      - name: script-volume
+        configMap:
+          name: custom-metrics-script

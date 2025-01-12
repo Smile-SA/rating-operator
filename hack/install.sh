@@ -13,7 +13,6 @@ kubectl -n ${RATING_NAMESPACE} apply -f deploy/crds/charts.helm.k8s.io_ratings_c
 kubectl -n ${RATING_NAMESPACE} apply -f deploy/crds/charts.helm.k8s.io_v1alpha1_rating_cr.yaml
 kubectl -n ${RATING_NAMESPACE} apply -f deploy/
 kubectl -n ${RATING_NAMESPACE} apply -f deploy/v3/ > /dev/null
-
 if [ "$LOCAL_GRAFANA" == "true" ]; then
     GRAFANA_NAMESPACE=${RATING_NAMESPACE} ./quickstart/grafana/install.sh
 fi
