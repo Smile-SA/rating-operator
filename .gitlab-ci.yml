@@ -20,6 +20,7 @@ before_script:
 build-master-gitlab:
   stage: build
   script:
+  - export DOCKER_TLS_CERTDIR=""  
   - *docker_login_gitlab
   - docker build -f build/Dockerfile --pull -t "$CI_REGISTRY_IMAGE:latest" .
   - docker push "$CI_REGISTRY_IMAGE"
