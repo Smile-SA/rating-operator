@@ -56,5 +56,3 @@ build-gitlab:
   except:
     refs:
     - master
-
-
