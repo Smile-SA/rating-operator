@@ -7,6 +7,7 @@
 ## Table of content
 - [Quick Installation](/documentation/QUICK-INSTALLATION.md)
 - [Detailed Installation](/documentation/INSTALL.md)
+- [Available Metrics](/documentation/METRICS.md)
 - [API endpoints](/documentation/API.md)
 - [Architecture](/documentation/ARCHITECTURE.md)
 - [Configuration](/documentation/CONFIGURE.md)
